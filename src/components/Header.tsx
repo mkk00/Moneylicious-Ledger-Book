@@ -1,16 +1,29 @@
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
-const MENU_LIST = ['대시보드', '자산관리', '커뮤니티', '마이페이지']
+const MENU_LIST = [
+  {
+    name: '대시보드',
+    path: '/dashboard'
+  },
+  { name: '자산관리', path: '/management' },
+  { name: '커뮤니티', path: '/board' },
+  { name: '마이페이지', path: '/mypage' }
+]
 
 const Header = () => {
   return (
     <Container>
       <Wrapper>
-        <h1>서브라포</h1>
+        <h1>
+          <Link to="/">서브라포</Link>
+        </h1>
         <nav>
           <MenuList>
             {MENU_LIST.map(menu => (
-              <li key={`menu-${menu}`}>{menu}</li>
+              <li key={`menu-${menu}`}>
+                <Link to={menu.path}>{menu.name}</Link>
+              </li>
             ))}
           </MenuList>
         </nav>

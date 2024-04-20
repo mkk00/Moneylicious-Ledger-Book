@@ -4,14 +4,9 @@ import { theme } from '@/styles/theme'
 import GlobalStyle from '@/styles/global-styles'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import Home from '@/pages/Home'
+import { routerList } from '@/utils/router'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />
-  }
-])
+const router = createBrowserRouter(routerList)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ThemeProvider theme={theme}>
