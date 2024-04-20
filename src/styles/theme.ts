@@ -5,6 +5,7 @@ export const theme: DefaultTheme = {
 
   color: {
     main: '#3c5afe',
-    sub: '#ff6e40'
+    sub: '#ff6e40',
+    white: '#ffffff'
   }
 }
