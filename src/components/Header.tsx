@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import styled, { useTheme } from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
 const MENU_LIST = [
   {
@@ -12,17 +12,28 @@ const MENU_LIST = [
 ]
 
 const Header = () => {
+  const { color } = useTheme()
+
+  const navActiveStyle = ({ isActive }: { isActive: boolean }) => ({
+    color: isActive ? color.sub : color.white,
+    fontWeight: isActive ? 'bold' : 'normal'
+  })
+
   return (
     <Container>
       <Wrapper>
         <h1>
-          <Link to="/">서브라포</Link>
+          <NavLink to="/">서브라포</NavLink>
         </h1>
         <nav>
           <MenuList>
             {MENU_LIST.map(menu => (
-              <li key={`menu-${menu}`}>
-                <Link to={menu.path}>{menu.name}</Link>
+              <li key={`menu-${menu.name}`}>
+                <NavLink
+                  to={menu.path}
+                  style={navActiveStyle}>
+                  {menu.name}
+                </NavLink>
               </li>
             ))}
           </MenuList>
@@ -39,8 +50,8 @@ const Container = styled.header`
   position: fixed;
   top: 0;
   left: 0;
-  background: ${props => props.theme.color.main};
-  color: ${props => props.theme.color.white};
+  background: ${({ theme }) => theme.color.main};
+  color: ${({ theme }) => theme.color.white};
   z-index: 9999;
 `
 
