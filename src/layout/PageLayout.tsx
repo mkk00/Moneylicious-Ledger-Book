@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import Header from '@/components/Header'
 
-const BasicLayout = ({ children }: { children: ReactNode }) => {
+const PageLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Container>
       <Header />
@@ -12,7 +12,7 @@ const BasicLayout = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export default BasicLayout
+export default PageLayout
 
 const Container = styled.div`
   width: 100vw;

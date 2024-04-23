@@ -1,10 +1,10 @@
-import BasicLayout from '@/layout/PageLayout'
+import PageLayout from '@/layout/PageLayout'
 
 const Dashboard = () => {
   return (
-    <BasicLayout>
+    <PageLayout>
       <>대시보드</>
-    </BasicLayout>
+    </PageLayout>
   )
 }
 

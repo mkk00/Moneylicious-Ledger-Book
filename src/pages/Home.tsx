@@ -1,10 +1,15 @@
-import BasicLayout from '@/layout/PageLayout'
+import PageLayout from '@/layout/PageLayout'
+import ContendsSplitLayout from '@/layout/ContendsSplitLayout'
+import Calendar from '@/components/Calendar'
 
 const Home = () => {
   return (
-    <BasicLayout>
-      <>홈</>
-    </BasicLayout>
+    <PageLayout>
+      <ContendsSplitLayout leftRatio={3}>
+        <Calendar />
+        <></>
+      </ContendsSplitLayout>
+    </PageLayout>
   )
 }
 

@@ -1,10 +1,10 @@
-import BasicLayout from '@/layout/PageLayout'
+import PageLayout from '@/layout/PageLayout'
 
 const Mypage = () => {
   return (
-    <BasicLayout>
+    <PageLayout>
       <>마이페이지</>
-    </BasicLayout>
+    </PageLayout>
   )
 }
 

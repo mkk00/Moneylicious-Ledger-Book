@@ -1,10 +1,10 @@
-import BasicLayout from '@/layout/PageLayout'
+import PageLayout from '@/layout/PageLayout'
 
 const Board = () => {
   return (
-    <BasicLayout>
+    <PageLayout>
       <>커뮤니티 페이지</>
-    </BasicLayout>
+    </PageLayout>
   )
 }
 

@@ -1,10 +1,10 @@
-import BasicLayout from '@/layout/PageLayout'
+import PageLayout from '@/layout/PageLayout'
 
 const Management = () => {
   return (
-    <BasicLayout>
+    <PageLayout>
       <>자산관리 페이지</>
-    </BasicLayout>
+    </PageLayout>
   )
 }
 
