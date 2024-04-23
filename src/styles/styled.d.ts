@@ -1,13 +1,8 @@
 import 'styled-components'
+import { ColorTypes } from '@/styles/theme'
 
 declare module 'styled-components' {
   export interface DefaultTheme {
-    basicWidth: string
-
-    color: {
-      main: string
-      sub: string
-      white: string
-    }
+    color: ColorTypes
   }
 }
