@@ -1,20 +1,13 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components'
 
-const ContendsSplitLayout = ({
-  children,
-  leftRatio = 1,
-  rightRatio = 1
-}: {
-  children: ReactNode[]
-  leftRatio?: number
-  rightRatio?: number
-}) => {
-  const [left, right] = children
+const ContendsSplitLayout = ({ children }: { children: ReactNode[] }) => {
+  const left = children[0]
+  const right = children[1]
   return (
     <Container>
-      <Contents ratio={leftRatio}>{left}</Contents>
-      <Contents ratio={rightRatio}>{right}</Contents>
+      <Left>{left}</Left>
+      <Right>{right}</Right>
     </Container>
   )
 }
@@ -26,6 +19,10 @@ const Container = styled.div`
   width: 100%;
 `
 
-const Contents = styled.section<{ ratio?: number }>`
-  flex: ${props => props.ratio};
+const Left = styled.section`
+  flex: 3;
+`
+
+const Right = styled.section`
+  flex: 1;
 `

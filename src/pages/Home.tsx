@@ -5,7 +5,7 @@ import Calendar from '@/components/Calendar'
 const Home = () => {
   return (
     <PageLayout>
-      <ContendsSplitLayout leftRatio={3}>
+      <ContendsSplitLayout>
         <Calendar />
         <></>
       </ContendsSplitLayout>
