@@ -5,15 +5,15 @@ const GlobalStyle = createGlobalStyle`
   ${normalize}
 
   @font-face {
-    font-family: 'NanumSquareNeo-Variable';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-  }
+}
 
   html,
   body {
-    font-family: 'NanumSquareNeo-Variable', sans-serif;
+    font-family: 'NanumSquareRound', sans-serif;
   }
 
   * {
