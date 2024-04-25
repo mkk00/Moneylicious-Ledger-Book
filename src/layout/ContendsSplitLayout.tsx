@@ -3,10 +3,12 @@ import styled from 'styled-components'
 
 const ContendsSplitLayout = ({ children }: { children: ReactNode[] }) => {
   const left = children[0]
-  const right = children[1]
+  const center = children[1]
+  const right = children[2]
   return (
     <Container>
       <Left>{left}</Left>
+      <Center>{center}</Center>
       <Right>{right}</Right>
     </Container>
   )
@@ -20,7 +22,11 @@ const Container = styled.div`
 `
 
 const Left = styled.section`
-  flex: 3;
+  flex: 2;
+`
+
+const Center = styled.section`
+  flex: 1;
 `
 
 const Right = styled.section`

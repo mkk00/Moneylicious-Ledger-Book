@@ -8,6 +8,7 @@ const Home = () => {
       <ContendsSplitLayout>
         <Calendar />
         <></>
+        <></>
       </ContendsSplitLayout>
     </PageLayout>
   )
