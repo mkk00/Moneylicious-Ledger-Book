@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { RiHome5Line } from 'react-icons/ri'
 import { BiSolidRightArrow, BiSolidLeftArrow } from 'react-icons/bi'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import DatePickerModal from '@/components/modal/DatePickerModal'
 
 const Calendar = () => {
   const [currentDate, setCurruentDate] = useState(new Date())
+  const [openDatePicker, setOpenDatePicker] = useState(false)
 
   const currentYear = currentDate.getFullYear()
   const currentMonth = currentDate.getMonth()
@@ -69,8 +72,20 @@ const Calendar = () => {
 
   return (
     <>
+      {openDatePicker && (
+        <DatePickerModal
+          setOpenDatePicker={setOpenDatePicker}
+          setCurruentDate={setCurruentDate}
+        />
+      )}
       <SelectedDateWrapper>
-        <SelectDateButton>
+        <BackTodayButton>
+          <RiHome5Line
+            size={16}
+            onClick={() => setCurruentDate(new Date())}
+          />
+        </BackTodayButton>
+        <SelectDateButton onClick={() => setOpenDatePicker(true)}>
           {currentYear}년 {currentMonth + 1}월
         </SelectDateButton>
         <SelectMonthButton>
@@ -98,6 +113,18 @@ const Calendar = () => {
 
 export default Calendar
 
+const buttonStyles = css`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-45%);
+`
+
+const hoverStyle = css`
+  :hover {
+    color: ${({ theme }) => theme.color.main};
+  }
+`
+
 const SelectedDateWrapper = styled.div`
   width: 595px;
   display: flex;
@@ -105,28 +132,29 @@ const SelectedDateWrapper = styled.div`
   position: relative;
 `
 
+const BackTodayButton = styled.button`
+  ${buttonStyles}
+  ${hoverStyle}
+  left: 20px;
+  padding: 5px;
+`
+
 const SelectDateButton = styled.button`
   width: fit-content;
   padding: 10px 30px;
   margin: 0 auto;
   font-size: 1.2rem;
-  border: 1px solid ${({ theme }) => theme.color.white};
-
-  &:hover {
-    cursor: pointer;
-  }
 `
 
 const SelectMonthButton = styled.div`
-  position: absolute;
+  ${buttonStyles}
   right: 20px;
-  top: 50%;
-  transform: translateY(-45%);
   display: flex;
   gap: 5px;
 
   button {
     padding: 5px;
+    ${hoverStyle}
   }
 `
 

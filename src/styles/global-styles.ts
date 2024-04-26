@@ -30,6 +30,7 @@ const GlobalStyle = createGlobalStyle`
   button {
     background: none;
     border: none;
+    cursor: pointer;
   }
 
   ol,
