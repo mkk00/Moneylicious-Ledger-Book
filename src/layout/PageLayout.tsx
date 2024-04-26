@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components'
 
-import Header from '@/components/Header'
+import Header from '@/components/common/Header'
 
 const PageLayout = ({ children }: { children: ReactNode }) => {
   return (
