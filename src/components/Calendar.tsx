@@ -9,6 +9,16 @@ const Calendar = () => {
   const currentMonth = currentDate.getMonth()
   const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 
+  const isToday = (date: number) => {
+    const today = new Date()
+
+    return (
+      currentYear === today.getFullYear() &&
+      currentMonth === today.getMonth() &&
+      date === today.getDate()
+    )
+  }
+
   // 해당 월의 시작 요일과 일 수 계산
   const getCalendarInfo = (year: number, month: number) => {
     const startDay = new Date(year, month - 1, 1).getDay()
@@ -23,12 +33,22 @@ const Calendar = () => {
 
     // 해당 월의 첫째 날이 시작되는 요일 전까지를 빈 요소로 채움
     for (let i = 0; i < startDay; i++) {
-      CalendarArr.push(<TableItems key={`empty + ${i}`}></TableItems>)
+      CalendarArr.push(
+        <TableItems
+          key={`empty + ${i}`}
+          $isToday={false}></TableItems>
+      )
     }
 
     // 1일부터 daysInMonth 까지의 날짜를 생성하여 배열에 추가
     for (let date = 1; date <= totalDate; date++) {
-      CalendarArr.push(<TableItems key={date}>{date}</TableItems>)
+      CalendarArr.push(
+        <TableItems
+          key={date}
+          $isToday={isToday(date)}>
+          {date}
+        </TableItems>
+      )
     }
     return CalendarArr
   }
@@ -112,6 +132,7 @@ const SelectMonthButton = styled.div`
 
 const CalendarTable = styled.table`
   border-collapse: collapse;
+  width: 100%;
 
   &,
   & thead {
@@ -136,17 +157,20 @@ const DaysItem = styled.th`
   height: 30px;
 `
 
-const TableItems = styled.td`
+const TableItems = styled.td<{ $isToday?: boolean }>`
   width: 85px;
   height: 85px;
   vertical-align: top;
   text-align: center;
   padding: 10px 5px;
+  background-color: ${({ $isToday, theme }) =>
+    $isToday ? theme.gray.gray_100 : 'none'};
+  font-weight: ${({ $isToday }) => ($isToday ? 'bold' : 'normal')};
+  border-radius: 5px;
 
   &:hover {
     font-weight: bold;
     color: ${({ theme }) => theme.color.white};
     background-color: ${({ theme }) => theme.color.main_light};
-    border-radius: 5px;
   }
 `
