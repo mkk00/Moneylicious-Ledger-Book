@@ -1,17 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { RiHome5Line } from 'react-icons/ri'
 import { BiSolidRightArrow, BiSolidLeftArrow } from 'react-icons/bi'
 import styled, { css } from 'styled-components'
 import DatePickerModal from '@/components/modal/DatePickerModal'
+import { getHolidayData } from '@/lib/holiday'
+import { holidayProps } from '@/interface/holidayProps'
 
 const Calendar = () => {
   const [currentDate, setCurruentDate] = useState(new Date())
   const [openDatePicker, setOpenDatePicker] = useState(false)
+  const [holiday, setHoliday] = useState<holidayProps[] | holidayProps | null>(
+    null
+  )
 
   const currentYear = currentDate.getFullYear()
   const currentMonth = currentDate.getMonth()
+
   const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 
+  // 오늘 날짜 찾는 함수
   const isToday = (date: number) => {
     const today = new Date()
 
@@ -20,6 +27,29 @@ const Calendar = () => {
       currentMonth === today.getMonth() &&
       date === today.getDate()
     )
+  }
+
+  // 공휴일 목록에서 date 추출해서 배열에 저장
+  const extractDayFromHoliday = () => {
+    if (Array.isArray(holiday)) {
+      return holiday
+        ?.filter(h => h.isHoliday === 'Y')
+        .map(holidays => holidays.locdate % 100)
+    } else if (holiday && holiday.isHoliday === 'Y') {
+      return holiday.locdate % 100
+    }
+  }
+
+  // 공휴일 체크
+  const findHoliday = (date: number) => {
+    const extractedDays = extractDayFromHoliday()
+    if (Array.isArray(extractedDays)) {
+      return extractedDays.includes(date)
+    } else if (extractedDays) {
+      return extractedDays === date
+    } else {
+      return false
+    }
   }
 
   // 해당 월의 시작 요일과 일 수 계산
@@ -39,7 +69,8 @@ const Calendar = () => {
       CalendarArr.push(
         <TableItems
           key={`empty + ${i}`}
-          $isToday={false}></TableItems>
+          $isToday={false}
+          $isHoliday={false}></TableItems>
       )
     }
 
@@ -48,7 +79,8 @@ const Calendar = () => {
       CalendarArr.push(
         <TableItems
           key={date}
-          $isToday={isToday(date)}>
+          $isToday={isToday(date)}
+          $isHoliday={findHoliday(date) || false}>
           {date}
         </TableItems>
       )
@@ -69,6 +101,20 @@ const Calendar = () => {
   const handleChangeMonth = (change: number) => {
     setCurruentDate(new Date(currentYear, currentMonth + change, 1))
   }
+
+  useEffect(() => {
+    // 공휴일 조회 api
+    getHolidayData(
+      currentYear,
+      currentMonth + 1 < 9
+        ? (currentMonth + 1).toString().padStart(2, '0')
+        : currentMonth + 1
+    ).then(res => {
+      setHoliday(res.data.response.body.items.item)
+      console.log(holiday)
+      console.log(extractDayFromHoliday())
+    })
+  }, [currentYear, currentMonth])
 
   return (
     <>
@@ -185,12 +231,14 @@ const DaysItem = styled.th`
   height: 30px;
 `
 
-const TableItems = styled.td<{ $isToday?: boolean }>`
+const TableItems = styled.td<{ $isToday?: boolean; $isHoliday?: boolean }>`
   width: 85px;
   height: 85px;
   vertical-align: top;
   text-align: center;
   padding: 10px 5px;
+  color: ${({ $isHoliday, theme }) =>
+    $isHoliday ? theme.color.sub_dark : 'inherit'};
   background-color: ${({ $isToday, theme }) =>
     $isToday ? theme.gray.gray_100 : 'none'};
   font-weight: ${({ $isToday }) => ($isToday ? 'bold' : 'normal')};
