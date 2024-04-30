@@ -1,19 +1,19 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 const ModalLayout = ({
   children,
-  setOpen,
+  closeModal,
   width = 'fit-content',
   height = 'fit-content'
 }: {
   children: ReactNode
-  setOpen: Dispatch<SetStateAction<boolean>>
+  closeModal: () => void
   width?: string
   height?: string
 }) => {
   return (
-    <Overlay onClick={() => setOpen(false)}>
+    <Overlay onClick={closeModal}>
       <Container
         onClick={e => e.stopPropagation()}
         width={width}
@@ -41,6 +41,10 @@ const Overlay = styled.div`
 `
 
 const Container = styled.div<{ width: string; height: string }>`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
   width: ${({ width }) => width};
   height: ${({ height }) => height};
   max-width: 1000px;
