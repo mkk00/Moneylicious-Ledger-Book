@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react'
 import { RiHome5Line } from 'react-icons/ri'
 import { BiSolidRightArrow, BiSolidLeftArrow } from 'react-icons/bi'
+import { FaCircle } from 'react-icons/fa'
 import styled, { css } from 'styled-components'
 import DatePickerModal from '@/components/modal/DatePickerModal'
 import { getHolidayData } from '@/lib/holiday'
 import { holidayProps } from '@/interface/holidayProps'
+import useModal from '@/hook/useModal'
 
 const Calendar = () => {
   const [currentDate, setCurruentDate] = useState(new Date())
-  const [openDatePicker, setOpenDatePicker] = useState(false)
   const [holiday, setHoliday] = useState<holidayProps[] | holidayProps | null>(
     null
   )
+
+  const { isOpen, openModal, closeModal } = useModal()
 
   const currentYear = currentDate.getFullYear()
   const currentMonth = currentDate.getMonth()
@@ -81,7 +84,15 @@ const Calendar = () => {
           key={date}
           $isToday={isToday(date)}
           $isHoliday={findHoliday(date) || false}>
-          {date}
+          <span>{date}</span>
+          {/* <DailyFinancialSummary>
+            <FaCircle />
+            20,000
+          </DailyFinancialSummary>
+          <DailyFinancialSummary>
+            <FaCircle />
+            20,000
+          </DailyFinancialSummary> */}
         </TableItems>
       )
     }
@@ -118,9 +129,9 @@ const Calendar = () => {
 
   return (
     <>
-      {openDatePicker && (
+      {isOpen && (
         <DatePickerModal
-          setOpenDatePicker={setOpenDatePicker}
+          closeModal={closeModal}
           setCurruentDate={setCurruentDate}
         />
       )}
@@ -131,7 +142,7 @@ const Calendar = () => {
             onClick={() => setCurruentDate(new Date())}
           />
         </BackTodayButton>
-        <SelectDateButton onClick={() => setOpenDatePicker(true)}>
+        <SelectDateButton onClick={openModal}>
           {currentYear}년 {currentMonth + 1}월
         </SelectDateButton>
         <SelectMonthButton>
@@ -214,12 +225,12 @@ const CalendarTable = styled.table`
   }
 
   & tr th:nth-child(1),
-  & tr td:nth-child(1) {
+  & tr td:nth-child(1) span {
     color: ${({ theme }) => theme.color.sub_dark};
   }
 
   & tr th:nth-child(7),
-  & tr td:nth-child(7) {
+  & tr td:nth-child(7) span {
     color: ${({ theme }) => theme.color.main_dark};
   }
 `
@@ -237,16 +248,28 @@ const TableItems = styled.td<{ $isToday?: boolean; $isHoliday?: boolean }>`
   vertical-align: top;
   text-align: center;
   padding: 10px 5px;
-  color: ${({ $isHoliday, theme }) =>
-    $isHoliday ? theme.color.sub_dark : 'inherit'};
   background-color: ${({ $isToday, theme }) =>
     $isToday ? theme.gray.gray_100 : 'none'};
-  font-weight: ${({ $isToday }) => ($isToday ? 'bold' : 'normal')};
   border-radius: 5px;
+
+  & > span {
+    color: ${({ $isHoliday, theme }) =>
+      $isHoliday ? theme.color.sub_dark : 'inherit'};
+    font-weight: ${({ $isToday }) => ($isToday ? 'bold' : 'normal')};
+  }
 
   &:hover {
     font-weight: bold;
     color: ${({ theme }) => theme.color.white};
     background-color: ${({ theme }) => theme.color.main_light};
   }
+`
+
+const DailyFinancialSummary = styled.div`
+  /* color: ${({ theme }) => theme.color.sub_dark}; */
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+  font-size: 0.8rem;
 `
