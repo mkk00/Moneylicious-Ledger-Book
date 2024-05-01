@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 interface DateProps {
   selectedDate: Date | null
-  setSelectedDate: (date: Date) => void
+  setSelectedDate: (date: Date | null) => void
   formatSelectedDate: (date: Date) => string | null
 }
 

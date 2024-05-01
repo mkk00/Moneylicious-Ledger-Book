@@ -7,7 +7,9 @@ import DatePickerModal from '@/components/modal/DatePickerModal'
 import { getHolidayData } from '@/lib/holiday'
 import { holidayProps } from '@/interface/holidayProps'
 import useModal from '@/hook/useModal'
+import useDateStore from '@/store/useDateStore'
 
+// TODO: 컴포넌트 분리 및 함수 정리
 const Calendar = () => {
   const [currentDate, setCurruentDate] = useState(new Date())
   const [holiday, setHoliday] = useState<holidayProps[] | holidayProps | null>(
@@ -18,6 +20,9 @@ const Calendar = () => {
 
   const currentYear = currentDate.getFullYear()
   const currentMonth = currentDate.getMonth()
+
+  const selectedDate = useDateStore(state => state.selectedDate)
+  const setSelectedDate = useDateStore(state => state.setSelectedDate)
 
   const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -77,13 +82,24 @@ const Calendar = () => {
       )
     }
 
+    // 캘린더 날짜 선택
+    const handleSelectDate = (date: number) => {
+      const select = new Date(currentYear, currentMonth, date)
+      setSelectedDate(select)
+
+      if (date === selectedDate?.getDate()) setSelectedDate(null)
+    }
+
+    // TODO: 하루 수입/지출 금액 표시
     // 1일부터 daysInMonth 까지의 날짜를 생성하여 배열에 추가
     for (let date = 1; date <= totalDate; date++) {
       CalendarArr.push(
         <TableItems
           key={date}
+          onClick={() => handleSelectDate(date)}
           $isToday={isToday(date)}
-          $isHoliday={findHoliday(date) || false}>
+          $isHoliday={findHoliday(date) || false}
+          $isSelect={selectedDate?.getDate() === date}>
           <span>{date}</span>
           {/* <DailyFinancialSummary>
             <FaCircle />
@@ -242,14 +258,22 @@ const DaysItem = styled.th`
   height: 30px;
 `
 
-const TableItems = styled.td<{ $isToday?: boolean; $isHoliday?: boolean }>`
+const TableItems = styled.td<{
+  $isToday?: boolean
+  $isHoliday?: boolean
+  $isSelect?: boolean
+}>`
   width: 85px;
   height: 85px;
   vertical-align: top;
   text-align: center;
   padding: 10px 5px;
-  background-color: ${({ $isToday, theme }) =>
-    $isToday ? theme.gray.gray_100 : 'none'};
+  background-color: ${({ $isSelect, $isToday, theme }) =>
+    $isToday
+      ? theme.gray.gray_100
+      : $isSelect
+        ? theme.color.main_light
+        : 'none'};
   border-radius: 5px;
 
   & > span {
