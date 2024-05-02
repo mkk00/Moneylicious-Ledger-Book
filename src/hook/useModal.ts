@@ -1,10 +1,27 @@
 import { useState } from 'react'
 
-const useModal = () => {
-  const [isOpen, setIsOpen] = useState(false)
+interface Modals {
+  [key: string]: boolean
+}
 
-  const openModal = () => setIsOpen(true)
-  const closeModal = () => setIsOpen(false)
+const useModal = () => {
+  const [modals, setModals] = useState<Modals>({})
+
+  const openModal = (key: string) => {
+    setModals(prev => ({
+      ...prev,
+      [key]: true
+    }))
+  }
+
+  const closeModal = (key: string) => {
+    setModals(prev => ({
+      ...prev,
+      [key]: false
+    }))
+  }
+
+  const isOpen = (key: string) => modals[key]
 
   return {
     isOpen,

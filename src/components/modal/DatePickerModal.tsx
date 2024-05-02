@@ -6,7 +6,7 @@ const DatePickerModal = ({
   closeModal,
   setCurruentDate
 }: {
-  closeModal: () => void
+  closeModal: (key: string) => void
   setCurruentDate: Dispatch<SetStateAction<Date>>
 }) => {
   const [isOpenYearList, setIsOpenYearList] = useState(false)
@@ -31,11 +31,11 @@ const DatePickerModal = ({
   // month 를 선택 완료하면 캘린더는 해당 월로 이동
   const handleSelectMonth = (month: number) => {
     setCurruentDate(new Date(year, month, 0))
-    closeModal()
+    closeModal('날짜선택')
   }
 
   return (
-    <ModalLayout closeModal={closeModal}>
+    <ModalLayout closeModal={() => closeModal('날짜선택')}>
       {!isOpenMonthSelector && (
         <SelectYearContainer>
           <YearButton onClick={() => setIsOpenYearList(!isOpenYearList)}>

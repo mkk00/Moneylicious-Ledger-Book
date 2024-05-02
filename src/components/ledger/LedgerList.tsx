@@ -17,20 +17,20 @@ const LedgerList = () => {
   const formatSelectedDate = useDateStore(state => state.formatSelectedDate)
 
   const handleIsOpenAdd = () => {
-    openModal()
+    openModal('내역추가')
     setIsEdit(false)
   }
 
   const handleIsOpenEdit = () => {
-    openModal()
+    openModal('내역추가')
     setIsEdit(true)
   }
 
   return (
     <Container>
-      {isOpen && (
+      {isOpen('내역추가') && (
         <AddLedgerModal
-          IsClose={closeModal}
+          IsClose={() => closeModal('내역추가')}
           isEdit={isEdit}
         />
       )}

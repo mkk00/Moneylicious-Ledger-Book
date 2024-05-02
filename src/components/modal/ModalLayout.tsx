@@ -13,7 +13,7 @@ const ModalLayout = ({
   height?: string
 }) => {
   return (
-    <Overlay onClick={closeModal}>
+    <Overlay onClick={() => closeModal()}>
       <Container
         onClick={e => e.stopPropagation()}
         width={width}

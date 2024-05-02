@@ -145,10 +145,10 @@ const Calendar = () => {
 
   return (
     <>
-      {isOpen && (
+      {isOpen('날짜선택') && (
         <DatePickerModal
-          closeModal={closeModal}
           setCurruentDate={setCurruentDate}
+          closeModal={() => closeModal('날짜선택')}
         />
       )}
       <SelectedDateWrapper>
@@ -158,7 +158,7 @@ const Calendar = () => {
             onClick={() => setCurruentDate(new Date())}
           />
         </BackTodayButton>
-        <SelectDateButton onClick={openModal}>
+        <SelectDateButton onClick={() => openModal('날짜선택')}>
           {currentYear}년 {currentMonth + 1}월
         </SelectDateButton>
         <SelectMonthButton>
