@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 import styled, { css } from 'styled-components'
 import ModalLayout from '@/components/modal/ModalLayout'
 
@@ -7,7 +7,7 @@ const DatePickerModal = ({
   setCurruentDate
 }: {
   closeModal: (key: string) => void
-  setCurruentDate: Dispatch<SetStateAction<Date>>
+  setCurruentDate: (date: Date) => void
 }) => {
   const [isOpenYearList, setIsOpenYearList] = useState(false)
   const [isOpenMonthSelector, setIsOpenMonthSelector] = useState(false)

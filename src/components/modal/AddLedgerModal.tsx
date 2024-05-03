@@ -12,6 +12,7 @@ import useDateStore from '@/store/useDateStore'
 import useFormControl from '@/hook/useFormControl'
 import { ledgerFormInitialValues } from '@/constants/ledgerFormInitialValues'
 import useSelectLedgerStore from '@/store/useSelectLedgerStore'
+import DatePickerModal from '@/components/modal/DatePickerModal'
 
 const AddLedgerModal = ({
   IsClose,
@@ -28,6 +29,7 @@ const AddLedgerModal = ({
   const selectMeans = useSelectLedgerStore(state => state.means)
   const setSelectMeans = useSelectLedgerStore(state => state.setMeans)
 
+  const setCurruentDate = useDateStore(state => state.setCurruentDate)
   const selectedDate = useDateStore(state => state.selectedDate)
   const formatSelectedDate = useDateStore(state => state.formatSelectedDate)
 
@@ -52,9 +54,17 @@ const AddLedgerModal = ({
   return (
     <ModalLayout closeModal={IsClose}>
       <Title>{isEdit ? '기록 수정' : '기록 추가'}</Title>
-      <LedgerDate>
+      <LedgerDate onClick={() => openModal('날짜선택')}>
         {selectedDate && formatSelectedDate(selectedDate)}
       </LedgerDate>
+      {isOpen('날짜선택') && (
+        <ModalPortal>
+          <DatePickerModal
+            setCurruentDate={setCurruentDate}
+            closeModal={() => closeModal('날짜선택')}
+          />
+        </ModalPortal>
+      )}
       {isOpen('카테고리') && (
         <ModalPortal>
           <CategoryModal closeModal={closeModal} />

@@ -12,18 +12,19 @@ import ModalPortal from '@/components/modal/ModalPortal'
 
 // TODO: 컴포넌트 분리 및 함수 정리
 const Calendar = () => {
-  const [currentDate, setCurruentDate] = useState(new Date())
   const [holiday, setHoliday] = useState<holidayProps[] | holidayProps | null>(
     null
   )
 
   const { isOpen, openModal, closeModal } = useModal()
 
-  const currentYear = currentDate.getFullYear()
-  const currentMonth = currentDate.getMonth()
-
+  const currentDate = useDateStore(state => state.currentDate)
+  const setCurruentDate = useDateStore(state => state.setCurruentDate)
   const selectedDate = useDateStore(state => state.selectedDate)
   const setSelectedDate = useDateStore(state => state.setSelectedDate)
+
+  const currentYear = currentDate.getFullYear()
+  const currentMonth = currentDate.getMonth()
 
   const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 
