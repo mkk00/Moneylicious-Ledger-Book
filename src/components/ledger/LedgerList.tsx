@@ -5,6 +5,7 @@ import { CiSquarePlus } from 'react-icons/ci'
 import AddLedgerModal from '@/components/modal/AddLedgerModal'
 import useModal from '@/hook/useModal'
 import useDateStore from '@/store/useDateStore'
+import ModalPortal from '@/components/modal/ModalPortal'
 
 const LedgerList = () => {
   const [isEdit, setIsEdit] = useState(false)
@@ -29,10 +30,12 @@ const LedgerList = () => {
   return (
     <Container>
       {isOpen('내역추가') && (
-        <AddLedgerModal
-          IsClose={() => closeModal('내역추가')}
-          isEdit={isEdit}
-        />
+        <ModalPortal>
+          <AddLedgerModal
+            IsClose={() => closeModal('내역추가')}
+            isEdit={isEdit}
+          />
+        </ModalPortal>
       )}
       <LedgerHeader>
         <Title>

@@ -8,6 +8,7 @@ import { getHolidayData } from '@/lib/holiday'
 import { holidayProps } from '@/interface/holidayProps'
 import useModal from '@/hook/useModal'
 import useDateStore from '@/store/useDateStore'
+import ModalPortal from '@/components/modal/ModalPortal'
 
 // TODO: 컴포넌트 분리 및 함수 정리
 const Calendar = () => {
@@ -141,15 +142,19 @@ const Calendar = () => {
       console.log(holiday)
       console.log(extractDayFromHoliday())
     })
-  }, [currentYear, currentMonth])
+
+    setSelectedDate(currentDate)
+  }, [currentDate, currentYear, currentMonth, selectedDate, setSelectedDate])
 
   return (
     <>
       {isOpen('날짜선택') && (
-        <DatePickerModal
-          setCurruentDate={setCurruentDate}
-          closeModal={() => closeModal('날짜선택')}
-        />
+        <ModalPortal>
+          <DatePickerModal
+            setCurruentDate={setCurruentDate}
+            closeModal={() => closeModal('날짜선택')}
+          />
+        </ModalPortal>
       )}
       <SelectedDateWrapper>
         <BackTodayButton>
