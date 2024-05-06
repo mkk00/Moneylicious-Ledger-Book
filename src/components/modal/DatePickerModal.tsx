@@ -1,17 +1,28 @@
 import { useState } from 'react'
 import styled, { css } from 'styled-components'
 import ModalLayout from '@/components/modal/ModalLayout'
+import useDateStore from '@/store/useDateStore'
+import { getCalendarInfo } from '@/utils/calendarUtils'
 
 const DatePickerModal = ({
   closeModal,
-  setCurruentDate
+  isSelectDate
 }: {
   closeModal: (key: string) => void
-  setCurruentDate: (date: Date) => void
+  isSelectDate?: boolean
 }) => {
   const [isOpenYearList, setIsOpenYearList] = useState(false)
   const [isOpenMonthSelector, setIsOpenMonthSelector] = useState(false)
+  const [isOpenDateSelector, setIsOpenDateSelector] = useState(false)
+
   const [year, setYear] = useState(2024)
+
+  const currentDate = useDateStore(state => state.currentDate)
+  const setCurruentDate = useDateStore(state => state.setCurruentDate)
+  const selectedDate = useDateStore(state => state.selectedDate)
+  const setSelectedDate = useDateStore(state => state.setSelectedDate)
+
+  const { totalDate } = getCalendarInfo(year, currentDate.getMonth() + 1)
 
   // year 선택 범위는 2020년도부터 현재 year를 기준으로 +1 year까지 보이도록 배열 생성
   const yearList = Array.from(
@@ -20,6 +31,8 @@ const DatePickerModal = ({
   )
 
   const monthList = Array.from({ length: 12 }, (_, idx) => idx + 1)
+
+  const dateList = Array.from({ length: totalDate }, (_, idx) => idx + 1)
 
   // year 를 선택 및 저장하고 month 선택으로 넘어감
   const handleSelectYear = (option: number) => {
@@ -31,12 +44,25 @@ const DatePickerModal = ({
   // month 를 선택 완료하면 캘린더는 해당 월로 이동
   const handleSelectMonth = (month: number) => {
     setCurruentDate(new Date(year, month, 0))
+    setIsOpenMonthSelector(false)
+    setIsOpenDateSelector(true)
+
+    if (!isSelectDate) {
+      setSelectedDate(new Date(year, month, selectedDate?.getDate()))
+      closeModal('날짜선택')
+    }
+  }
+
+  const handleSelectDate = (date: number) => {
+    console.log(date)
+    setCurruentDate(new Date(year, currentDate.getMonth(), date))
+    setSelectedDate(new Date(year, currentDate.getMonth() - 1, date))
     closeModal('날짜선택')
   }
 
   return (
     <ModalLayout closeModal={() => closeModal('날짜선택')}>
-      {!isOpenMonthSelector && (
+      {!isOpenMonthSelector && !isOpenDateSelector && (
         <SelectYearContainer>
           <YearButton onClick={() => setIsOpenYearList(!isOpenYearList)}>
             {year}
@@ -65,6 +91,17 @@ const DatePickerModal = ({
           ))}
         </SelectMonthContainer>
       )}
+      {isOpenDateSelector && isSelectDate && (
+        <SelectDateContainer>
+          {dateList.map(date => (
+            <MonthButton
+              key={date}
+              onClick={() => handleSelectDate(date)}>
+              {date}
+            </MonthButton>
+          ))}
+        </SelectDateContainer>
+      )}
     </ModalLayout>
   )
 }
@@ -77,6 +114,11 @@ const hoverStyle = css`
     background-color: ${({ theme }) => theme.color.sub_light};
     color: ${({ theme }) => theme.color.white};
   }
+`
+
+const gridStyle = css`
+  display: grid;
+  gap: 3px;
 `
 
 const SelectYearContainer = styled.div`
@@ -110,10 +152,14 @@ const DropdownMenu = styled.ul`
 `
 
 const SelectMonthContainer = styled.div`
-  display: grid;
+  ${gridStyle}
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 3px;
+`
+
+const SelectDateContainer = styled.div`
+  ${gridStyle}
+  grid-template-columns: repeat(7, 1fr);
 `
 
 const MonthButton = styled.button`

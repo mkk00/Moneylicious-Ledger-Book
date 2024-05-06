@@ -12,6 +12,7 @@ const CalendarHeader = () => {
   const currentDate = useDateStore(state => state.currentDate)
   const setCurruentDate = useDateStore(state => state.setCurruentDate)
   const selectedDate = useDateStore(state => state.selectedDate)
+  const setSelectedDate = useDateStore(state => state.setSelectedDate)
 
   const currentYear = currentDate.getFullYear()
   const currentMonth = currentDate.getMonth()
@@ -24,6 +25,13 @@ const CalendarHeader = () => {
         selectedDate ? selectedDate.getDate() : 1
       )
     )
+
+    const select = new Date(
+      currentYear,
+      currentMonth + change,
+      selectedDate?.getDate()
+    )
+    if (selectedDate) setSelectedDate(select)
   }
 
   return (
@@ -32,7 +40,10 @@ const CalendarHeader = () => {
         <BackTodayButton>
           <RiHome5Line
             size={16}
-            onClick={() => setCurruentDate(new Date())}
+            onClick={() => {
+              setCurruentDate(new Date())
+              setSelectedDate(null)
+            }}
           />
         </BackTodayButton>
         <SelectDateButton onClick={() => openModal('날짜선택')}>
@@ -49,10 +60,7 @@ const CalendarHeader = () => {
       </SelectedDateWrapper>
       {isOpen('날짜선택') && (
         <ModalPortal>
-          <DatePickerModal
-            setCurruentDate={setCurruentDate}
-            closeModal={() => closeModal('날짜선택')}
-          />
+          <DatePickerModal closeModal={() => closeModal('날짜선택')} />
         </ModalPortal>
       )}
     </>

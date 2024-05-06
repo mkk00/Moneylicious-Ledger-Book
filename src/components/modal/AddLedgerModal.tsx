@@ -29,7 +29,6 @@ const AddLedgerModal = ({
   const selectMeans = useSelectLedgerStore(state => state.means)
   const setSelectMeans = useSelectLedgerStore(state => state.setMeans)
 
-  const setCurruentDate = useDateStore(state => state.setCurruentDate)
   const selectedDate = useDateStore(state => state.selectedDate)
   const formatSelectedDate = useDateStore(state => state.formatSelectedDate)
 
@@ -60,8 +59,8 @@ const AddLedgerModal = ({
       {isOpen('날짜선택') && (
         <ModalPortal>
           <DatePickerModal
-            setCurruentDate={setCurruentDate}
             closeModal={() => closeModal('날짜선택')}
+            isSelectDate={true}
           />
         </ModalPortal>
       )}
