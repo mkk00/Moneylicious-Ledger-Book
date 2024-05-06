@@ -23,7 +23,7 @@ const Header = () => {
     <Container>
       <Wrapper>
         <h1>
-          <NavLink to="/">서브라포</NavLink>
+          <NavLink to="/">Dont woryy</NavLink>
         </h1>
         <nav>
           <MenuList>

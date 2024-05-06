@@ -1,4 +1,4 @@
-export interface holidayProps {
+export interface HolidayProps {
   dateKind: string
   dateName: string
   isHoliday: 'Y' | 'N'
