@@ -12,10 +12,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh', 'react', 'prettier'],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],    
+    'react-refresh/only-export-components': 'off',    
     "react/react-in-jsx-scope": "off",
     "react/jsx-uses-react": "off",
     "@typescript-eslint/no-unused-vars": "warn",
