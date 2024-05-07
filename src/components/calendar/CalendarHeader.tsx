@@ -42,7 +42,7 @@ const CalendarHeader = () => {
             size={16}
             onClick={() => {
               setCurruentDate(new Date())
-              setSelectedDate(null)
+              setSelectedDate(new Date())
             }}
           />
         </BackTodayButton>

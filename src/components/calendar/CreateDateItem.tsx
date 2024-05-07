@@ -39,10 +39,10 @@ const TableItems = styled.td<{
   text-align: center;
   padding: 10px 5px;
   background-color: ${({ $isSelect, $isToday, theme }) =>
-    $isToday
-      ? theme.gray.gray_100
-      : $isSelect
-        ? theme.color.main_light
+    $isSelect
+      ? theme.color.main_light
+      : $isToday
+        ? theme.gray.gray_100
         : 'none'};
   border-radius: 5px;
 

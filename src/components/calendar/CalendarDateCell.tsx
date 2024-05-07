@@ -76,6 +76,10 @@ const CalendarDateCell = () => {
   }
 
   useEffect(() => {
+    setSelectedDate(new Date())
+  }, [])
+
+  useEffect(() => {
     getHolidayData(currentYear, currentMonth).then(res => {
       setHoliday(res.data.response.body.items.item)
     })
