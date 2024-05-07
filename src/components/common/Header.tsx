@@ -1,5 +1,6 @@
 import styled, { useTheme } from 'styled-components'
 import { NavLink } from 'react-router-dom'
+import { memo } from 'react'
 
 const MENU_LIST = [
   {
@@ -11,7 +12,7 @@ const MENU_LIST = [
   { name: '마이페이지', path: '/mypage' }
 ]
 
-const Header = () => {
+const BaseHeader = () => {
   const { color } = useTheme()
 
   const navActiveStyle = ({ isActive }: { isActive: boolean }) => ({
@@ -23,7 +24,7 @@ const Header = () => {
     <Container>
       <Wrapper>
         <h1>
-          <NavLink to="/">Dont woryy</NavLink>
+          <NavLink to="/">Moneylicious</NavLink>
         </h1>
         <nav>
           <MenuList>
@@ -42,6 +43,8 @@ const Header = () => {
     </Container>
   )
 }
+
+const Header = memo(BaseHeader)
 
 export default Header
 
