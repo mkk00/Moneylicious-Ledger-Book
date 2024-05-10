@@ -12,6 +12,7 @@ const useModal = () => {
       ...prev,
       [key]: true
     }))
+    document.body.style.overflow = 'hidden'
   }
 
   const closeModal = (key: string) => {
@@ -19,6 +20,7 @@ const useModal = () => {
       ...prev,
       [key]: false
     }))
+    document.body.style.overflow = 'auto'
   }
 
   const isOpen = (key: string) => modals[key]
