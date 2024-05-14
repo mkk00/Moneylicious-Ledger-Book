@@ -4,6 +4,7 @@ import ModalLayout from './ModalLayout'
 import styled from 'styled-components'
 import Button from '@/components/button/Button'
 import { MdMailOutline, MdLockOpen } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const initialValue = {
   email: '',
@@ -11,6 +12,7 @@ const initialValue = {
 }
 
 const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
+  const navigate = useNavigate()
   const onSubmit = () => {
     console.log('로그인 완료!')
   }
@@ -65,7 +67,7 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
         <FindWrapper>
           <button>이메일 찾기</button>
           <button>패스워드 찾기</button>
-          <button>회원가입</button>
+          <button onClick={() => navigate('/signup')}>회원가입</button>
         </FindWrapper>
       </Wrapper>
     </ModalLayout>

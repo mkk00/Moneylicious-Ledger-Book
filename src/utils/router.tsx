@@ -5,6 +5,7 @@ import Dashboard from '@/pages/Dashboard'
 import Management from '@/pages/Management'
 import Board from '@/pages/Board'
 import Mypage from '@/pages/Mypage'
+import Signup from '@/pages/Signup'
 
 export const routerList: RouteObject[] = [
   {
@@ -26,5 +27,9 @@ export const routerList: RouteObject[] = [
   {
     path: '/mypage',
     element: <Mypage />
+  },
+  {
+    path: '/signup',
+    element: <Signup />
   }
 ]

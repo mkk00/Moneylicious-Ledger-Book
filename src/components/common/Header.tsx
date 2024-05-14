@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { memo } from 'react'
 import AuthButton from '@/components/button/AuthButton'
 import useModal from '@/hook/useModal'
@@ -17,6 +17,7 @@ const MENU_LIST = [
 ]
 
 const Header = () => {
+  const navigate = useNavigate()
   const { color } = useTheme()
 
   const { isOpen, openModal, closeModal } = useModal()
@@ -55,7 +56,7 @@ const Header = () => {
           />
           <AuthButton
             text="회원가입"
-            onClick={() => {}}
+            onClick={() => navigate('/signup')}
           />
         </AuthButtons>
         {isOpen('로그인') && (
