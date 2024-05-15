@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import Button from '@/components/button/Button'
 import { MdMailOutline, MdLockOpen } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
+import { authProps } from '@/utils/authValidation'
 
 const initialValue = {
   email: '',
@@ -13,8 +14,8 @@ const initialValue = {
 
 const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
   const navigate = useNavigate()
-  const onSubmit = () => {
-    console.log('로그인 완료!')
+  const onSubmit = (values: authProps) => {
+    console.log('로그인 완료!', values)
   }
 
   const { values, errors, handleChange, handleSubmit } = useAuthForm({
@@ -30,7 +31,7 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
         <span>나만의 Moneylicious하는 비법!</span>
         <span>로그인하고 맛있게 자산관리 해보세요.</span>
         <FormWrapper>
-          <InputLow>
+          <InputRow>
             <label>
               <MdMailOutline size={20} />
               <input
@@ -41,8 +42,8 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
                 onChange={e => handleChange(e)}
               />
             </label>
-          </InputLow>
-          <InputLow>
+          </InputRow>
+          <InputRow>
             <label>
               <MdLockOpen size={20} />
               <input
@@ -53,7 +54,7 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
                 onChange={e => handleChange(e)}
               />
             </label>
-          </InputLow>
+          </InputRow>
           <ErrorMessage>
             <div>{errors.email}</div>
             <div>{errors.password}</div>
@@ -112,7 +113,7 @@ const FormWrapper = styled.form`
   }
 `
 
-const InputLow = styled.div`
+const InputRow = styled.div`
   width: 350px;
   border: 1px solid ${({ theme }) => theme.gray.gray_300};
   border-radius: 6px;

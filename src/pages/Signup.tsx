@@ -1,7 +1,216 @@
 import PageLayout from '@/layout/PageLayout'
+import styled from 'styled-components'
+import useAuthForm from '@/hook/useAuthForm'
+import authValidation from '@/utils/authValidation'
+import Button from '@/components/button/Button'
+import { authProps } from '@/utils/authValidation'
 
 const Signup = () => {
-  return <PageLayout>회원가입</PageLayout>
+  const initialValue = {
+    email: '',
+    password: '',
+    confirmPassword: '',
+    name: '',
+    message: ''
+  }
+
+  const onSubmit = (values: authProps) => {
+    console.log('회원가입 완료!')
+    console.log(values)
+  }
+
+  const { values, errors, handleChange, handleSubmit } = useAuthForm({
+    initialValue,
+    onSubmit,
+    validate: authValidation
+  })
+
+  return (
+    <PageLayout>
+      <Container>
+        <h2>회원가입</h2>
+        <FormWrapper>
+          <InputWrapper>
+            <InputLeft>
+              <InputName>이메일</InputName>
+              <ErrorMessage>{errors.email}</ErrorMessage>
+            </InputLeft>
+            <InputInner>
+              <InputRow>
+                <label>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="money@moneylicious.com"
+                    value={values.email}
+                    onChange={e => handleChange(e)}
+                  />
+                </label>
+              </InputRow>
+            </InputInner>
+          </InputWrapper>
+          <InputWrapper>
+            <InputLeft>
+              <InputName>패스워드</InputName>
+              <ErrorMessage>{errors.password}</ErrorMessage>
+            </InputLeft>
+            <InputInner>
+              <InputRow>
+                <label>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="**********"
+                    value={values.password}
+                    onChange={e => handleChange(e)}
+                  />
+                </label>
+              </InputRow>
+            </InputInner>
+          </InputWrapper>
+          <InputWrapper>
+            <InputLeft>
+              <InputName>패스워드 확인</InputName>
+              <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+            </InputLeft>
+            <InputInner>
+              <InputRow>
+                <label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="**********"
+                    value={values.confirmPassword}
+                    onChange={e => handleChange(e)}
+                  />
+                </label>
+              </InputRow>
+            </InputInner>
+          </InputWrapper>
+          <InputWrapper>
+            <InputLeft>
+              <InputName>닉네임</InputName>
+              <ErrorMessage>{errors.name}</ErrorMessage>
+            </InputLeft>
+            <InputInner>
+              <InputRow>
+                <label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="moneylicious"
+                    value={values.name}
+                    onChange={e => handleChange(e)}
+                  />
+                </label>
+              </InputRow>
+            </InputInner>
+          </InputWrapper>
+          <InputWrapper>
+            <InputLeft>
+              <InputName>메시지</InputName>
+              <ErrorMessage>{errors.message}</ErrorMessage>
+            </InputLeft>
+            <InputInner>
+              <InputRow>
+                <label>
+                  <textarea
+                    name="message"
+                    placeholder="프로필 메시지를 작성해보세요."
+                    value={values.message}
+                    onChange={e => handleChange(e)}
+                    maxLength={30}
+                  />
+                </label>
+              </InputRow>
+            </InputInner>
+          </InputWrapper>
+          <Button
+            text="회원가입 완료"
+            type="submit"
+            size="small"
+            onClick={handleSubmit}
+          />
+        </FormWrapper>
+      </Container>
+    </PageLayout>
+  )
 }
 
 export default Signup
+
+const Container = styled.div`
+  width: 450px;
+  height: auto;
+  margin: 120px auto;
+
+  h2 {
+    text-align: center;
+  }
+`
+
+const FormWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  margin-top: 50px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+`
+
+const InputWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const InputLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+`
+
+const InputName = styled.div`
+  font-size: 1.1rem;
+`
+
+const ErrorMessage = styled.div`
+  width: 145px;
+  color: ${({ theme }) => theme.color.sub_dark};
+  font-size: 0.7rem;
+`
+
+const InputInner = styled.div`
+  width: 300px;
+  display: flex;
+  gap: 10px;
+`
+
+const InputRow = styled.div`
+  border: 1px solid ${({ theme }) => theme.gray.gray_300};
+  border-radius: 6px;
+  padding: 14px 18px 13px;
+  height: 100%;
+  flex-grow: 1;
+
+  input,
+  textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    line-height: normal;
+  }
+
+  textarea {
+    resize: none;
+    height: 100px;
+  }
+`
