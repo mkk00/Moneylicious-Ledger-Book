@@ -1,10 +1,10 @@
 import { emailRegex, passwordRegex, nameRegex } from './regexUtils'
 
-export interface authProps {
+export interface authErrorProps {
   email?: string
   password?: string
-  confirmPassword?: string
   name?: string
+  confirmPassword?: string
   message?: string
 }
 
@@ -14,8 +14,8 @@ const authValidation = ({
   confirmPassword,
   name,
   message
-}: authProps) => {
-  const errors: authProps = {}
+}: authErrorProps) => {
+  const errors: authErrorProps = {}
 
   const regex = {
     email: emailRegex,

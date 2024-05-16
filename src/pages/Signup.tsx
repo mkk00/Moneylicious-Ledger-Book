@@ -1,11 +1,13 @@
 import PageLayout from '@/layout/PageLayout'
 import styled from 'styled-components'
-import useAuthForm from '@/hook/useAuthForm'
+import useAuthForm, { authProps } from '@/hook/useAuthForm'
 import authValidation from '@/utils/authValidation'
 import Button from '@/components/button/Button'
-import { authProps } from '@/utils/authValidation'
+import { supabase } from '@/supabaseconfig'
+import { useNavigate } from 'react-router-dom'
 
 const Signup = () => {
+  const navigate = useNavigate()
   const initialValue = {
     email: '',
     password: '',
@@ -14,9 +16,29 @@ const Signup = () => {
     message: ''
   }
 
-  const onSubmit = (values: authProps) => {
-    console.log('회원가입 완료!')
-    console.log(values)
+  const onSubmit = async (values: authProps) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          data: {
+            user_name: values.name,
+            image_url: null,
+            message: values.message
+          }
+        }
+      })
+
+      if (error) {
+        alert(error.message)
+      } else if (data.session?.access_token) {
+        alert('회원가입이 완료되었습니다.')
+        navigate('/')
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const { values, errors, handleChange, handleSubmit } = useAuthForm({
