@@ -1,24 +1,51 @@
-import useAuthForm from '@/hook/useAuthForm'
 import authValidation from '@/utils/authValidation'
-import ModalLayout from './ModalLayout'
+import useAuthForm, { authProps } from '@/hook/useAuthForm'
+import ModalLayout from '@/components/modal/ModalLayout'
 import styled from 'styled-components'
 import Button from '@/components/button/Button'
 import { MdMailOutline, MdLockOpen } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
-import { authProps } from '@/utils/authValidation'
-
-const initialValue = {
-  email: '',
-  password: ''
-}
+import { supabase } from '@/supabaseconfig'
+import useAuthStore from '@/store/useAuthStore'
 
 const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
   const navigate = useNavigate()
-  const onSubmit = (values: authProps) => {
-    console.log('로그인 완료!', values)
+  const { setUserInfo, setLogin } = useAuthStore()
+  const initialValue = {
+    email: '',
+    password: ''
+  }
+
+  const onSubmit = async (values: authProps) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password
+      })
+
+      if (data) {
+        console.log(data)
+        setUserInfo({
+          id: data.user?.id,
+          email: data.user?.email,
+          created_at: data.user?.created_at,
+          user_name: data.user?.user_metadata.user_name,
+          message: data.user?.user_metadata.message,
+          accessToken: data.session?.access_token
+        })
+        setLogin()
+        closeModal()
+      }
+      if (error) {
+        alert(error)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const { values, errors, handleChange, handleSubmit } = useAuthForm({
+    type: 'login',
     initialValue,
     onSubmit,
     validate: authValidation

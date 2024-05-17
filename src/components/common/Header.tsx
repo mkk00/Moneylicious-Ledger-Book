@@ -5,6 +5,8 @@ import AuthButton from '@/components/button/AuthButton'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
+import useAuthStore from '@/store/useAuthStore'
+import Profile from '@/components/common/Profile'
 
 const MENU_LIST = [
   {
@@ -18,6 +20,8 @@ const MENU_LIST = [
 
 const Header = () => {
   const navigate = useNavigate()
+  const { userInfo, isLogin } = useAuthStore()
+
   const { color } = useTheme()
 
   const { isOpen, openModal, closeModal } = useModal()
@@ -48,17 +52,21 @@ const Header = () => {
             </MenuList>
           </nav>
         </InnerWrapper>
-        <AuthButtons>
-          <AuthButton
-            text="로그인"
-            type="main"
-            onClick={() => openModal('로그인')}
-          />
-          <AuthButton
-            text="회원가입"
-            onClick={() => navigate('/signup')}
-          />
-        </AuthButtons>
+        {isLogin ? (
+          <Profile userInfo={userInfo} />
+        ) : (
+          <AuthButtons>
+            <AuthButton
+              text="로그인"
+              type="main"
+              onClick={() => openModal('로그인')}
+            />
+            <AuthButton
+              text="회원가입"
+              onClick={() => navigate('/signup')}
+            />
+          </AuthButtons>
+        )}
         {isOpen('로그인') && (
           <ModalPortal>
             <LoginModal closeModal={() => closeModal('로그인')} />
