@@ -8,13 +8,10 @@ export interface authErrorProps {
   message?: string
 }
 
-const authValidation = ({
-  email,
-  password,
-  confirmPassword,
-  name,
-  message
-}: authErrorProps) => {
+const authValidation = (
+  type: string,
+  { email, password, confirmPassword, name, message }: authErrorProps
+) => {
   const errors: authErrorProps = {}
 
   const regex = {
@@ -41,26 +38,29 @@ const authValidation = ({
     delete errors.password
   }
 
-  if (password !== confirmPassword) {
-    errors.confirmPassword = '패스워드가 일치하지 않습니다.'
-  } else {
-    delete errors.confirmPassword
-  }
+  if (type === 'signup')
+    if (password !== confirmPassword) {
+      errors.confirmPassword = '패스워드가 일치하지 않습니다.'
+    } else {
+      delete errors.confirmPassword
+    }
 
-  if (!name) {
-    errors.name = '닉네임을 입력해주세요.'
-  } else if (!regex.name.test(name)) {
-    errors.name =
-      '닉네임은 3글자 이상 8글자 이하의 영어, 한글 또는 숫자만 가능합니다.'
-  } else {
-    delete errors.name
-  }
+  if (type === 'signup')
+    if (!name) {
+      errors.name = '닉네임을 입력해주세요.'
+    } else if (!regex.name.test(name)) {
+      errors.name =
+        '닉네임은 3글자 이상 8글자 이하의 영어, 한글 또는 숫자만 가능합니다.'
+    } else {
+      delete errors.name
+    }
 
-  if (message && message.length > 30) {
-    errors.message = '메시지는 30글자 이하만 입력 가능합니다.'
-  } else {
-    delete errors.message
-  }
+  if (type === 'signup')
+    if (message && message.length > 30) {
+      errors.message = '메시지는 30글자 이하만 입력 가능합니다.'
+    } else {
+      delete errors.message
+    }
 
   return errors
 }

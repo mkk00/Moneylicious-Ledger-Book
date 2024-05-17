@@ -42,6 +42,7 @@ const Signup = () => {
   }
 
   const { values, errors, handleChange, handleSubmit } = useAuthForm({
+    type: 'signup',
     initialValue,
     onSubmit,
     validate: authValidation

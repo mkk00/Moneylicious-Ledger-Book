@@ -4,18 +4,19 @@ import { authErrorProps } from '@/utils/authValidation'
 export interface authProps {
   email: string
   password: string
-  name: string
-  confirmPassword: string
+  name?: string
+  confirmPassword?: string
   message?: string
 }
 
 interface FormProps {
+  type: string
   initialValue: authProps
   onSubmit: (values: authProps) => void
-  validate: (values: authErrorProps) => authErrorProps
+  validate: (type: string, values: authErrorProps) => authErrorProps
 }
 
-const useAuthForm = ({ initialValue, onSubmit, validate }: FormProps) => {
+const useAuthForm = ({ type, initialValue, onSubmit, validate }: FormProps) => {
   const [values, setValues] = useState(initialValue)
   const [errors, setErrors] = useState<authErrorProps>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -35,11 +36,12 @@ const useAuthForm = ({ initialValue, onSubmit, validate }: FormProps) => {
     e.preventDefault()
     setIsLoading(true)
 
-    const validationErrors = validate(values)
+    const validationErrors = validate(type, values)
 
     if (Object.keys(validationErrors).length === 0) {
       onSubmit(values)
     } else {
+      console.log('error', validationErrors)
       setErrors(validationErrors)
     }
   }
