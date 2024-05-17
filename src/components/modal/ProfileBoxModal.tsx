@@ -3,8 +3,10 @@ import styled from 'styled-components'
 import { RiLogoutBoxLine, RiHomeSmile2Line } from 'react-icons/ri'
 import { supabase } from '@/supabaseconfig'
 import useAuthStore from '@/store/useAuthStore'
+import { useNavigate } from 'react-router-dom'
 
 const ProfileBoxModal = ({ closeModal }: { closeModal: () => void }) => {
+  const navigate = useNavigate()
   const setLogout = useAuthStore(state => state.setLogout)
 
   const handleLogOut = async () => {
@@ -26,7 +28,7 @@ const ProfileBoxModal = ({ closeModal }: { closeModal: () => void }) => {
           <RiLogoutBoxLine size={20} />
           로그아웃
         </Button>
-        <Button>
+        <Button onClick={() => navigate('/mypage')}>
           <RiHomeSmile2Line size={20} />
           마이페이지
         </Button>

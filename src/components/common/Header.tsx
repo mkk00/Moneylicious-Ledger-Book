@@ -14,8 +14,7 @@ const MENU_LIST = [
     path: '/dashboard'
   },
   { name: '자산관리', path: '/management' },
-  { name: '커뮤니티', path: '/board' },
-  { name: '마이페이지', path: '/mypage' }
+  { name: '커뮤니티', path: '/board' }
 ]
 
 const Header = () => {
