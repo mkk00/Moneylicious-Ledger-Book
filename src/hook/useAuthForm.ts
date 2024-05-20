@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, MouseEvent } from 'react'
-import { authErrorProps } from '@/utils/authValidation'
+import { AuthErrorProps } from '@/utils/authValidation'
 
-export interface authProps {
+export interface AuthProps {
   email: string
   password: string
   name?: string
@@ -11,14 +11,14 @@ export interface authProps {
 
 interface FormProps {
   type: string
-  initialValue: authProps
-  onSubmit: (values: authProps) => void
-  validate: (type: string, values: authErrorProps) => authErrorProps
+  initialValue: AuthProps
+  onSubmit: (values: AuthProps) => void
+  validate: (type: string, values: AuthErrorProps) => AuthErrorProps
 }
 
 const useAuthForm = ({ type, initialValue, onSubmit, validate }: FormProps) => {
   const [values, setValues] = useState(initialValue)
-  const [errors, setErrors] = useState<authErrorProps>({})
+  const [errors, setErrors] = useState<AuthErrorProps>({})
   const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (

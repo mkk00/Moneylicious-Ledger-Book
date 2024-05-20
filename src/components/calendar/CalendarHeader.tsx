@@ -10,7 +10,7 @@ const CalendarHeader = () => {
   const { isOpen, openModal, closeModal } = useModal()
 
   const currentDate = useDateStore(state => state.currentDate)
-  const setCurruentDate = useDateStore(state => state.setCurruentDate)
+  const setCurrentDate = useDateStore(state => state.setCurrentDate)
   const selectedDate = useDateStore(state => state.selectedDate)
   const setSelectedDate = useDateStore(state => state.setSelectedDate)
 
@@ -18,7 +18,7 @@ const CalendarHeader = () => {
   const currentMonth = currentDate.getMonth()
 
   const handleChangeMonth = (change: number) => {
-    setCurruentDate(
+    setCurrentDate(
       new Date(
         currentYear,
         currentMonth + change,
@@ -41,7 +41,7 @@ const CalendarHeader = () => {
           <RiHome5Line
             size={16}
             onClick={() => {
-              setCurruentDate(new Date())
+              setCurrentDate(new Date())
               setSelectedDate(new Date())
             }}
           />

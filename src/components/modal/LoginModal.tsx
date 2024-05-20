@@ -1,5 +1,5 @@
 import authValidation from '@/utils/authValidation'
-import useAuthForm, { authProps } from '@/hook/useAuthForm'
+import useAuthForm, { AuthProps } from '@/hook/useAuthForm'
 import ModalLayout from '@/components/modal/ModalLayout'
 import styled from 'styled-components'
 import Button from '@/components/button/Button'
@@ -16,7 +16,7 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
     password: ''
   }
 
-  const onSubmit = async (values: authProps) => {
+  const onSubmit = async (values: AuthProps) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: values.email,
