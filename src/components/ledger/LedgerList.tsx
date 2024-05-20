@@ -15,10 +15,19 @@ const LedgerList = () => {
   const { color } = useTheme()
 
   const selectedDate = useDateStore(state => state.selectedDate)
+  const currentDate = useDateStore(state => state.currentDate)
+  const setCurrentDate = useDateStore(state => state.setCurrentDate)
   const formatSelectedDate = useDateStore(state => state.formatSelectedDate)
 
   const handleIsOpenAdd = () => {
     openModal('내역추가')
+    setCurrentDate(
+      new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate()
+      )
+    )
     setIsEdit(false)
   }
 

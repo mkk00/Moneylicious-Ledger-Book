@@ -18,7 +18,7 @@ const DatePickerModal = ({
   const [year, setYear] = useState(2024)
 
   const currentDate = useDateStore(state => state.currentDate)
-  const setCurruentDate = useDateStore(state => state.setCurruentDate)
+  const setCurrentDate = useDateStore(state => state.setCurrentDate)
   const selectedDate = useDateStore(state => state.selectedDate)
   const setSelectedDate = useDateStore(state => state.setSelectedDate)
 
@@ -43,7 +43,8 @@ const DatePickerModal = ({
 
   // month 를 선택 완료하면 캘린더는 해당 월로 이동
   const handleSelectMonth = (month: number) => {
-    setCurruentDate(new Date(year, month, 0))
+    setCurrentDate(new Date(year, month, 0))
+    setSelectedDate(new Date(year, month, 0))
     setIsOpenMonthSelector(false)
     setIsOpenDateSelector(true)
 
@@ -54,9 +55,8 @@ const DatePickerModal = ({
   }
 
   const handleSelectDate = (date: number) => {
-    console.log(date)
-    setCurruentDate(new Date(year, currentDate.getMonth(), date))
-    setSelectedDate(new Date(year, currentDate.getMonth() - 1, date))
+    setCurrentDate(new Date(year, currentDate.getMonth(), date))
+    setSelectedDate(new Date(year, currentDate.getMonth(), date))
     closeModal('날짜선택')
   }
 

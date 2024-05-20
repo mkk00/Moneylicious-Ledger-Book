@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 interface DateProps {
   currentDate: Date
-  setCurruentDate: (date: Date) => void
+  setCurrentDate: (date: Date) => void
   selectedDate: Date | null
   setSelectedDate: (date: Date | null) => void
   formatSelectedDate: (date: Date) => string | null
@@ -11,11 +11,24 @@ interface DateProps {
 const useDateStore = create<DateProps>(set => ({
   // 캘린더에서 보여질 날짜
   currentDate: new Date(),
-  setCurruentDate: date => set({ currentDate: date }),
+  setCurrentDate: date => {
+    const currentDate = new Date()
+    currentDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())
+    set({ currentDate: currentDate })
+  },
 
   // 날짜 선택
   selectedDate: null,
-  setSelectedDate: date => set({ selectedDate: date }),
+  setSelectedDate: date => {
+    const currentDate = new Date()
+    if (date)
+      currentDate.setFullYear(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      )
+    set({ selectedDate: currentDate })
+  },
   formatSelectedDate: date => {
     if ({ date }.date) {
       const year = date.getFullYear()
