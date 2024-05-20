@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import ModalLayout from '@/components/modal/ModalLayout'
 import CategoryModal from '@/components/modal/CategoryModal'
 import MeansModal from '@/components/modal/MeansModal'
@@ -10,9 +10,10 @@ import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import useDateStore from '@/store/useDateStore'
 import useFormControl from '@/hook/useFormControl'
-import { ledgerFormInitialValues } from '@/constants/ledgerFormInitialValues'
 import useSelectLedgerStore from '@/store/useSelectLedgerStore'
 import DatePickerModal from '@/components/modal/DatePickerModal'
+import { supabase } from '@/supabaseconfig'
+import useAuthStore from '@/store/useAuthStore'
 
 const AddLedgerModal = ({
   IsClose,
@@ -21,9 +22,6 @@ const AddLedgerModal = ({
   IsClose: () => void
   isEdit: boolean
 }) => {
-  const { values, handleChange, category, setCategory, means, setMeans } =
-    useFormControl(ledgerFormInitialValues)
-
   const selectCategory = useSelectLedgerStore(state => state.category)
   const setSelectCategory = useSelectLedgerStore(state => state.setCategory)
   const selectMeans = useSelectLedgerStore(state => state.means)
@@ -34,16 +32,46 @@ const AddLedgerModal = ({
 
   const { isOpen, openModal, closeModal } = useModal()
 
-  const handleAddLedgerItem = () => {}
+  const { userInfo } = useAuthStore()
+
+  const handleAddLedgerItem = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('accountbook')
+        .insert({
+          user_id: userInfo?.id,
+          created_at: selectedDate,
+          title: values.description,
+          amount: values.amount,
+          category: selectCategory.category,
+          means: selectMeans.means,
+          memo: values.memo
+        })
+        .select()
+      data && IsClose()
+      if (error) alert(error.message)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const initialValue = {
+    user_id: userInfo?.id,
+    created_at: selectedDate,
+    description: '',
+    amount: '',
+    category: CATEGORY_LIST[0].category,
+    means: MENAS_LIST[0].means,
+    memo: ''
+  }
+
+  const { values, handleChange, handleSubmit } = useFormControl({
+    initialValue,
+    onSubmit: handleAddLedgerItem
+  })
+
   const handleEditLedgerItem = () => {}
   const handleDeleteLedgerItem = () => {}
-
-  useEffect(() => {
-    if (selectCategory.category !== category)
-      setCategory(selectCategory.category)
-
-    if (selectMeans.means !== means) setMeans(selectMeans.means)
-  }, [selectCategory, category, setCategory])
 
   useEffect(() => {
     setSelectCategory(CATEGORY_LIST[0])
@@ -87,46 +115,26 @@ const AddLedgerModal = ({
         <label>
           금액
           <input
-            type="number"
+            type="text"
             name="amount"
             value={values.amount}
             onChange={e => handleChange(e)}
           />
         </label>
-        <label>
+        <SelectListLabel>
           카테고리
-          <CategoryInputWrapper>
-            <input
-              type="text"
-              name="category"
-              value={selectCategory.category}
-              onChange={e => handleChange(e)}
-              onClick={e => {
-                e.preventDefault()
-                openModal('카테고리')
-              }}
-              readOnly
-            />
+          <SelectListItem onClick={() => openModal('카테고리')}>
+            {selectCategory.category}
             {selectCategory.icon}
-          </CategoryInputWrapper>
-        </label>
-        <label>
+          </SelectListItem>
+        </SelectListLabel>
+        <SelectListLabel>
           수단
-          <CategoryInputWrapper>
-            <input
-              type="text"
-              name="means"
-              value={selectMeans.means}
-              onChange={e => handleChange(e)}
-              onClick={e => {
-                e.preventDefault()
-                openModal('수단')
-              }}
-              readOnly
-            />
+          <SelectListItem onClick={() => openModal('수단')}>
+            {selectMeans.means}
             {selectMeans.icon}
-          </CategoryInputWrapper>
-        </label>
+          </SelectListItem>
+        </SelectListLabel>
         <label>
           메모
           <textarea
@@ -141,7 +149,7 @@ const AddLedgerModal = ({
         {!isEdit && (
           <IconButton
             type="add"
-            onClick={handleAddLedgerItem}
+            onClick={handleSubmit}
           />
         )}
         {isEdit && (
@@ -162,6 +170,21 @@ const AddLedgerModal = ({
 }
 
 export default AddLedgerModal
+
+const labelStyle = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  height: 40px;
+`
+
+const inputStyle = css`
+  width: 150px;
+  height: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
+  padding: 5px 15px;
+`
 
 const Title = styled.div`
   width: 100%;
@@ -193,20 +216,13 @@ const LedgerForm = styled.form`
   gap: 10px;
 
   & label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    height: 40px;
+    ${labelStyle}
   }
 
   & input,
   & textarea {
-    width: 150px;
-    height: 100%;
     border: none;
-    border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
-    padding: 5px 15px;
+    ${inputStyle}
 
     &:focus {
       outline: none;
@@ -237,34 +253,22 @@ const LedgerForm = styled.form`
   }
 `
 
-const CategoryInputWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
+const SelectListLabel = styled.div`
+  ${labelStyle}
+`
 
-  & > input {
-    text-align: right;
-    border: none;
-    padding-right: 40px;
-  }
+const SelectListItem = styled.div`
+  ${inputStyle}
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 40px;
+  position: relative;
 
   & > svg {
     position: absolute;
     right: 0;
-  }
-`
-
-const CategoryButton = styled.button`
-  width: 150px;
-  border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  padding: 5px 10px;
-  & svg {
-    color: ${({ theme }) => theme.color.main_light};
+    bottom: 8px;
   }
 `
 

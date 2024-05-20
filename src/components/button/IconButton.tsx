@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react'
 import styled from 'styled-components'
 import { CiSaveDown1, CiEdit, CiEraser } from 'react-icons/ci'
 
@@ -6,12 +7,12 @@ const IconButton = ({
   onClick
 }: {
   type: 'add' | 'edit' | 'del'
-  onClick: () => void
+  onClick: (e: MouseEvent<HTMLButtonElement>) => void
 }) => {
   return (
     <Button
       type={type}
-      onClick={() => onClick()}>
+      onClick={e => onClick(e)}>
       {type === 'add' && <CiSaveDown1 size={24} />}
       {type === 'edit' && <CiEdit size={24} />}
       {type === 'del' && <CiEraser size={24} />}
