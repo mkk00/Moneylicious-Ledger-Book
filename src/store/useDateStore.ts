@@ -21,13 +21,16 @@ const useDateStore = create<DateProps>(set => ({
   selectedDate: null,
   setSelectedDate: date => {
     const currentDate = new Date()
-    if (date)
+    if (date) {
       currentDate.setFullYear(
         date.getFullYear(),
         date.getMonth(),
         date.getDate()
       )
-    set({ selectedDate: currentDate })
+      set({ selectedDate: currentDate })
+    } else {
+      set({ selectedDate: null })
+    }
   },
   formatSelectedDate: date => {
     if ({ date }.date) {
