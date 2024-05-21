@@ -21,7 +21,7 @@ const LedgerList = () => {
   const setCurrentDate = useDateStore(state => state.setCurrentDate)
   const formatSelectedDate = useDateStore(state => state.formatSelectedDate)
 
-  const getAccountList = async () => {
+  const getAmountList = async () => {
     try {
       if (!selectedDate) return null
       const { data, error } = await supabase
@@ -51,8 +51,13 @@ const LedgerList = () => {
     setIsEdit(false)
   }
 
+  const handleIsOpenEdit = () => {
+    setIsEdit(true)
+    openModal('내역추가')
+  }
+
   useEffect(() => {
-    getAccountList()
+    getAmountList()
   }, [selectedDate])
 
   return (
@@ -81,7 +86,7 @@ const LedgerList = () => {
           <LedgerListItem
             key={list.id}
             accountList={list}
-            setIsEdit={setIsEdit}
+            onClick={handleIsOpenEdit}
           />
         ))}
       </LedgerListWrapper>

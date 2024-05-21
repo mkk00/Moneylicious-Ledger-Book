@@ -1,26 +1,15 @@
-import { SetStateAction } from 'react'
 import styled from 'styled-components'
-
-import useModal from '@/hook/useModal'
-
 import { LedgerDataProps } from '@/interface/LedgerProps'
 
 const LedgerListItem = ({
   accountList,
-  setIsEdit
+  onClick
 }: {
   accountList: LedgerDataProps
-  setIsEdit: React.Dispatch<SetStateAction<boolean>>
+  onClick: () => void
 }) => {
-  const { openModal } = useModal()
-
-  const handleIsOpenEdit = () => {
-    openModal('내역추가')
-    setIsEdit(true)
-  }
-
   return (
-    <Container onClick={handleIsOpenEdit}>
+    <Container onClick={onClick}>
       <LedgerItem>
         <div>{accountList.title}</div>
         <div>{accountList.amount} 원</div>
@@ -32,13 +21,13 @@ const LedgerListItem = ({
 
 export default LedgerListItem
 
-const Container = styled.ul`
+const Container = styled.div`
   border-left: 4px solid ${({ theme }) => theme.color.sub};
   padding: 8px;
   cursor: pointer;
 `
 
-const LedgerItem = styled.li`
+const LedgerItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
