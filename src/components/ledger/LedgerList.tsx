@@ -1,23 +1,43 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
+import { supabase } from '@/supabaseconfig'
+import LedgerListItem from '@/components/ledger/LedgerListItem'
+import { LedgerDataProps } from '@/interface/LedgerProps'
 import { FaCircle } from 'react-icons/fa'
 import { CiSquarePlus } from 'react-icons/ci'
-import AddLedgerModal from '@/components/modal/AddLedgerModal'
-import useModal from '@/hook/useModal'
 import useDateStore from '@/store/useDateStore'
+import useModal from '@/hook/useModal'
+import AddLedgerModal from '@/components/modal/AddLedgerModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 
 const LedgerList = () => {
-  const [isEdit, setIsEdit] = useState(false)
-
   const { isOpen, openModal, closeModal } = useModal()
-
   const { color } = useTheme()
+  const [dataList, setDataList] = useState<LedgerDataProps[] | null>(null)
+  const [isEdit, setIsEdit] = useState(false)
 
   const selectedDate = useDateStore(state => state.selectedDate)
   const currentDate = useDateStore(state => state.currentDate)
   const setCurrentDate = useDateStore(state => state.setCurrentDate)
   const formatSelectedDate = useDateStore(state => state.formatSelectedDate)
+
+  const getAccountList = async () => {
+    try {
+      if (!selectedDate) return null
+      const { data, error } = await supabase
+        .from('amountbook')
+        .select('*')
+        .eq('created_at_year', selectedDate?.getFullYear())
+        .eq('created_at_month', selectedDate?.getMonth() + 1)
+        .eq('created_at_day', selectedDate?.getDate())
+        .returns<LedgerDataProps[] | null>()
+
+      setDataList(data)
+      error && alert(error?.message)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const handleIsOpenAdd = () => {
     openModal('내역추가')
@@ -31,10 +51,9 @@ const LedgerList = () => {
     setIsEdit(false)
   }
 
-  const handleIsOpenEdit = () => {
-    openModal('내역추가')
-    setIsEdit(true)
-  }
+  useEffect(() => {
+    getAccountList()
+  }, [selectedDate])
 
   return (
     <Container>
@@ -58,12 +77,14 @@ const LedgerList = () => {
         <span>{selectedDate && formatSelectedDate(selectedDate)}</span>
       </LedgerHeader>
       <LedgerListWrapper>
-        <LedgerItem onClick={handleIsOpenEdit}>
-          <div>BBQ 치킨</div>
-          <div>20,000원</div>
-        </LedgerItem>
+        {dataList?.map(list => (
+          <LedgerListItem
+            key={list.id}
+            accountList={list}
+            setIsEdit={setIsEdit}
+          />
+        ))}
       </LedgerListWrapper>
-      <Memo>소비 이유 메모</Memo>
       <Summary>
         <LedgerHeader>Total</LedgerHeader>
         <CountTotal>
@@ -114,38 +135,17 @@ const Title = styled.div`
 `
 
 const LedgerListWrapper = styled.div`
-  min-height: 181px;
-  max-height: 275px;
+  height: 275px;
   margin: 20px 0;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
   overflow-y: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
   }
-`
-
-const LedgerItem = styled.div`
-  padding: 10px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 8px;
-  cursor: pointer;
-`
-
-const Memo = styled.div`
-  max-height: 90px;
-  margin: 20px 0;
-  background-color: ${({ theme }) => theme.gray.gray_100};
-  color: ${({ theme }) => theme.gray.gray_400};
-  border-radius: 10px;
-  padding: 15px;
-  line-height: 1.2;
-  font-size: 0.8rem;
 `
 
 const Summary = styled.div`

@@ -37,11 +37,11 @@ const AddLedgerModal = ({
   const handleAddLedgerItem = async () => {
     try {
       const { data, error } = await supabase
-        .from('accountbook')
+        .from('amountbook')
         .insert({
           user_id: userInfo?.id,
           created_at: selectedDate,
-          title: values.description,
+          title: values.title,
           amount: values.amount,
           category: selectCategory.category,
           means: selectMeans.means,
@@ -58,7 +58,7 @@ const AddLedgerModal = ({
   const initialValue = {
     user_id: userInfo?.id,
     created_at: selectedDate,
-    description: '',
+    title: '',
     amount: '',
     category: CATEGORY_LIST[0].category,
     means: MENAS_LIST[0].means,
@@ -77,6 +77,8 @@ const AddLedgerModal = ({
     setSelectCategory(CATEGORY_LIST[0])
     setSelectMeans(MENAS_LIST[0])
   }, [setSelectCategory, setSelectMeans])
+
+  // useEffect(() => {}, [isLoading])
 
   return (
     <ModalLayout closeModal={IsClose}>
@@ -107,8 +109,8 @@ const AddLedgerModal = ({
           내역
           <input
             type="text"
-            name="description"
-            value={values.description}
+            name="title"
+            value={values.title}
             onChange={e => handleChange(e)}
           />
         </label>
