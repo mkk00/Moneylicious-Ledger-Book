@@ -14,13 +14,16 @@ import useSelectLedgerStore from '@/store/useSelectLedgerStore'
 import DatePickerModal from '@/components/modal/DatePickerModal'
 import { supabase } from '@/supabaseconfig'
 import useAuthStore from '@/store/useAuthStore'
+import { LedgerDataProps } from '@/interface/LedgerProps'
 
 const AddLedgerModal = ({
   IsClose,
-  isEdit
+  isEdit,
+  editData
 }: {
   IsClose: () => void
   isEdit: boolean
+  editData: LedgerDataProps | null
 }) => {
   const [amountType, setAmountType] = useState<'지출' | '수입'>('지출')
 
@@ -39,8 +42,6 @@ const AddLedgerModal = ({
   const handleAmountType = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setAmountType(amountType === '지출' ? '수입' : '지출')
-
-    // setSelectCategory()
   }
 
   const handleAddLedgerItem = async () => {
@@ -68,15 +69,17 @@ const AddLedgerModal = ({
   const initialValue = {
     user_id: userInfo?.id,
     created_at: selectedDate,
-    type: '지출',
-    title: '',
-    amount: '',
+    type: isEdit && editData ? editData.type : '지출',
+    title: isEdit && editData ? editData.title : '',
+    amount: isEdit && editData ? editData.amount : '',
     category:
-      amountType === '지출'
-        ? CATEGORY_LIST[0].category
-        : INCOME_LIST[0].category,
-    means: MENAS_LIST[0].means,
-    memo: ''
+      isEdit && editData
+        ? editData.category
+        : amountType === '지출'
+          ? CATEGORY_LIST[0].category
+          : INCOME_LIST[0].category,
+    means: isEdit && editData ? editData.means : MENAS_LIST[0].means,
+    memo: isEdit && editData ? editData.memo : ''
   }
 
   const { values, handleChange, handleSubmit } = useFormControl({
@@ -84,18 +87,47 @@ const AddLedgerModal = ({
     onSubmit: handleAddLedgerItem
   })
 
-  const handleEditLedgerItem = () => {}
-  const handleDeleteLedgerItem = () => {}
+  const handleEditLedgerItem = async () => {}
+
+  const handleDeleteLedgerItem = async () => {}
 
   useEffect(() => {
-    if (amountType === '지출') {
-      setSelectCategory(CATEGORY_LIST[0])
-      setSelectMeans(MENAS_LIST[0])
-    } else {
-      setSelectCategory(INCOME_LIST[0])
+    if (isEdit && editData) {
+      setAmountType(editData.type)
+      console.log(editData?.amount)
+    }
+  }, [isEdit, editData])
+
+  useEffect(() => {
+    if (!isEdit) {
+      if (amountType === '지출') {
+        setSelectCategory(CATEGORY_LIST[0])
+      } else {
+        setSelectCategory(INCOME_LIST[0])
+      }
       setSelectMeans(MENAS_LIST[0])
     }
   }, [setSelectCategory, setSelectMeans, amountType])
+
+  useEffect(() => {
+    if (isEdit && editData) {
+      const meansItem = MENAS_LIST.filter(item => item.means === editData.means)
+
+      if (editData.type === '지출') {
+        const categoryItem = CATEGORY_LIST.filter(
+          item => item.category === editData.category
+        )
+        setSelectCategory(categoryItem[0])
+      } else {
+        const incomeItem = INCOME_LIST.filter(
+          item => item.category === editData.category
+        )
+        setSelectCategory(incomeItem[0])
+      }
+      setSelectMeans(meansItem[0])
+      console.log(selectCategory)
+    }
+  }, [isEdit])
 
   return (
     <ModalLayout closeModal={IsClose}>
@@ -111,7 +143,7 @@ const AddLedgerModal = ({
           />
         </ModalPortal>
       )}
-      {isOpen(`${amountType}카테고리`) && (
+      {isOpen(`${editData ? editData.type : amountType}카테고리`) && (
         <ModalPortal>
           <CategoryModal
             closeModal={closeModal}

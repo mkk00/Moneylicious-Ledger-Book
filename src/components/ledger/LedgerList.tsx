@@ -23,6 +23,7 @@ const LedgerList = () => {
     income: '0'
   })
   const [isEdit, setIsEdit] = useState(false)
+  const [editData, setEditData] = useState<LedgerDataProps | null>(null)
 
   const selectedDate = useDateStore(state => state.selectedDate)
   const currentDate = useDateStore(state => state.currentDate)
@@ -59,9 +60,24 @@ const LedgerList = () => {
     setIsEdit(false)
   }
 
-  const handleIsOpenEdit = () => {
+  const getLedgerItemData = async (id: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('amountbook')
+        .select('*')
+        .eq('id', id)
+        .returns<LedgerDataProps[] | null>()
+
+      data && setEditData(data[0])
+      error && alert(error.message)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleIsOpenEdit = (id: string) => {
     setIsEdit(true)
-    openModal('내역추가')
+    getLedgerItemData(id).then(() => openModal('내역추가'))
   }
 
   useEffect(() => {
@@ -90,6 +106,7 @@ const LedgerList = () => {
           <AddLedgerModal
             IsClose={() => closeModal('내역추가')}
             isEdit={isEdit}
+            editData={editData}
           />
         </ModalPortal>
       )}
@@ -109,7 +126,7 @@ const LedgerList = () => {
           <LedgerListItem
             key={list.id}
             accountList={list}
-            onClick={handleIsOpenEdit}
+            onClick={() => handleIsOpenEdit(list.id)}
           />
         ))}
       </LedgerListWrapper>

@@ -3,7 +3,7 @@ import { ChangeEvent, useState, MouseEvent } from 'react'
 export interface FormValues {
   user_id?: string
   created_at: Date | null
-  type: string
+  type: '수입' | '지출'
   title?: string
   amount: string
   category: string
