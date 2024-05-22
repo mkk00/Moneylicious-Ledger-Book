@@ -9,7 +9,9 @@ const LedgerListItem = ({
   onClick: () => void
 }) => {
   return (
-    <Container onClick={onClick}>
+    <Container
+      onClick={onClick}
+      type={accountList.type}>
       <LedgerItem>
         <div>{accountList.title}</div>
         <div>{accountList.amount} 원</div>
@@ -21,8 +23,10 @@ const LedgerListItem = ({
 
 export default LedgerListItem
 
-const Container = styled.div`
-  border-left: 4px solid ${({ theme }) => theme.color.sub};
+const Container = styled.div<{ type: string }>`
+  border-left: 4px solid
+    ${({ theme, type }) =>
+      type === '지출' ? theme.color.sub : theme.color.main};
   padding: 8px;
   cursor: pointer;
 `

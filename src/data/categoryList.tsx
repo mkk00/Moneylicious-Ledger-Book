@@ -2,7 +2,15 @@ import { PiMusicNotes, PiPiggyBankFill } from 'react-icons/pi'
 import { IoSchoolOutline, IoEllipsisHorizontal } from 'react-icons/io5'
 import { LiaSubwaySolid, LiaMoneyBillAlt } from 'react-icons/lia'
 import { FiSmartphone } from 'react-icons/fi'
-import {} from 'react-icons/pi'
+import {
+  PiBank,
+  PiHandCoins,
+  PiHandHeart,
+  PiWallet,
+  PiStackOverflowLogo,
+  PiBuildings
+} from 'react-icons/pi'
+import { GiHealthPotion } from 'react-icons/gi'
 import { HiOutlineReceiptTax } from 'react-icons/hi'
 import { BsHouseHeart, BsCalculatorFill, BsCalendarMinus } from 'react-icons/bs'
 import {
@@ -121,6 +129,49 @@ export const CATEGORY_LIST = [
   },
   {
     id: 20,
+    category: '기타',
+    icon: <IoEllipsisHorizontal size={28} />
+  }
+]
+
+export const INCOME_LIST = [
+  {
+    id: 0,
+    category: '월급',
+    icon: <PiHandHeart size={28} />
+  },
+  {
+    id: 1,
+    category: '용돈',
+    icon: <PiWallet size={28} />
+  },
+  {
+    id: 2,
+    category: '부수입',
+    icon: <PiHandCoins size={28} />
+  },
+  {
+    id: 3,
+    category: '상여금',
+    icon: <GiHealthPotion size={28} />
+  },
+  {
+    id: 4,
+    category: '금융',
+    icon: <PiBank size={28} />
+  },
+  {
+    id: 5,
+    category: '보험',
+    icon: <PiBuildings size={28} />
+  },
+  {
+    id: 6,
+    category: '포인트',
+    icon: <PiStackOverflowLogo size={28} />
+  },
+  {
+    id: 7,
     category: '기타',
     icon: <IoEllipsisHorizontal size={28} />
   }

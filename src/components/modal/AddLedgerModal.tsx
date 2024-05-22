@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import ModalLayout from '@/components/modal/ModalLayout'
 import CategoryModal from '@/components/modal/CategoryModal'
 import MeansModal from '@/components/modal/MeansModal'
 import IconButton from '@/components/button/IconButton'
-import { CATEGORY_LIST } from '@/data/categoryList'
+import { CATEGORY_LIST, INCOME_LIST } from '@/data/categoryList'
 import { MENAS_LIST } from '@/data/meansList'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
@@ -22,6 +22,8 @@ const AddLedgerModal = ({
   IsClose: () => void
   isEdit: boolean
 }) => {
+  const [amountType, setAmountType] = useState<'지출' | '수입'>('지출')
+
   const selectCategory = useSelectLedgerStore(state => state.category)
   const setSelectCategory = useSelectLedgerStore(state => state.setCategory)
   const selectMeans = useSelectLedgerStore(state => state.means)
@@ -34,6 +36,13 @@ const AddLedgerModal = ({
 
   const { userInfo } = useAuthStore()
 
+  const handleAmountType = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setAmountType(amountType === '지출' ? '수입' : '지출')
+
+    // setSelectCategory()
+  }
+
   const handleAddLedgerItem = async () => {
     try {
       const { data, error } = await supabase
@@ -41,6 +50,7 @@ const AddLedgerModal = ({
         .insert({
           user_id: userInfo?.id,
           created_at: selectedDate,
+          type: amountType,
           title: values.title,
           amount: values.amount,
           category: selectCategory.category,
@@ -58,9 +68,13 @@ const AddLedgerModal = ({
   const initialValue = {
     user_id: userInfo?.id,
     created_at: selectedDate,
+    type: '지출',
     title: '',
     amount: '',
-    category: CATEGORY_LIST[0].category,
+    category:
+      amountType === '지출'
+        ? CATEGORY_LIST[0].category
+        : INCOME_LIST[0].category,
     means: MENAS_LIST[0].means,
     memo: ''
   }
@@ -74,11 +88,14 @@ const AddLedgerModal = ({
   const handleDeleteLedgerItem = () => {}
 
   useEffect(() => {
-    setSelectCategory(CATEGORY_LIST[0])
-    setSelectMeans(MENAS_LIST[0])
-  }, [setSelectCategory, setSelectMeans])
-
-  // useEffect(() => {}, [isLoading])
+    if (amountType === '지출') {
+      setSelectCategory(CATEGORY_LIST[0])
+      setSelectMeans(MENAS_LIST[0])
+    } else {
+      setSelectCategory(INCOME_LIST[0])
+      setSelectMeans(MENAS_LIST[0])
+    }
+  }, [setSelectCategory, setSelectMeans, amountType])
 
   return (
     <ModalLayout closeModal={IsClose}>
@@ -94,14 +111,20 @@ const AddLedgerModal = ({
           />
         </ModalPortal>
       )}
-      {isOpen('카테고리') && (
+      {isOpen(`${amountType}카테고리`) && (
         <ModalPortal>
-          <CategoryModal closeModal={closeModal} />
+          <CategoryModal
+            closeModal={closeModal}
+            type={amountType}
+          />
         </ModalPortal>
       )}
       {isOpen('수단') && (
         <ModalPortal>
-          <MeansModal closeModal={closeModal} />
+          <MeansModal
+            closeModal={closeModal}
+            type={amountType}
+          />
         </ModalPortal>
       )}
       <LedgerForm>
@@ -124,8 +147,8 @@ const AddLedgerModal = ({
           />
         </label>
         <SelectListLabel>
-          카테고리
-          <SelectListItem onClick={() => openModal('카테고리')}>
+          {amountType} 카테고리
+          <SelectListItem onClick={() => openModal(`${amountType}카테고리`)}>
             {selectCategory.category}
             {selectCategory.icon}
           </SelectListItem>
@@ -148,6 +171,17 @@ const AddLedgerModal = ({
         </label>
       </LedgerForm>
       <ButtonWrapper>
+        {amountType === '지출' ? (
+          <IconButton
+            type="expense"
+            onClick={handleAmountType}
+          />
+        ) : (
+          <IconButton
+            type="income"
+            onClick={handleAmountType}
+          />
+        )}
         {!isEdit && (
           <IconButton
             type="add"
@@ -178,7 +212,7 @@ const labelStyle = css`
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  height: 40px;
+  height: 35px;
 `
 
 const inputStyle = css`
@@ -211,7 +245,7 @@ const LedgerDate = styled.button`
 
 const LedgerForm = styled.form`
   margin: 20px;
-  width: 250px;
+  width: 263px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -219,6 +253,7 @@ const LedgerForm = styled.form`
 
   & label {
     ${labelStyle}
+    position: relative;
   }
 
   & input,
@@ -231,6 +266,19 @@ const LedgerForm = styled.form`
       border-bottom: 1px solid ${({ theme }) => theme.gray.gray_400};
       transition: all 0.3s;
     }
+  }
+
+  & input[name='amount'] {
+    text-align: center;
+    padding-right: 25px;
+  }
+
+  & label:nth-of-type(2):after {
+    content: '원';
+    display: block;
+    position: absolute;
+    right: 2px;
+    top: 7px;
   }
 
   & textarea {
@@ -262,7 +310,7 @@ const SelectListLabel = styled.div`
 const SelectListItem = styled.div`
   ${inputStyle}
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   padding-right: 40px;
   position: relative;
@@ -270,7 +318,7 @@ const SelectListItem = styled.div`
   & > svg {
     position: absolute;
     right: 0;
-    bottom: 8px;
+    bottom: 4px;
   }
 `
 
