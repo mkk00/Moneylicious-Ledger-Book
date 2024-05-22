@@ -9,11 +9,19 @@ import useDateStore from '@/store/useDateStore'
 import useModal from '@/hook/useModal'
 import AddLedgerModal from '@/components/modal/AddLedgerModal'
 import ModalPortal from '@/components/modal/ModalPortal'
+import { getTotalAmount, calculateSummary } from '@/utils/totalAccount'
 
 const LedgerList = () => {
   const { isOpen, openModal, closeModal } = useModal()
   const { color } = useTheme()
   const [dataList, setDataList] = useState<LedgerDataProps[] | null>(null)
+  const [summary, setSummary] = useState<{
+    expense: string
+    income: string
+  } | null>({
+    expense: '0',
+    income: '0'
+  })
   const [isEdit, setIsEdit] = useState(false)
 
   const selectedDate = useDateStore(state => state.selectedDate)
@@ -57,6 +65,21 @@ const LedgerList = () => {
   }
 
   useEffect(() => {
+    const totalAmount = async () => {
+      const data = await getTotalAmount(
+        currentDate.getFullYear(),
+        currentDate.getMonth()
+      )
+      if (data) {
+        const total = calculateSummary(data)
+        setSummary(total)
+      }
+    }
+
+    totalAmount()
+  }, [currentDate.getFullYear(), currentDate.getMonth()])
+
+  useEffect(() => {
     getAmountList()
   }, [selectedDate])
 
@@ -96,14 +119,14 @@ const LedgerList = () => {
           <div>수입</div>
           <Account type="plus">
             <FaCircle />
-            1,800,000
+            {summary?.income} 원
           </Account>
         </CountTotal>
         <CountTotal>
           <div>지출</div>
           <Account type="minus">
             <FaCircle />
-            2,000,000
+            {summary?.expense} 원
           </Account>
         </CountTotal>
       </Summary>

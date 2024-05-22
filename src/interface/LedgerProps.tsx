@@ -15,3 +15,13 @@ export interface MeansProps {
 export interface LedgerDataProps extends FormValues {
   id: string
 }
+
+export interface TypeAmountProps {
+  type: string
+  amount: string
+}
+
+export interface SummaryProps {
+  expense: number
+  income: number
+}
