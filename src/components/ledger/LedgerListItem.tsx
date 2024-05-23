@@ -16,7 +16,10 @@ const LedgerListItem = ({
         <div>{accountList.title}</div>
         <div>{accountList.amount} 원</div>
       </LedgerItem>
-      {accountList.memo && <Memo>{accountList.memo}</Memo>}
+      <Detail memo={accountList.memo}>
+        {accountList.memo && <div>{accountList.memo}</div>}
+        <div>{accountList.category}</div>
+      </Detail>
     </Container>
   )
 }
@@ -43,8 +46,11 @@ const LedgerItem = styled.div`
   }
 `
 
-const Memo = styled.div`
-  color: ${({ theme }) => theme.gray.gray_300};
+const Detail = styled.div<{ memo?: string }>`
+  display: flex;
+  justify-content: ${({ memo }) => (memo ? 'space-between' : 'flex-end')};
+  align-items: center;
   font-size: 0.7rem;
   margin-top: 5px;
+  color: ${({ theme }) => theme.gray.gray_300};
 `
