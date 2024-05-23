@@ -104,9 +104,10 @@ const LedgerList = () => {
       {isOpen('내역추가') && (
         <ModalPortal>
           <AddLedgerModal
-            IsClose={() => closeModal('내역추가')}
+            isClose={() => closeModal('내역추가')}
             isEdit={isEdit}
             editData={editData}
+            updateData={getAmountList}
           />
         </ModalPortal>
       )}

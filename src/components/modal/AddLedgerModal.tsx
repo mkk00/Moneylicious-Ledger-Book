@@ -17,13 +17,15 @@ import useAuthStore from '@/store/useAuthStore'
 import { LedgerDataProps } from '@/interface/LedgerProps'
 
 const AddLedgerModal = ({
-  IsClose,
+  isClose,
   isEdit,
-  editData
+  editData,
+  updateData
 }: {
-  IsClose: () => void
+  isClose: () => void
   isEdit: boolean
   editData: LedgerDataProps | null
+  updateData: () => Promise<null | undefined>
 }) => {
   const [amountType, setAmountType] = useState<'지출' | '수입'>('지출')
 
@@ -59,7 +61,12 @@ const AddLedgerModal = ({
           memo: values.memo
         })
         .select()
-      data && IsClose()
+        .returns<LedgerDataProps[] | null>()
+
+      if (data) {
+        await updateData()
+        isClose()
+      }
       if (error) alert(error.message)
     } catch (error) {
       console.error(error)
@@ -87,9 +94,44 @@ const AddLedgerModal = ({
     onSubmit: handleAddLedgerItem
   })
 
-  const handleEditLedgerItem = async () => {}
+  const handleEditLedgerItem = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('amountbook')
+        .update([
+          {
+            user_id: userInfo?.id,
+            created_at: selectedDate,
+            type: amountType,
+            title: values.title,
+            amount: values.amount,
+            category: selectCategory.category,
+            means: selectMeans.means,
+            memo: values.memo
+          }
+        ])
+        .eq('id', editData?.id)
+        .select()
+        .returns<LedgerDataProps[] | null>()
 
-  const handleDeleteLedgerItem = async () => {}
+      data && updateData()
+      data && isClose()
+      if (error) alert(error.message)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleDeleteLedgerItem = async () => {
+    const { error } = await supabase
+      .from('amountbook')
+      .delete()
+      .eq('id', editData?.id)
+
+    updateData()
+    isClose()
+    if (error) alert(error.message)
+  }
 
   useEffect(() => {
     if (isEdit && editData) {
@@ -128,7 +170,7 @@ const AddLedgerModal = ({
   }, [isEdit])
 
   return (
-    <ModalLayout closeModal={IsClose}>
+    <ModalLayout closeModal={isClose}>
       <Title>{isEdit ? '기록 수정' : '기록 추가'}</Title>
       <LedgerDate onClick={() => openModal('날짜선택')}>
         {selectedDate && formatSelectedDate(selectedDate)}
