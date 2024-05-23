@@ -94,7 +94,6 @@ const AddLedgerModal = ({
   useEffect(() => {
     if (isEdit && editData) {
       setAmountType(editData.type)
-      console.log(editData?.amount)
     }
   }, [isEdit, editData])
 
@@ -125,7 +124,6 @@ const AddLedgerModal = ({
         setSelectCategory(incomeItem[0])
       }
       setSelectMeans(meansItem[0])
-      console.log(selectCategory)
     }
   }, [isEdit])
 
@@ -143,7 +141,7 @@ const AddLedgerModal = ({
           />
         </ModalPortal>
       )}
-      {isOpen(`${editData ? editData.type : amountType}카테고리`) && (
+      {isOpen(`${amountType}카테고리`) && (
         <ModalPortal>
           <CategoryModal
             closeModal={closeModal}
