@@ -16,12 +16,25 @@ export interface LedgerDataProps extends FormValues {
   id: string
 }
 
+export interface LedgerFullDateProps extends LedgerDataProps {
+  created_at_year: number
+  created_at_month: number
+  created_at_day: number
+}
+
 export interface TypeAmountProps {
   type: string
   amount: string
+  created_at_month: number
+  created_at_day: number
 }
 
 export interface SummaryProps {
   expense: number
   income: number
+}
+
+export interface DailySummaryProps extends SummaryProps {
+  month: number
+  date: number
 }

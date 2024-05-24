@@ -1,11 +1,15 @@
-import { TypeAmountProps, SummaryProps } from '@/interface/LedgerProps'
+import {
+  TypeAmountProps,
+  DailySummaryProps,
+  SummaryProps
+} from '@/interface/LedgerProps'
 import { supabase } from '@/supabaseconfig'
 
 export const getTotalAmount = async (year: number, month: number) => {
   try {
     const { data, error } = await supabase
       .from('amountbook')
-      .select('type, amount')
+      .select('type, amount, created_at_month, created_at_day')
       .eq('created_at_year', year)
       .eq('created_at_month', month + 1)
       .returns<TypeAmountProps[] | null>()
@@ -44,4 +48,40 @@ export const calculateSummary = (data: TypeAmountProps[] | null) => {
   }
 
   return formattedResult
+}
+
+export const calculateDailySummary = (data: TypeAmountProps[] | null) => {
+  if (!data) return null
+
+  const dailySummaryMap: DailySummaryProps[] = []
+
+  data.forEach((item, idx) => {
+    const amount = parseInt(item.amount.replace(/[^0-9]/g, ''))
+    const month = item.created_at_month
+    const date = item.created_at_day
+
+    let existingItem = dailySummaryMap.find(
+      summary => summary.date === date && summary.month === month
+    )
+
+    if (!existingItem) {
+      existingItem = {
+        month: month,
+        date: date,
+        expense: 0,
+        income: 0
+      }
+      dailySummaryMap.push(existingItem)
+    }
+
+    if (item.type === '지출') {
+      existingItem.expense += amount
+    } else if (item.type === '수입') {
+      existingItem.income += amount
+    }
+  })
+
+  const dailySummary: DailySummaryProps[] = Object.values(dailySummaryMap)
+
+  return dailySummary
 }

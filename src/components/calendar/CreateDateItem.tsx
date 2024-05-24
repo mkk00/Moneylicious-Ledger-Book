@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import DateItemProps from '@/interface/DateItemProps'
+import { FaCircle } from 'react-icons/fa'
 
 // 1일부터 daysInMonth 까지의 날짜를 생성하여 배열에 추가
 const CreateDateItem = (dateInfo: DateItemProps) => {
-  const { date, isToday, isHoliday, isSelected, handleSelectDate } = dateInfo
+  const { date, isToday, isHoliday, isSelected, handleSelectDate, dailyTotal } =
+    dateInfo
 
-  // TODO: 하루 수입/지출 금액 표시
   return (
     <TableItems
       key={date}
@@ -14,14 +15,14 @@ const CreateDateItem = (dateInfo: DateItemProps) => {
       $isHoliday={isHoliday}
       $isSelect={isSelected}>
       <span>{date}</span>
-      {/* <DailyFinancialSummary>
-        <FaCircle />
-        20,000
+      <DailyFinancialSummary>
+        {dailyTotal?.income ? <FaCircle /> : null}
+        {dailyTotal?.income !== 0 && dailyTotal?.income.toLocaleString()}
       </DailyFinancialSummary>
       <DailyFinancialSummary>
-        <FaCircle />
-        20,000
-      </DailyFinancialSummary> */}
+        {dailyTotal?.expense ? <FaCircle /> : null}
+        {dailyTotal?.expense !== 0 && dailyTotal?.expense.toLocaleString()}
+      </DailyFinancialSummary>
     </TableItems>
   )
 }
@@ -60,10 +61,17 @@ const TableItems = styled.td<{
 `
 
 const DailyFinancialSummary = styled.div`
-  /* color: ${({ theme }) => theme.color.sub_dark}; */
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 3px;
   margin-top: 5px;
   font-size: 0.8rem;
+
+  &:nth-of-type(1) svg {
+    color: ${({ theme }) => theme.color.main};
+  }
+  &:nth-of-type(2) svg {
+    color: ${({ theme }) => theme.color.sub};
+  }
 `

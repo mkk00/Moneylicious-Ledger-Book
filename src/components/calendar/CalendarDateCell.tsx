@@ -5,15 +5,19 @@ import { HolidayProps } from '@/interface/HolidayProps'
 import useDateStore from '@/store/useDateStore'
 import { isToday, findHoliday, getCalendarInfo } from '@/utils/calendarUtils'
 import CreateDateItem from '@/components/calendar/CreateDateItem'
+import { DailySummaryProps } from '@/interface/LedgerProps'
+import { getTotalAmount, calculateDailySummary } from '@/utils/totalAccount'
 
 const CalendarDateCell = () => {
   const [holiday, setHoliday] = useState<HolidayProps[] | HolidayProps | null>(
     null
   )
+  const [total, setTotal] = useState<DailySummaryProps[] | null>(null)
 
   const selectedDate = useDateStore(state => state.selectedDate)
   const setSelectedDate = useDateStore(state => state.setSelectedDate)
 
+  const currentDate = useDateStore(state => state.currentDate)
   const currentFullDate = useDateStore(state => state.currentDate)
   const currentYear = currentFullDate.getFullYear()
   const currentMonth = currentFullDate.getMonth()
@@ -50,7 +54,8 @@ const CalendarDateCell = () => {
           isToday: isToday(currentYear, currentMonth, date),
           isHoliday: findHoliday(holiday, date) || false,
           isSelected: selectedDate?.getDate() === date,
-          handleSelectDate
+          handleSelectDate,
+          dailyTotal: findDailyTotal(date, currentMonth + 1)
         })
       )
     }
@@ -74,6 +79,29 @@ const CalendarDateCell = () => {
 
     return weeksArr
   }
+
+  const getDailyTotal = async () => {
+    const totalAmount = async () => {
+      const data = await getTotalAmount(
+        currentDate.getFullYear(),
+        currentDate.getMonth()
+      )
+      if (data) {
+        const total = calculateDailySummary(data)
+        setTotal(total)
+      }
+    }
+
+    totalAmount()
+  }
+
+  const findDailyTotal = (date: number, month: number) => {
+    return total?.find(item => item.date === date && item.month === month)
+  }
+
+  useEffect(() => {
+    getDailyTotal()
+  }, [currentYear, currentMonth])
 
   useEffect(() => {
     setSelectedDate(new Date())
