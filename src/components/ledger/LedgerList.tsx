@@ -14,6 +14,7 @@ import { getHolidayData } from '@/lib/holiday'
 import { HolidayProps } from '@/interface/HolidayProps'
 import { filterHoliday } from '@/utils/calendarUtils'
 import HolidayList from '@/components/ledger/HolidayList'
+import IconButton from '@/components/button/IconButton'
 
 const LedgerList = () => {
   const { isOpen, openModal, closeModal } = useModal()
@@ -136,14 +137,7 @@ const LedgerList = () => {
         </ModalPortal>
       )}
       <LedgerHeader>
-        <Title>
-          <div>내역</div>
-          <CiSquarePlus
-            size={24}
-            color={color.main_dark}
-            onClick={handleIsOpenAdd}
-          />
-        </Title>
+        <div>내역</div>
         <span>{selectedDate && formatSelectedDate(selectedDate)}</span>
       </LedgerHeader>
       {selectedDate && selectHoliday && (
@@ -160,6 +154,10 @@ const LedgerList = () => {
             onClick={() => handleIsOpenEdit(list.id)}
           />
         ))}
+        <IconButton
+          type="plus"
+          onClick={handleIsOpenAdd}
+        />
       </LedgerListWrapper>
       <Summary>
         <LedgerHeader>Total</LedgerHeader>
@@ -204,18 +202,13 @@ const LedgerHeader = styled.div`
   }
 `
 
-const Title = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`
-
 const LedgerListWrapper = styled.div`
-  height: 250px;
+  min-height: 280px;
+  max-height: 340px;
   margin: 15px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   overflow-y: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;

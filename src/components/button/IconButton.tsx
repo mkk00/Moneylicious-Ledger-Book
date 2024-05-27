@@ -7,12 +7,13 @@ import {
   CiCirclePlus,
   CiCircleMinus
 } from 'react-icons/ci'
+import { PiPlusThin } from 'react-icons/pi'
 
 const IconButton = ({
   type,
   onClick
 }: {
-  type: 'add' | 'edit' | 'del' | 'expense' | 'income'
+  type: 'add' | 'edit' | 'del' | 'expense' | 'income' | 'plus'
   onClick: (e: MouseEvent<HTMLButtonElement>) => void
 }) => {
   return (
@@ -24,6 +25,7 @@ const IconButton = ({
       {type === 'del' && <CiEraser size={24} />}
       {type === 'expense' && <CiCircleMinus size={24} />}
       {type === 'income' && <CiCirclePlus size={24} />}
+      {type === 'plus' && <PiPlusThin size={20} />}
     </Button>
   )
 }
@@ -31,7 +33,7 @@ const IconButton = ({
 export default IconButton
 
 const Button = styled.button<{
-  type: 'add' | 'edit' | 'del' | 'expense' | 'income'
+  type: 'add' | 'edit' | 'del' | 'expense' | 'income' | 'plus'
 }>`
   width: ${({ type }) =>
     type === 'del' || type === 'expense' || type === 'income'
@@ -39,7 +41,7 @@ const Button = styled.button<{
       : '100%'};
   border: 1px solid ${({ theme }) => theme.gray.gray_200};
   border-radius: 8px;
-  padding: 15px;
+  padding: ${({ type }) => (type === 'plus' ? '6px' : '15px')};
   display: flex;
   align-items: center;
   justify-content: center;
