@@ -82,7 +82,6 @@ const hoverStyle = css`
 `
 
 const SelectedDateWrapper = styled.div`
-  width: 595px;
   display: flex;
   padding: 8px 0;
   position: relative;

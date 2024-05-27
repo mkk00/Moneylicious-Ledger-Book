@@ -1,15 +1,22 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components'
 
-const ContendsSplitLayout = ({ children }: { children: ReactNode[] }) => {
-  const left = children[0]
-  const center = children[1]
-  const right = children[2]
+const ContendsSplitLayout = ({
+  left,
+  center,
+  right,
+  flex
+}: {
+  left: ReactNode
+  center?: ReactNode
+  right?: ReactNode
+  flex?: number[]
+}) => {
   return (
     <Container>
-      <Left>{left}</Left>
-      <Center>{center}</Center>
-      <Right>{right}</Right>
+      {left && <Left $flex={flex?.[0]}>{left}</Left>}
+      {center && <Center $flex={flex?.[1]}>{center}</Center>}
+      {right && <Right $flex={flex?.[2]}>{right}</Right>}
     </Container>
   )
 }
@@ -21,14 +28,14 @@ const Container = styled.div`
   width: 100%;
 `
 
-const Left = styled.section`
-  flex: 2;
+const Left = styled.section<{ $flex?: number }>`
+  flex: ${({ $flex }) => ($flex ? $flex : 1)};
 `
 
-const Center = styled.section`
-  flex: 1;
+const Center = styled.section<{ $flex?: number }>`
+  flex: ${({ $flex }) => ($flex ? $flex : 1)};
 `
 
-const Right = styled.section`
-  flex: 1;
+const Right = styled.section<{ $flex?: number }>`
+  flex: ${({ $flex }) => ($flex ? $flex : 1)};
 `

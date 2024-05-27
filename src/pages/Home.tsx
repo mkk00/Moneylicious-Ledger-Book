@@ -9,11 +9,12 @@ const Home = () => {
 
   return (
     <PageLayout>
-      <ContendsSplitLayout>
-        <Calendar />
-        {selectedDate && <LedgerList />}
-        <></>
-      </ContendsSplitLayout>
+      <ContendsSplitLayout
+        left={<Calendar />}
+        center={selectedDate ? <LedgerList /> : <></>}
+        right={<></>}
+        flex={[2, 1, 1]}
+      />
     </PageLayout>
   )
 }

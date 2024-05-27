@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, MouseEvent } from 'react'
 import styled, { css } from 'styled-components'
 import ModalLayout from '@/components/modal/ModalLayout'
 import CategoryModal from '@/components/modal/CategoryModal'
@@ -41,7 +41,7 @@ const AddLedgerModal = ({
 
   const { userInfo } = useAuthStore()
 
-  const handleAmountType = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAmountType = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setAmountType(amountType === '지출' ? '수입' : '지출')
   }
