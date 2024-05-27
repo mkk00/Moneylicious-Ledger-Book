@@ -62,3 +62,31 @@ export const findHoliday = (
     return false
   }
 }
+
+export const filterHoliday = (
+  holiday: HolidayProps[] | HolidayProps | null,
+  selected: Date
+) => {
+  const locdate = Number(formatHolidayDate(selected))
+
+  if (!Array.isArray(holiday)) {
+    if (!holiday) return null
+    else {
+      return holiday.locdate === locdate ? holiday : null
+    }
+  }
+
+  return holiday.filter(h => {
+    const day = h.locdate
+    return day === locdate
+  })
+}
+
+const formatHolidayDate = (date: Date) => {
+  if (date) {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}${month}${day}`
+  } else return null
+}

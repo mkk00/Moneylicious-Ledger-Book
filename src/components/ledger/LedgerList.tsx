@@ -10,6 +10,10 @@ import useModal from '@/hook/useModal'
 import AddLedgerModal from '@/components/modal/AddLedgerModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import { getTotalAmount, calculateSummary } from '@/utils/totalAccount'
+import { getHolidayData } from '@/lib/holiday'
+import { HolidayProps } from '@/interface/HolidayProps'
+import { filterHoliday } from '@/utils/calendarUtils'
+import HolidayList from '@/components/ledger/HolidayList'
 
 const LedgerList = () => {
   const { isOpen, openModal, closeModal } = useModal()
@@ -24,6 +28,12 @@ const LedgerList = () => {
   })
   const [isEdit, setIsEdit] = useState(false)
   const [editData, setEditData] = useState<LedgerDataProps | null>(null)
+  const [holiday, setHoliday] = useState<HolidayProps[] | HolidayProps | null>(
+    null
+  )
+  const [selectHoliday, setSelectHoliday] = useState<
+    HolidayProps[] | HolidayProps | null
+  >(null)
 
   const selectedDate = useDateStore(state => state.selectedDate)
   const currentDate = useDateStore(state => state.currentDate)
@@ -81,6 +91,20 @@ const LedgerList = () => {
   }
 
   useEffect(() => {
+    getHolidayData(currentDate.getFullYear(), currentDate.getMonth()).then(
+      res => {
+        setHoliday(res.data.response.body.items.item)
+      }
+    )
+  }, [currentDate.getFullYear(), currentDate.getMonth()])
+
+  useEffect(() => {
+    if (selectedDate && holiday) {
+      setSelectHoliday(filterHoliday(holiday, selectedDate))
+    }
+  }, [selectedDate, holiday])
+
+  useEffect(() => {
     const totalAmount = async () => {
       const data = await getTotalAmount(
         currentDate.getFullYear(),
@@ -93,7 +117,7 @@ const LedgerList = () => {
     }
 
     totalAmount()
-  }, [currentDate.getFullYear(), currentDate.getMonth()])
+  }, [currentDate.getFullYear(), currentDate.getMonth(), selectHoliday])
 
   useEffect(() => {
     getAmountList()
@@ -122,6 +146,12 @@ const LedgerList = () => {
         </Title>
         <span>{selectedDate && formatSelectedDate(selectedDate)}</span>
       </LedgerHeader>
+      {selectedDate && selectHoliday && (
+        <HolidayList
+          holidays={selectHoliday}
+          selectedDate={selectedDate}
+        />
+      )}
       <LedgerListWrapper>
         {dataList?.map(list => (
           <LedgerListItem
@@ -181,8 +211,8 @@ const Title = styled.div`
 `
 
 const LedgerListWrapper = styled.div`
-  height: 275px;
-  margin: 20px 0;
+  height: 250px;
+  margin: 15px 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
