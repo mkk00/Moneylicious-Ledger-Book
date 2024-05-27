@@ -1,5 +1,5 @@
 import { HolidayProps } from '@/interface/HolidayProps'
-import { MdHolidayVillage } from 'react-icons/md'
+import { BsCalendar2Event } from 'react-icons/bs'
 import styled from 'styled-components'
 
 interface HolidayListProps {
@@ -38,7 +38,7 @@ const HolidayListItem = ({
   selectedDate: Date
 }) => (
   <HolidayInfo key={holiday.dateName}>
-    <MdHolidayVillage size={15} />
+    <BsCalendar2Event size={13} />
     {holiday.locdate % 100 === selectedDate.getDate() && holiday.dateName}
   </HolidayInfo>
 )
@@ -49,5 +49,5 @@ const HolidayInfo = styled.div`
   gap: 5px;
   padding-top: 10px;
   font-size: 0.7rem;
-  color: ${({ theme }) => theme.color.sub};
+  color: ${({ theme }) => theme.gray.gray_400};
 `
