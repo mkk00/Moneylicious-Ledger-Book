@@ -7,8 +7,10 @@ import { isToday, findHoliday, getCalendarInfo } from '@/utils/calendarUtils'
 import CreateDateItem from '@/components/calendar/CreateDateItem'
 import { DailySummaryProps } from '@/interface/LedgerProps'
 import { getTotalAmount, calculateDailySummary } from '@/utils/totalAccount'
+import useAuthStore from '@/store/useAuthStore'
 
 const CalendarDateCell = () => {
+  const { isLogin } = useAuthStore()
   const [holiday, setHoliday] = useState<HolidayProps[] | HolidayProps | null>(
     null
   )
@@ -101,7 +103,7 @@ const CalendarDateCell = () => {
 
   useEffect(() => {
     getDailyTotal()
-  }, [currentYear, currentMonth])
+  }, [currentYear, currentMonth, isLogin])
 
   useEffect(() => {
     setSelectedDate(new Date())
