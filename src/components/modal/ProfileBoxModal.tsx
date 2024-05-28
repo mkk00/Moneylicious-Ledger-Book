@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 const ProfileBoxModal = ({ closeModal }: { closeModal: () => void }) => {
   const navigate = useNavigate()
-  const setLogout = useAuthStore(state => state.setLogout)
+  const { setLogout, setUserInfo } = useAuthStore()
 
   const handleLogOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -17,6 +17,7 @@ const ProfileBoxModal = ({ closeModal }: { closeModal: () => void }) => {
     } else {
       alert('로그아웃 되었습니다.')
       setLogout()
+      setUserInfo(null)
     }
   }
   return (

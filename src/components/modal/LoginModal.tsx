@@ -28,6 +28,7 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
         setUserInfo({
           id: data.user?.id,
           email: data.user?.email,
+          image_url: data.user?.user_metadata.image_url,
           created_at: data.user?.created_at,
           user_name: data.user?.user_metadata.user_name,
           message: data.user?.user_metadata.message,

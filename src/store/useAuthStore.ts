@@ -7,6 +7,7 @@ export interface userInfoProps {
   userInfo: {
     id?: string
     email?: string
+    image_url?: string
     created_at?: string
     user_name?: string
     message?: string
@@ -38,6 +39,7 @@ const useAuthStore = create<userInfoProps>(set => ({
     ? {
         id: JSON_token.user.id,
         email: JSON_token.user.email,
+        image_url: JSON_token.user.image_url,
         created_at: JSON_token.user.created_at,
         user_name: JSON_token.user.user_metadata.user_name,
         message: JSON_token.user.user_metadata.message,
