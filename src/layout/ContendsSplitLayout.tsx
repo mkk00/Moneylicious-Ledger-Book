@@ -16,7 +16,7 @@ const ContendsSplitLayout = ({
     <Container>
       {left && <Left $flex={flex?.[0]}>{left}</Left>}
       {center && <Center $flex={flex?.[1]}>{center}</Center>}
-      {right && <Right $flex={flex?.[2]}>{right}</Right>}
+      {right && <Right $flex={center ? flex?.[2] : flex?.[1]}>{right}</Right>}
     </Container>
   )
 }

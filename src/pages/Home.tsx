@@ -16,7 +16,7 @@ const Home = () => {
         left={<Calendar />}
         center={selectedDate && userInfo ? <LedgerList /> : <></>}
         right={<MyLoginInfo />}
-        flex={[2, 1, 1]}
+        flex={userInfo ? [2, 1, 1] : [4, 1, 2]}
       />
     </PageLayout>
   )

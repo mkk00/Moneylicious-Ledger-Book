@@ -85,7 +85,7 @@ export default MyLoginInfo
 const ProfileBox = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: 20px 0 0 20px;
   gap: 15px;
 `
 
@@ -96,6 +96,7 @@ const ProfileImage = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 30px;
+  margin: 0 auto;
 
   svg,
   img {
@@ -123,8 +124,12 @@ const UserName = styled.div`
 
 const AuthButtons = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 10px;
+
+  button {
+    flex-grow: 1;
+  }
 `
 
 const Message = styled.div`
