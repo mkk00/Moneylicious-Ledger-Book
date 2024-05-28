@@ -57,11 +57,13 @@ const Header = () => {
           <AuthButtons>
             <AuthButton
               text="로그인"
+              size="small"
               type="main"
               onClick={() => openModal('로그인')}
             />
             <AuthButton
               text="회원가입"
+              size="small"
               onClick={() => navigate('/signup')}
             />
           </AuthButtons>
