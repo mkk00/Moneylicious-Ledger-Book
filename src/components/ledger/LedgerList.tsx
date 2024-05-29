@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 import { supabase } from '@/supabaseconfig'
 import LedgerListItem from '@/components/ledger/LedgerListItem'
 import { LedgerDataProps } from '@/interface/LedgerProps'
 import { FaCircle } from 'react-icons/fa'
-import { CiSquarePlus } from 'react-icons/ci'
 import useDateStore from '@/store/useDateStore'
 import useModal from '@/hook/useModal'
 import AddLedgerModal from '@/components/modal/AddLedgerModal'
@@ -18,7 +17,6 @@ import IconButton from '@/components/button/IconButton'
 
 const LedgerList = () => {
   const { isOpen, openModal, closeModal } = useModal()
-  const { color } = useTheme()
   const [dataList, setDataList] = useState<LedgerDataProps[] | null>(null)
   const [summary, setSummary] = useState<{
     expense: string

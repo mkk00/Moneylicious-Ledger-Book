@@ -55,7 +55,7 @@ export const calculateDailySummary = (data: TypeAmountProps[] | null) => {
 
   const dailySummaryMap: DailySummaryProps[] = []
 
-  data.forEach((item, idx) => {
+  data.forEach(item => {
     const amount = parseInt(item.amount.replace(/[^0-9]/g, ''))
     const month = item.created_at_month
     const date = item.created_at_day

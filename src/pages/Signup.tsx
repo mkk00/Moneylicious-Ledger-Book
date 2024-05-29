@@ -1,6 +1,6 @@
 import PageLayout from '@/layout/PageLayout'
 import styled from 'styled-components'
-import useAuthForm, { authProps } from '@/hook/useAuthForm'
+import useAuthForm, { AuthProps } from '@/hook/useAuthForm'
 import authValidation from '@/utils/authValidation'
 import Button from '@/components/button/Button'
 import { supabase } from '@/supabaseconfig'
@@ -16,7 +16,7 @@ const Signup = () => {
     message: ''
   }
 
-  const onSubmit = async (values: authProps) => {
+  const onSubmit = async (values: AuthProps) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email: values.email,
