@@ -1,78 +1,46 @@
-import styled, { useTheme } from 'styled-components'
-import { NavLink, useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+import { NavLink } from 'react-router-dom'
 import { memo } from 'react'
-import AuthButton from '@/components/button/AuthButton'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
-import LoginModal from '@/components/modal/LoginModal'
-import useAuthStore from '@/store/useAuthStore'
-import Profile from '@/components/common/Profile'
-
-const MENU_LIST = [
-  {
-    name: '대시보드',
-    path: '/dashboard'
-  },
-  { name: '자산관리', path: '/management' },
-  { name: '커뮤니티', path: '/board' }
-]
+import { NotMobile, Mobile, useResponsive } from '@/hook/useMediaQuery'
+import UserInfo from '@/components/common/UserInfo'
+import NavigationBar from '@/components/common/NavigationBar'
+import { RxHamburgerMenu } from 'react-icons/rx'
+import SideBar from '@/components/common/SideBar'
 
 const Header = () => {
-  const navigate = useNavigate()
-  const { userInfo, isLogin } = useAuthStore()
-
-  const { color } = useTheme()
-
+  const { isMobile } = useResponsive()
   const { isOpen, openModal, closeModal } = useModal()
-
-  const navActiveStyle = ({ isActive }: { isActive: boolean }) => ({
-    color: isActive ? color.sub : color.white,
-    fontWeight: isActive ? 'bold' : 'normal'
-  })
 
   return (
     <Container>
-      <Wrapper>
+      <Wrapper $isMobile={isMobile}>
         <InnerWrapper>
           <h1>
             <NavLink to="/">Moneylicious</NavLink>
           </h1>
-          <nav>
-            <MenuList>
-              {MENU_LIST.map(menu => (
-                <li key={`menu-${menu.name}`}>
-                  <NavLink
-                    to={menu.path}
-                    style={navActiveStyle}>
-                    {menu.name}
-                  </NavLink>
-                </li>
-              ))}
-            </MenuList>
-          </nav>
+          <NotMobile>
+            <NavigationBar />
+          </NotMobile>
         </InnerWrapper>
-        {isLogin ? (
-          <Profile userInfo={userInfo} />
-        ) : (
-          <AuthButtons>
-            <AuthButton
-              text="로그인"
-              size="small"
-              type="main"
-              onClick={() => openModal('로그인')}
+        <NotMobile>
+          <UserInfo />
+        </NotMobile>
+        <Mobile>
+          <>
+            <RxHamburgerMenu
+              size={24}
+              onClick={() => openModal('사이드바')}
+              style={{ cursor: 'pointer' }}
             />
-            <AuthButton
-              text="회원가입"
-              size="small"
-              onClick={() => navigate('/signup')}
-            />
-          </AuthButtons>
-        )}
-        {isOpen('로그인') && (
-          <ModalPortal>
-            <LoginModal closeModal={() => closeModal('로그인')} />
-          </ModalPortal>
-        )}
+            {isOpen('사이드바') && (
+              <ModalPortal>
+                <SideBar closeModal={() => closeModal('사이드바')} />
+              </ModalPortal>
+            )}
+          </>
+        </Mobile>
       </Wrapper>
     </Container>
   )
@@ -87,12 +55,14 @@ const Container = styled.header`
   left: 0;
   background: ${({ theme }) => theme.color.main};
   color: ${({ theme }) => theme.color.white};
-  z-index: 9999;
+  z-index: 99;
 `
 
-const Wrapper = styled.div`
-  width: 1200px;
+const Wrapper = styled.div<{ $isMobile: boolean }>`
+  width: ${({ $isMobile }) => ($isMobile ? '100%' : '1200px')};
   height: 65px;
+  padding-left: ${({ $isMobile }) => ($isMobile ? '1.5rem' : '0')};
+  padding-right: ${({ $isMobile }) => ($isMobile ? '2.5rem' : '0')};
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -108,15 +78,4 @@ const InnerWrapper = styled.div`
   display: flex;
   gap: 100px;
   align-items: center;
-`
-
-const MenuList = styled.ul`
-  width: 100%;
-  display: flex;
-  gap: 50px;
-`
-
-const AuthButtons = styled.div`
-  display: flex;
-  gap: 10px;
 `
