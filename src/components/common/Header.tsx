@@ -6,9 +6,13 @@ import ModalPortal from '@/components/modal/ModalPortal'
 import { NotMobile, Mobile, useResponsive } from '@/hook/useMediaQuery'
 import UserInfo from '@/components/common/UserInfo'
 import NavigationBar from '@/components/common/NavigationBar'
+import { RxHamburgerMenu } from 'react-icons/rx'
+import SideBar from '@/components/common/SideBar'
 
 const Header = () => {
   const { isMobile } = useResponsive()
+  const { isOpen, openModal, closeModal } = useModal()
+
   return (
     <Container>
       <Wrapper $isMobile={isMobile}>
@@ -23,6 +27,20 @@ const Header = () => {
         <NotMobile>
           <UserInfo />
         </NotMobile>
+        <Mobile>
+          <>
+            <RxHamburgerMenu
+              size={24}
+              onClick={() => openModal('사이드바')}
+              style={{ cursor: 'pointer' }}
+            />
+            {isOpen('사이드바') && (
+              <ModalPortal>
+                <SideBar closeModal={() => closeModal('사이드바')} />
+              </ModalPortal>
+            )}
+          </>
+        </Mobile>
       </Wrapper>
     </Container>
   )
@@ -43,7 +61,8 @@ const Container = styled.header`
 const Wrapper = styled.div<{ $isMobile: boolean }>`
   width: ${({ $isMobile }) => ($isMobile ? '100%' : '1200px')};
   height: 65px;
-  padding: ${({ $isMobile }) => ($isMobile ? '1.2rem' : '0')};
+  padding-left: ${({ $isMobile }) => ($isMobile ? '1.5rem' : '0')};
+  padding-right: ${({ $isMobile }) => ($isMobile ? '2.5rem' : '0')};
   margin: 0 auto;
   display: flex;
   justify-content: space-between;

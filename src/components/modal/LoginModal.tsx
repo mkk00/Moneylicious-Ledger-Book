@@ -7,10 +7,12 @@ import { MdMailOutline, MdLockOpen } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/supabaseconfig'
 import useAuthStore from '@/store/useAuthStore'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
   const navigate = useNavigate()
   const { setUserInfo, setLogin } = useAuthStore()
+  const { isMobile } = useResponsive()
   const initialValue = {
     email: '',
     password: ''
@@ -53,13 +55,15 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
   })
 
   return (
-    <ModalLayout closeModal={closeModal}>
+    <ModalLayout
+      closeModal={closeModal}
+      width={isMobile ? '95%' : undefined}>
       <Wrapper>
         <Title>Moneylicious</Title>
         <span>나만의 Moneylicious하는 비법!</span>
         <span>로그인하고 맛있게 자산관리 해보세요.</span>
         <FormWrapper>
-          <InputRow>
+          <InputRow $isMobile={isMobile}>
             <label>
               <MdMailOutline size={20} />
               <input
@@ -71,7 +75,7 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
               />
             </label>
           </InputRow>
-          <InputRow>
+          <InputRow $isMobile={isMobile}>
             <label>
               <MdLockOpen size={20} />
               <input
@@ -141,8 +145,8 @@ const FormWrapper = styled.form`
   }
 `
 
-const InputRow = styled.div`
-  width: 350px;
+const InputRow = styled.div<{ $isMobile?: boolean }>`
+  width: ${({ $isMobile }) => ($isMobile ? undefined : '350px')};
   border: 1px solid ${({ theme }) => theme.gray.gray_300};
   border-radius: 6px;
   padding: 16px 18px 15px;

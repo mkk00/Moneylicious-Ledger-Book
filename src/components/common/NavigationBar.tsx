@@ -1,6 +1,6 @@
 import styled, { css, useTheme } from 'styled-components'
 import { NavLink } from 'react-router-dom'
-import { NotMobile, Mobile, useResponsive } from '@/hook/useMediaQuery'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const NavigationBar = () => {
   const MENU_LIST = [
@@ -50,7 +50,7 @@ const MenuList = styled.ul<{ $isMobile: boolean }>`
       & {
         flex-direction: column;
         color: black;
-        gap: 15px;
+        gap: 25px;
         font-size: 1.2rem;
       }
     `}
