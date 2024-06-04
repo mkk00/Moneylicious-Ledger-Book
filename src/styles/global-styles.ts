@@ -21,6 +21,7 @@ const GlobalStyle = createGlobalStyle`
   html,
   body {
     font-family: 'NanumSquareRound', sans-serif;
+    max-width: 100vw;
   }
 
   * {

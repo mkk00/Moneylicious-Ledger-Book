@@ -16,7 +16,7 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
 export default PageLayout
 
 const Container = styled.div<{ $isNotMobile: boolean }>`
-  width: ${({ $isNotMobile }) => ($isNotMobile ? '100vw' : '100%')};
+  width: ${({ $isNotMobile }) => ($isNotMobile ? '100vw' : 'inherit')};
   height: auto;
 `
 
