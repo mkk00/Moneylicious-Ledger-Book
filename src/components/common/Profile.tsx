@@ -1,17 +1,17 @@
 import { BsPersonCircle } from 'react-icons/bs'
-import { userInfoProps } from '@/store/useAuthStore'
+import { UserAuthProps } from '@/store/useAuthStore'
 import styled from 'styled-components'
 import ProfileBox from '@/components/modal/ProfileBox'
 import useModal from '@/hook/useModal'
 import ProfileLayout from '@/components/modal/ProfileLayout'
 
-const Profile = ({ userInfo }: { userInfo: userInfoProps['userInfo'] }) => {
+const Profile = ({ userInfo }: { userInfo: UserAuthProps['userInfo'] }) => {
   const { isOpen, openModal, closeModal } = useModal()
   return (
     <Container>
       <ProfileWrapper onClick={() => openModal('프로필')}>
         <BsPersonCircle size={20} />
-        <span>{userInfo?.user_name}</span>
+        <span>{userInfo?.username}</span>
       </ProfileWrapper>
       {isOpen('프로필') && (
         <ProfileLayout

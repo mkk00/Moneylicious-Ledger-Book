@@ -12,7 +12,7 @@ const SideBar = ({ closeModal }: { closeModal: () => void }) => {
       <Container>
         <UserInfoWrapper $isLogin={userInfo ? true : false}>
           <UserName>
-            <div>{userInfo ? userInfo.user_name : 'Unkown User'} 님</div>
+            <div>{userInfo ? userInfo.username : 'Unkown User'} 님</div>
             <span>{userInfo?.email}</span>
           </UserName>
           {userInfo ? <ProfileBox /> : <UserInfo />}

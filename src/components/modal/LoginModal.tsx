@@ -1,5 +1,6 @@
 import authValidation from '@/utils/authValidation'
-import useAuthForm, { AuthProps } from '@/hook/useAuthForm'
+import useAuthForm from '@/hook/useAuthForm'
+import { AuthProps } from '@/interface/authProps'
 import ModalLayout from '@/components/modal/ModalLayout'
 import styled from 'styled-components'
 import Button from '@/components/button/Button'
@@ -32,7 +33,7 @@ const LoginModal = ({ closeModal }: { closeModal: () => void }) => {
           email: data.user?.email,
           image_url: data.user?.user_metadata.image_url,
           created_at: data.user?.created_at,
-          user_name: data.user?.user_metadata.user_name,
+          username: data.user?.user_metadata.user_name,
           message: data.user?.user_metadata.message,
           accessToken: data.session?.access_token
         })

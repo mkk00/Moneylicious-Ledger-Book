@@ -1,6 +1,7 @@
 import PageLayout from '@/layout/PageLayout'
 import styled from 'styled-components'
-import useAuthForm, { AuthProps } from '@/hook/useAuthForm'
+import useAuthForm from '@/hook/useAuthForm'
+import { AuthProps } from '@/interface/authProps'
 import authValidation from '@/utils/authValidation'
 import Button from '@/components/button/Button'
 import { supabase } from '@/supabaseconfig'
