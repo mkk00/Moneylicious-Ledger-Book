@@ -10,7 +10,16 @@ const Profile = ({ userInfo }: { userInfo: UserAuthProps['userInfo'] }) => {
   return (
     <Container>
       <ProfileWrapper onClick={() => openModal('프로필')}>
-        <BsPersonCircle size={20} />
+        {userInfo?.image_url ? (
+          <ProfileImage>
+            <img
+              src={userInfo.image_url}
+              alt="유저프로필"
+            />
+          </ProfileImage>
+        ) : (
+          <BsPersonCircle size={20} />
+        )}
         <span>{userInfo?.username}</span>
       </ProfileWrapper>
       {isOpen('프로필') && (
@@ -37,4 +46,17 @@ const ProfileWrapper = styled.div`
   align-items: center;
   gap: 10px;
   padding: 10px 15px;
+`
+
+const ProfileImage = styled.div`
+  width: 23px;
+  height: 23px;
+  background-color: ${({ theme }) => theme.color.white};
+  border-radius: 100%;
+  padding: 2px;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `
