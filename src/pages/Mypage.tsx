@@ -5,7 +5,7 @@ import useAuthStore from '@/store/useAuthStore'
 import useAuthForm from '@/hook/useAuthForm'
 import { AuthProps, MypageProps } from '@/interface/authProps'
 import Button from '@/components/button/Button'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import mypageValidation from '@/utils/mypageValidation'
 import { FaCloudUploadAlt } from 'react-icons/fa'
 import { supabase, supabaseUrl } from '@/supabaseconfig'
@@ -116,12 +116,20 @@ const Mypage = () => {
     }
   }
 
-  const { values, handleChange, handleSubmit } = useAuthForm({
+  const { values, errors, handleChange, handleSubmit } = useAuthForm({
     type: 'mypage',
     initialValue,
     onSubmit,
     validate: mypageValidation
   })
+
+  useEffect(() => {
+    if (!edit) {
+      delete errors.name
+      delete errors.password
+      delete errors.message
+    }
+  }, [edit])
 
   return (
     <PageLayout>
@@ -161,7 +169,10 @@ const Mypage = () => {
             <span>{userInfo?.email}</span>
           </InputRows>
           <InputRows>
-            닉네임
+            <InputLeft>
+              <InputName>닉네임</InputName>
+              {edit && <ErrorMessage>{errors.name}</ErrorMessage>}
+            </InputLeft>
             {edit ? (
               <label>
                 <input
@@ -177,7 +188,10 @@ const Mypage = () => {
             )}
           </InputRows>
           <InputRows>
-            패스워드
+            <InputLeft>
+              <InputName>패스워드</InputName>
+              {edit && <ErrorMessage>{errors.password}</ErrorMessage>}
+            </InputLeft>
             {edit ? (
               <label>
                 <input
@@ -193,7 +207,10 @@ const Mypage = () => {
             )}
           </InputRows>
           <InputRows>
-            메시지
+            <InputLeft>
+              <InputName>메시지</InputName>
+              {edit && <ErrorMessage>{errors.message}</ErrorMessage>}
+            </InputLeft>
             {edit ? (
               <label>
                 <textarea
@@ -343,6 +360,23 @@ const UploadIcon = styled.div<{ edit?: boolean }>`
     margin-top: 4px;
     margin-right: 8px;
   }
+`
+
+const InputLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+`
+
+const InputName = styled.div`
+  font-size: 1.1rem;
+`
+
+const ErrorMessage = styled.div`
+  width: 145px;
+  color: ${({ theme }) => theme.color.sub_dark};
+  font-size: 0.7rem;
 `
 
 const ButtonWrapper = styled.div`
