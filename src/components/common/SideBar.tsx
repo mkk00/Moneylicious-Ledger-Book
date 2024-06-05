@@ -12,7 +12,10 @@ const SideBar = ({ closeModal }: { closeModal: () => void }) => {
       <Container>
         <UserInfoWrapper $isLogin={userInfo ? true : false}>
           <UserName>
-            <div>{userInfo ? userInfo.user_name : 'Unkown User'} 님</div>
+            <div>
+              {userInfo && <img src={userInfo.image_url} />}
+              <>{userInfo ? userInfo.username : 'Unkown User'} 님</>
+            </div>
             <span>{userInfo?.email}</span>
           </UserName>
           {userInfo ? <ProfileBox /> : <UserInfo />}
@@ -69,6 +72,17 @@ const UserName = styled.div`
   font-size: 1.3rem;
   display: flex;
   flex-direction: column;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      width: 28px;
+      height: 28px;
+    }
+  }
 
   span {
     color: ${({ theme }) => theme.gray.gray_300};

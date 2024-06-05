@@ -1,25 +1,18 @@
 import { create } from 'zustand'
+import { UserInfoProps } from '@/interface/authProps'
 
-export interface userInfoProps {
+export interface UserAuthProps {
   isLogin: boolean
   setLogin: () => void
   setLogout: () => void
-  userInfo: {
-    id?: string
-    email?: string
-    image_url?: string
-    created_at?: string
-    user_name?: string
-    message?: string
-    accessToken?: string
-  } | null
-  setUserInfo: (userInfo: userInfoProps['userInfo']) => void
+  userInfo: UserInfoProps | null
+  setUserInfo: (userInfo: UserAuthProps['userInfo']) => void
 }
 
 const token = localStorage.getItem('sb-mbduhlqpzhiarzanmprr-auth-token')
 const JSON_token = token ? JSON.parse(token) : null
 
-const useAuthStore = create<userInfoProps>(set => ({
+const useAuthStore = create<UserAuthProps>(set => ({
   isLogin: localStorage.getItem('sb-mbduhlqpzhiarzanmprr-auth-token')
     ? true
     : false,
@@ -41,7 +34,7 @@ const useAuthStore = create<userInfoProps>(set => ({
         email: JSON_token.user.email,
         image_url: JSON_token.user.image_url,
         created_at: JSON_token.user.created_at,
-        user_name: JSON_token.user.user_metadata.user_name,
+        username: JSON_token.user.user_metadata.user_name,
         message: JSON_token.user.user_metadata.message,
         accessToken: JSON_token.access_token
       }

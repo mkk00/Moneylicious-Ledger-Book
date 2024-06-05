@@ -17,6 +17,7 @@ const ProfileBox = () => {
       alert('로그아웃 되었습니다.')
       setLogout()
       setUserInfo(null)
+      navigate('/')
     }
   }
   return (

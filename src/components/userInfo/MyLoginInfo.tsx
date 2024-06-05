@@ -16,10 +16,12 @@ const MyLoginInfo = () => {
     <>
       <ProfileBox>
         {userInfo?.image_url ? (
-          <img
-            src={userInfo.image_url}
-            alt="user profile image"
-          />
+          <ProfileImage>
+            <img
+              src={userInfo.image_url}
+              alt="user profile image"
+            />
+          </ProfileImage>
         ) : (
           <ProfileImage>
             <svg
@@ -44,9 +46,7 @@ const MyLoginInfo = () => {
         )}
         <UserInfo>
           <UserName>
-            {userInfo
-              ? `${userInfo.user_name} 님! 반가워요`
-              : 'Unkown User 님!'}
+            {userInfo ? `${userInfo.username} 님! 반가워요` : 'Unkown User 님!'}
           </UserName>
           {userInfo ? (
             <span>{userInfo.email}</span>

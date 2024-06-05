@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { NavLink } from 'react-router-dom'
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import { NotMobile, Mobile, useResponsive } from '@/hook/useMediaQuery'
@@ -8,10 +8,41 @@ import UserInfo from '@/components/common/UserInfo'
 import NavigationBar from '@/components/common/NavigationBar'
 import { RxHamburgerMenu } from 'react-icons/rx'
 import SideBar from '@/components/common/SideBar'
+import useAuthStore from '@/store/useAuthStore'
+import { UserInfoProps } from '@/interface/authProps'
+import { supabase } from '@/supabaseconfig'
 
 const Header = () => {
   const { isMobile } = useResponsive()
   const { isOpen, openModal, closeModal } = useModal()
+  const { userInfo, setUserInfo } = useAuthStore()
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('userinfo')
+          .select('*')
+          .eq('id', userInfo?.id)
+          .returns<UserInfoProps[] | null>()
+
+        if (data) {
+          console.log(data[0])
+          data &&
+            setUserInfo({
+              ...userInfo,
+              image_url: data[0].image_url,
+              username: data[0].username,
+              message: data[0].message
+            })
+        }
+        error && alert(`헤더오류:${error.message}`)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    userInfo && getUserInfo()
+  }, [])
 
   return (
     <Container>
