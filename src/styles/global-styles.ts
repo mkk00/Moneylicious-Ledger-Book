@@ -36,6 +36,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   button {
+    color: inherit;
+    -webkit-appearance: none;
     background: none;
     border: none;
     cursor: pointer;
