@@ -13,9 +13,9 @@ const ContendsSplitLayout = ({
   right?: ReactNode
   flex?: number[]
 }) => {
-  const { isNotMobile } = useResponsive()
+  const { isDesktopOrLaptop } = useResponsive()
   return (
-    <Container $isNotMobile={isNotMobile}>
+    <Container $isDesktopOrLaptop={isDesktopOrLaptop}>
       {left && <Left $flex={flex?.[0]}>{left}</Left>}
       {center && <Center $flex={flex?.[1]}>{center}</Center>}
       {right && <Right $flex={center ? flex?.[2] : flex?.[1]}>{right}</Right>}
@@ -25,11 +25,12 @@ const ContendsSplitLayout = ({
 
 export default ContendsSplitLayout
 
-const Container = styled.div<{ $isNotMobile: boolean }>`
+const Container = styled.div<{ $isDesktopOrLaptop: boolean }>`
   width: 100%;
   display: flex;
-  flex-direction: ${({ $isNotMobile }) => ($isNotMobile ? 'row' : 'column')};
-  gap: ${({ $isNotMobile }) => ($isNotMobile ? '0' : '30px')};
+  flex-direction: ${({ $isDesktopOrLaptop }) =>
+    $isDesktopOrLaptop ? 'row' : 'column'};
+  gap: ${({ $isDesktopOrLaptop }) => ($isDesktopOrLaptop ? '0' : '30px')};
 `
 
 const Left = styled.section<{ $flex?: number }>`
