@@ -48,7 +48,7 @@ const MyLoginInfo = () => {
           <UserName>
             {userInfo ? `${userInfo.username} 님! 반가워요` : 'Unkown User 님!'}
           </UserName>
-          {userInfo ? (
+          {userInfo?.accessToken ? (
             <span>{userInfo.email}</span>
           ) : (
             <AuthButtons>

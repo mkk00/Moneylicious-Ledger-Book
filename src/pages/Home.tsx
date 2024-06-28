@@ -16,9 +16,9 @@ const Home = () => {
     <PageLayout>
       <ContendsSplitLayout
         left={<Calendar />}
-        center={selectedDate && userInfo ? <LedgerList /> : <></>}
+        center={selectedDate && userInfo?.accessToken ? <LedgerList /> : <></>}
         right={isNotMobile && <MyLoginInfo />}
-        flex={userInfo ? [2, 1, 1] : [4, 1, 2]}
+        flex={userInfo?.accessToken ? [2, 1, 1] : [4, 1, 2]}
       />
     </PageLayout>
   )
