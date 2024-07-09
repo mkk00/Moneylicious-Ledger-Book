@@ -6,25 +6,11 @@ import { FormRow, Input } from '@/components/input/FormRow'
 import { useNavigate } from 'react-router-dom'
 import { useResponsive } from '@/hook/useMediaQuery'
 import SelectBox from '@/components/input/CustomSelect'
+import { TAG_LIST } from '@/data/boardTagList'
 
 const Board = () => {
   const navigate = useNavigate()
   const { isDesktopOrLaptop } = useResponsive()
-
-  const TAG_LIST = [
-    {
-      id: 0,
-      name: '기타'
-    },
-    {
-      id: 1,
-      name: '소비습관'
-    },
-    {
-      id: 2,
-      name: '고민'
-    }
-  ]
 
   return (
     <PageLayout>
