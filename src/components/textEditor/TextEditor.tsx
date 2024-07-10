@@ -12,15 +12,16 @@ const TextEditor = ({
       toolbar: {
         container: [
           [{ size: ['small', false, 'large', 'huge'] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ align: [] }],
           [
             {
               color: []
             },
             { background: [] }
           ],
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ align: [] }],
+          ['link'],
           ['image']
         ]
       }
