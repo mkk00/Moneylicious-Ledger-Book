@@ -33,7 +33,7 @@ const Board = () => {
         const postData = {
           user_name: userInfo?.username,
           title: boardData.title,
-          tag: selectTag,
+          tag: selectTag.name,
           content: values
         }
 

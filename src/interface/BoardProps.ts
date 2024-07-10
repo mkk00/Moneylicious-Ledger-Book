@@ -9,7 +9,7 @@ interface BoardTitleProps {
 
 interface BoardListProps {
   board_id: number
-  tag: BoardProps
+  tag: string
   title: string
   comments_count: number
   user_name: string

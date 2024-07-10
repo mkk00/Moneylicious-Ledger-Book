@@ -21,7 +21,7 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
         {post?.map(item => (
           <tr key={item.board_id}>
             <td>{item.board_id}</td>
-            <td>{item.tag.name}</td>
+            <td>{item.tag}</td>
             <Title>
               {item.title} <span>[{item.comments_count}]</span>
             </Title>

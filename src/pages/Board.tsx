@@ -5,21 +5,32 @@ import styled, { css, useTheme } from 'styled-components'
 import { useEffect, useState } from 'react'
 import BoardTable from '@/components/board/BoardTable'
 import { supabase } from '@/supabaseconfig'
-import { BoardListProps } from '@/interface/BoardProps'
+import { BoardProps, BoardListProps } from '@/interface/BoardProps'
 
 const Board = () => {
   const navigate = useNavigate()
   const theme = useTheme()
-  const [currentTag, setCurrentTag] = useState<number | null>(null)
+  const [currentTag, setCurrentTag] = useState<BoardProps | null>(null)
   const [BoardData, setBoardData] = useState<BoardListProps[] | null>(null)
 
   const getBoardData = async () => {
+    let query = supabase
+      .from('board')
+      .select(
+        'board_id, tag, title, comments_count, user_name, created_at, likes_count'
+      )
+      .order('id', { ascending: false })
+
+    if (currentTag !== null) {
+      query = query.eq('tag', currentTag.name)
+
+      const { data, error } = await query
+      if (data) setBoardData(data)
+      if (error) alert(error.message)
+    }
+
     try {
-      const { data, error } = await supabase
-        .from('board')
-        .select(
-          'board_id, tag, title, comments_count, user_name, created_at, likes_count'
-        )
+      const { data, error } = await query
 
       if (data) setBoardData(data)
       if (error) alert(error.message)
@@ -40,15 +51,19 @@ const Board = () => {
           <List
             key={list.id}
             onClick={() => {
-              currentTag === list.id
+              currentTag?.id === list.id
                 ? setCurrentTag(null)
-                : setCurrentTag(list.id)
+                : setCurrentTag(list)
             }}
             style={{
               color:
-                list.id === currentTag ? theme.color.white : theme.color.main,
+                list.id === currentTag?.id
+                  ? theme.color.white
+                  : theme.color.main,
               backgroundColor:
-                list.id === currentTag ? theme.color.main : theme.color.white
+                list.id === currentTag?.id
+                  ? theme.color.main
+                  : theme.color.white
             }}>
             {list.name}
           </List>
