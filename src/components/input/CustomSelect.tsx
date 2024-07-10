@@ -1,33 +1,30 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import styled from 'styled-components'
 import { FormRow } from '@/components/input/FormRow'
+import { BoardProps } from '@/interface/BoardProps'
 
 const SelectBox = ({
+  selectTag,
+  setSelectTag,
   list,
   width
 }: {
-  list: {
-    id: number
-    name: string
-  }[]
+  selectTag: BoardProps
+  setSelectTag: Dispatch<SetStateAction<BoardProps>>
+  list: BoardProps[]
   width?: string
 }) => {
-  const [select, setSelect] = useState<{
-    id: number
-    name: string
-  }>(list[0])
-
   const [isOn, setIsOn] = useState(false)
   return (
     <Container $width={width}>
-      <Select onClick={() => setIsOn(prev => !prev)}>{select.name}</Select>
+      <Select onClick={() => setIsOn(prev => !prev)}>{selectTag.name}</Select>
       {isOn && (
         <Option>
           {list.map(list => (
             <Li
               key={list.id}
               onClick={() => {
-                setSelect(list)
+                setSelectTag(list)
                 setIsOn(false)
               }}>
               {list.name}

@@ -1,27 +1,22 @@
 export const TAG_LIST = [
   {
     id: 0,
-    name: '자유',
-    path: '/board/free'
+    name: '일반'
   },
   {
     id: 1,
-    name: '소비습관',
-    path: '/board/habit'
+    name: '소비습관'
   },
   {
     id: 2,
-    name: '정보',
-    path: '/board/info'
+    name: '정보'
   },
   {
     id: 3,
-    name: '오운완',
-    path: '/board/health'
+    name: '고민'
   },
   {
     id: 4,
-    name: '고민',
-    path: '/board/concern'
+    name: '기타'
   }
 ]
