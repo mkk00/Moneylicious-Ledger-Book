@@ -1,23 +1,9 @@
 import { formatDate } from '@/utils/formatDate'
 import styled, { css } from 'styled-components'
+import { BoardListProps } from '@/interface/BoardProps'
 
-const BoardTable = ({
-  post
-}: {
-  post?:
-    | {
-        board_id: number
-        user_id: string
-        tag: string
-        title: string
-        comments_count: number
-        user_name: string
-        create_at: Date
-        likes_count: number
-      }[]
-    | null
-}) => {
-  const today = formatDate(new Date())
+const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
+  const today = new Date()
 
   return (
     <Table>
@@ -35,15 +21,15 @@ const BoardTable = ({
         {post?.map(item => (
           <tr key={item.board_id}>
             <td>{item.board_id}</td>
-            <td>{item.tag}</td>
+            <td>{item.tag.name}</td>
             <Title>
-              {item.title} [<span>{item.comments_count}</span>]
+              {item.title} <span>[{item.comments_count}]</span>
             </Title>
             <Name>{item.user_name}</Name>
             <WriteDate>
-              {formatDate(item.create_at) === today
+              {formatDate(new Date(item.created_at)) === formatDate(today)
                 ? '오늘'
-                : formatDate(item.create_at)}
+                : formatDate(new Date(item.created_at))}
             </WriteDate>
             <td>{item.likes_count > 9999 ? '9999+' : item.likes_count}</td>
           </tr>

@@ -4,13 +4,33 @@ import { TAG_LIST } from '@/data/boardTagList'
 import styled, { css, useTheme } from 'styled-components'
 import { useEffect, useState } from 'react'
 import BoardTable from '@/components/board/BoardTable'
+import { supabase } from '@/supabaseconfig'
+import { BoardListProps } from '@/interface/BoardProps'
 
 const Board = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const [currentTag, setCurrentTag] = useState<number | null>(null)
+  const [BoardData, setBoardData] = useState<BoardListProps[] | null>(null)
 
-  useEffect(() => {}, [currentTag])
+  const getBoardData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('board')
+        .select(
+          'board_id, tag, title, comments_count, user_name, created_at, likes_count'
+        )
+
+      if (data) setBoardData(data)
+      if (error) alert(error.message)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    getBoardData()
+  }, [currentTag])
 
   return (
     <PageLayout>
@@ -35,14 +55,14 @@ const Board = () => {
         ))}
       </CategoryList>
       <PostHeader>
-        <span>전체 0개</span>
+        <span>전체 {BoardData ? BoardData.length : 0}개</span>
         <Button
           type="button"
           onClick={() => navigate('/board/write')}>
           글작성
         </Button>
       </PostHeader>
-      <BoardTable post={null} />
+      <BoardTable post={BoardData} />
     </PageLayout>
   )
 }
