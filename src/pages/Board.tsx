@@ -19,7 +19,7 @@ const Board = () => {
       .select(
         'board_id, tag, title, comments_count, user_name, created_at, likes_count'
       )
-      .order('id', { ascending: false })
+      .order('board_id', { ascending: false })
 
     if (currentTag !== null) {
       query = query.eq('tag', currentTag.name)
