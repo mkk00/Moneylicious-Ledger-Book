@@ -31,6 +31,8 @@ const Board = () => {
     if (isConfirmed)
       try {
         const postData = {
+          user_id: userInfo?.id,
+          email: userInfo?.email,
           user_name: userInfo?.username,
           title: boardData.title,
           tag: selectTag.name,

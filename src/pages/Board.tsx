@@ -6,12 +6,35 @@ import { useEffect, useState } from 'react'
 import BoardTable from '@/components/board/BoardTable'
 import { supabase } from '@/supabaseconfig'
 import { BoardProps, BoardListProps } from '@/interface/BoardProps'
+import Pagination from '@/components/common/Pagination'
 
 const Board = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const [currentTag, setCurrentTag] = useState<BoardProps | null>(null)
   const [BoardData, setBoardData] = useState<BoardListProps[] | null>(null)
+
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const pageGroupSize = 10
+  const postsPerPage = 15
+
+  const getTotalPages = async () => {
+    try {
+      const { count, error } = await supabase
+        .from('board')
+        .select('board_id', { count: 'exact', head: true })
+
+      if (count) {
+        setTotalPages(Math.ceil(count! / postsPerPage))
+      }
+      if (error) {
+        throw error.message
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const getBoardData = async () => {
     let query = supabase
@@ -20,6 +43,7 @@ const Board = () => {
         'board_id, tag, title, comments_count, user_name, created_at, likes_count'
       )
       .order('board_id', { ascending: false })
+      .range((page - 1) * postsPerPage, page * postsPerPage - 1)
 
     if (currentTag !== null) {
       query = query.eq('tag', currentTag.name)
@@ -40,8 +64,9 @@ const Board = () => {
   }
 
   useEffect(() => {
+    getTotalPages()
     getBoardData()
-  }, [currentTag])
+  }, [currentTag, page])
 
   return (
     <PageLayout>
@@ -78,6 +103,12 @@ const Board = () => {
         </Button>
       </PostHeader>
       <BoardTable post={BoardData} />
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+        pageSize={pageGroupSize}
+      />
     </PageLayout>
   )
 }
