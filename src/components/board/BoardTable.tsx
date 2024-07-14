@@ -24,6 +24,7 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
           <Th $width="lg">작성자</Th>
           <Th $width="md">작성일</Th>
           <Th $width="md">추천수</Th>
+          <Th $width="md">조회수</Th>
         </tr>
       </Thead>
       <Tbody>
@@ -49,6 +50,7 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
                 : formatDate(new Date(item.created_at))}
             </WriteDate>
             <td>{item.likes_count > 9999 ? '9999+' : item.likes_count}</td>
+            <td>{item.views_count > 9999 ? '9999+' : item.views_count}</td>
           </tr>
         ))}
       </Tbody>

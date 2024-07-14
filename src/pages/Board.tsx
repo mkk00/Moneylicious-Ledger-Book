@@ -13,7 +13,7 @@ const Board = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const [currentTag, setCurrentTag] = useState<BoardProps | null>(null)
-  const [BoardData, setBoardData] = useState<BoardListProps[] | null>(null)
+  const [boardData, setBoardData] = useState<BoardListProps[] | null>(null)
 
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
@@ -41,7 +41,7 @@ const Board = () => {
     let query = supabase
       .from('board')
       .select(
-        'id, board_id, tag, title, content, comments_count, user_name, created_at, likes_count'
+        'id, board_id, tag, title, content, comments_count, user_name, created_at, likes_count, views_count'
       )
       .order('board_id', { ascending: false })
       .range((page - 1) * postsPerPage, page * postsPerPage - 1)
@@ -62,6 +62,30 @@ const Board = () => {
     } catch (err) {
       console.error(err)
     }
+  }
+
+  // const fetchViewCount = async (uuid: string) => {
+  //   const { data, error } = await supabase
+  //     .from('board')
+  //     .select('*')
+  //     .eq('id', uuid)
+  //     .single()
+
+  //   if (!error) {
+  //     await supabase
+  //       .from('board')
+  //       .update({
+  //         views_count: data.views_count + 1
+  //       })
+  //       .eq('id', uuid)
+
+  //     setBoardData(data)
+  //     console.log(boardData)
+  //   }
+  // }
+
+  const handleUpdate = () => {
+    getBoardData()
   }
 
   useEffect(() => {
@@ -95,16 +119,16 @@ const Board = () => {
           </List>
         ))}
       </CategoryList>
-      <Outlet />
+      <Outlet context={{ handleUpdate }} />
       <PostHeader>
-        <span>전체 {BoardData ? BoardData.length : 0}개</span>
+        <span>전체 {boardData ? boardData.length : 0}개</span>
         <Button
           type="button"
           onClick={() => navigate('/board/write')}>
           글작성
         </Button>
       </PostHeader>
-      <BoardTable post={BoardData} />
+      <BoardTable post={boardData} />
       <Pagination
         page={page}
         totalPages={totalPages}

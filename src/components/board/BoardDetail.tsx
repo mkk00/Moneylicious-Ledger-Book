@@ -3,12 +3,36 @@ import { useLocation } from 'react-router-dom'
 import { formatDate } from '@/utils/formatDate'
 import DOMPurify from 'isomorphic-dompurify'
 import { GoThumbsup } from 'react-icons/go'
+import { supabase } from '@/supabaseconfig'
+import { useEffect, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 
 const BoardDetail = () => {
+  const { handleUpdate } = useOutletContext<{ handleUpdate: () => void }>()
   const location = useLocation()
   const { item } = location.state || {}
+  const [viewsCount, setViewsCount] = useState(item.views_count)
 
-  console.log(item.content)
+  const fetchViewCount = async () => {
+    const { data, error } = await supabase
+      .from('board')
+      .update({
+        views_count: item.views_count + 1
+      })
+      .eq('id', item.id)
+      .select('views_count')
+
+    if (data) {
+      setViewsCount(data[0].views_count)
+      handleUpdate()
+    }
+
+    if (error) console.error(error)
+  }
+
+  useEffect(() => {
+    fetchViewCount()
+  }, [item])
 
   return (
     <Container>
@@ -23,6 +47,7 @@ const BoardDetail = () => {
         <Bottom>
           <div>작성 {item.user_name}</div>
           <CteatedAt>작성일 {formatDate(new Date(item.created_at))}</CteatedAt>
+          <div>조회 {viewsCount}</div>
         </Bottom>
       </Detailheader>
       {item?.content && (
