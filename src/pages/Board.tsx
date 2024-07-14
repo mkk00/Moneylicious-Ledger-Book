@@ -7,6 +7,7 @@ import BoardTable from '@/components/board/BoardTable'
 import { supabase } from '@/supabaseconfig'
 import { BoardProps, BoardListProps } from '@/interface/BoardProps'
 import Pagination from '@/components/common/Pagination'
+import { Outlet } from 'react-router-dom'
 
 const Board = () => {
   const navigate = useNavigate()
@@ -40,7 +41,7 @@ const Board = () => {
     let query = supabase
       .from('board')
       .select(
-        'board_id, tag, title, comments_count, user_name, created_at, likes_count'
+        'id, board_id, tag, title, content, comments_count, user_name, created_at, likes_count'
       )
       .order('board_id', { ascending: false })
       .range((page - 1) * postsPerPage, page * postsPerPage - 1)
@@ -94,6 +95,7 @@ const Board = () => {
           </List>
         ))}
       </CategoryList>
+      <Outlet />
       <PostHeader>
         <span>전체 {BoardData ? BoardData.length : 0}개</span>
         <Button

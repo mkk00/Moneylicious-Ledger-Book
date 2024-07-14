@@ -1,9 +1,18 @@
 import { formatDate } from '@/utils/formatDate'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import { BoardListProps } from '@/interface/BoardProps'
+import { NavLink } from 'react-router-dom'
 
 const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
   const today = new Date()
+  const { color } = useTheme()
+
+  const navActiveStyle = ({ isActive }: { isActive: boolean }) => ({
+    color: isActive ? color.main_dark : 'initial',
+    fontWeight: isActive ? 'bold' : 'normal',
+    textDecoration: isActive ? 'underline' : 'none',
+    textUnderlineOffset: '4px'
+  })
 
   return (
     <Table>
@@ -23,7 +32,15 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
             <td>{item.board_id}</td>
             <td>{item.tag}</td>
             <Title>
-              {item.title} <span>[{item.comments_count}]</span>
+              <NavLink
+                to={`/board/${item.board_id}`}
+                state={{ item }}
+                style={navActiveStyle}>
+                {item.title}
+                <span>
+                  {item.comments_count ? '[' + item.comments_count + ']' : null}
+                </span>
+              </NavLink>
             </Title>
             <Name>{item.user_name}</Name>
             <WriteDate>
