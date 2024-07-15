@@ -41,7 +41,7 @@ const Board = () => {
     let query = supabase
       .from('board')
       .select(
-        'id, board_id, tag, title, content, comments_count, user_name, created_at, likes_count, views_count'
+        'id, board_id, user_id, tag, title, content, comments_count, user_name, created_at, likes_count, views_count'
       )
       .order('board_id', { ascending: false })
       .range((page - 1) * postsPerPage, page * postsPerPage - 1)

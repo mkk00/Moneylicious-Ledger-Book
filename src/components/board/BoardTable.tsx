@@ -7,6 +7,10 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
   const today = new Date()
   const { color } = useTheme()
 
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const navActiveStyle = ({ isActive }: { isActive: boolean }) => ({
     color: isActive ? color.main_dark : 'initial',
     fontWeight: isActive ? 'bold' : 'normal',
@@ -32,14 +36,16 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
           <tr key={item.board_id}>
             <td>{item.board_id}</td>
             <td>{item.tag}</td>
-            <Title>
+            <Title onClick={handleScrollToTop}>
               <NavLink
                 to={`/board/${item.board_id}`}
                 state={{ item }}
                 style={navActiveStyle}>
                 {item.title}
                 <span>
-                  {item.comments_count ? '[' + item.comments_count + ']' : null}
+                  {item.comments_count
+                    ? ' [' + item.comments_count + ']'
+                    : null}
                 </span>
               </NavLink>
             </Title>

@@ -10,15 +10,15 @@ const Button = ({
   text: string
   type?: 'button' | 'submit'
   size?: 'small' | 'medium' | 'large'
-  onClick: (e: MouseEvent<HTMLButtonElement>) => void
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void
 }) => {
   return (
     <ButtonComponents
       type={type}
       size={size}
       onClick={e => {
-        e.preventDefault()
-        onClick(e)
+        type === 'button' && e.preventDefault()
+        onClick && onClick(e)
       }}>
       {text}
     </ButtonComponents>
@@ -39,4 +39,5 @@ const ButtonComponents = styled.button<{ size?: 'small' | 'medium' | 'large' }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 `

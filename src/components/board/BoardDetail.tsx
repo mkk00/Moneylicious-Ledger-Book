@@ -10,6 +10,7 @@ import useAuthStore from '@/store/useAuthStore'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
+import Comment from '@/components/board/Comment'
 
 const BoardDetail = () => {
   const { handleUpdate } = useOutletContext<{ handleUpdate: () => void }>()
@@ -99,46 +100,56 @@ const BoardDetail = () => {
   }, [item])
 
   return (
-    <Container>
-      <Detailheader>
-        <Top>
-          <Title>
-            {item.title}
-            {item.comments_count ? ' [' + item.comments_count + ']' : null}
-          </Title>
-          <Tag>#{item.tag}</Tag>
-        </Top>
-        <Bottom>
-          <div>작성 {item.user_name}</div>
-          <CteatedAt>작성일 {formatDate(new Date(item.created_at))}</CteatedAt>
-          <div>조회 {viewsCount}</div>
-        </Bottom>
-      </Detailheader>
-      {item?.content && (
-        <Content
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(String(item?.content))
-          }}
-        />
-      )}
-      <Button
-        $isLike={isLike}
-        onClick={handleLike}>
-        <GoThumbsup size={30} />
-        {likesCount}
-      </Button>
-      {isOpen('로그인') && (
-        <ModalPortal>
-          <LoginModal closeModal={() => closeModal('로그인')} />
-        </ModalPortal>
-      )}
-    </Container>
+    <>
+      <BoardContainer>
+        <Detailheader>
+          <Top>
+            <Title>
+              {item.title}
+              {item.comments_count ? ' [' + item.comments_count + ']' : null}
+            </Title>
+            <Tag>#{item.tag}</Tag>
+          </Top>
+          <Bottom>
+            <div>작성 {item.user_name}</div>
+            <CteatedAt>
+              작성일 {formatDate(new Date(item.created_at))}
+            </CteatedAt>
+            <div>조회 {viewsCount}</div>
+            <div>추천 {likesCount}</div>
+            <div>댓글 {likesCount}</div>
+          </Bottom>
+        </Detailheader>
+        {item?.content && (
+          <Content
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(String(item?.content))
+            }}
+          />
+        )}
+        <Button
+          $isLike={isLike}
+          onClick={handleLike}>
+          <GoThumbsup size={30} />
+          {likesCount}
+        </Button>
+        {isOpen('로그인') && (
+          <ModalPortal>
+            <LoginModal closeModal={() => closeModal('로그인')} />
+          </ModalPortal>
+        )}
+      </BoardContainer>
+      <Comment
+        boardData={item}
+        handleUpdate={handleUpdate}
+      />
+    </>
   )
 }
 
 export default BoardDetail
 
-const Container = styled.div`
+const BoardContainer = styled.div`
   margin: 50px 0;
   border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
 `
