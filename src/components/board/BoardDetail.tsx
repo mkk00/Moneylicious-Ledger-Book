@@ -6,12 +6,21 @@ import { GoThumbsup } from 'react-icons/go'
 import { supabase } from '@/supabaseconfig'
 import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
+import useAuthStore from '@/store/useAuthStore'
+import useModal from '@/hook/useModal'
+import ModalPortal from '@/components/modal/ModalPortal'
+import LoginModal from '@/components/modal/LoginModal'
 
 const BoardDetail = () => {
   const { handleUpdate } = useOutletContext<{ handleUpdate: () => void }>()
   const location = useLocation()
   const { item } = location.state || {}
-  const [viewsCount, setViewsCount] = useState(item.views_count)
+  const { userInfo } = useAuthStore()
+  const { isOpen, openModal, closeModal } = useModal()
+
+  const [viewsCount, setViewsCount] = useState<number>(item.views_count)
+  const [isLike, setIsLike] = useState(false)
+  const [likesCount, setLikesCount] = useState<number>(item.likes_count)
 
   const fetchViewCount = async () => {
     const { data, error } = await supabase
@@ -29,6 +38,61 @@ const BoardDetail = () => {
 
     if (error) console.error(error)
   }
+
+  const checkLiked = async () => {
+    if (!userInfo?.accessToken) return null
+    const { data } = await supabase
+      .from('likes')
+      .select('*')
+      .eq('board_id', item.id)
+      .eq('user_id', userInfo?.id)
+      .single()
+
+    if (data) {
+      setIsLike(true)
+    } else {
+      setIsLike(false)
+    }
+  }
+
+  const getLikesCount = async () => {
+    const { data } = await supabase
+      .from('board')
+      .select('likes_count')
+      .eq('id', item.id)
+      .single()
+
+    if (data) {
+      setLikesCount(data.likes_count)
+    }
+  }
+
+  const handleLike = async () => {
+    if (!userInfo?.accessToken) {
+      confirm('로그인이 필요한 서비스입니다.') && openModal('로그인')
+      return null
+    }
+    if (isLike) {
+      await supabase
+        .from('likes')
+        .delete()
+        .eq('board_id', item.id)
+        .eq('user_id', userInfo?.id)
+      setIsLike(false)
+    } else {
+      await supabase
+        .from('likes')
+        .insert({ board_id: item.id, user_id: userInfo?.id })
+      setIsLike(true)
+    }
+    getLikesCount()
+    handleUpdate()
+  }
+
+  useEffect(() => {
+    checkLiked()
+    getLikesCount()
+  }, [item.id, userInfo?.id, isLike])
 
   useEffect(() => {
     fetchViewCount()
@@ -57,9 +121,17 @@ const BoardDetail = () => {
           }}
         />
       )}
-      <Button>
+      <Button
+        $isLike={isLike}
+        onClick={handleLike}>
         <GoThumbsup size={30} />
+        {likesCount}
       </Button>
+      {isOpen('로그인') && (
+        <ModalPortal>
+          <LoginModal closeModal={() => closeModal('로그인')} />
+        </ModalPortal>
+      )}
     </Container>
   )
 }
@@ -138,16 +210,21 @@ const Content = styled.div`
   }
 `
 
-const Button = styled.button`
+const Button = styled.button<{ $isLike: boolean }>`
   width: 65px;
   height: 65px;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
   margin: 30px auto;
   border-radius: 100%;
   padding: 15px;
-  background-color: ${({ theme }) => theme.color.main_light};
+  background-color: ${({ theme, $isLike }) =>
+    $isLike ? theme.color.main_light : theme.gray.gray_100};
+  font-size: 0.7rem;
 
   & svg {
-    color: ${({ theme }) => theme.color.white};
+    color: ${({ theme, $isLike }) => ($isLike ? theme.color.white : 'initial')};
   }
 `
