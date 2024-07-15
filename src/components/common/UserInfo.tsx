@@ -9,12 +9,12 @@ import LoginModal from '@/components/modal/LoginModal'
 
 const UserInfo = () => {
   const navigate = useNavigate()
-  const { userInfo, isLogin } = useAuthStore()
+  const { userInfo } = useAuthStore()
   const { isOpen, openModal, closeModal } = useModal()
 
   return (
     <>
-      {isLogin ? (
+      {userInfo?.accessToken ? (
         <Profile userInfo={userInfo} />
       ) : (
         <AuthButtons>

@@ -15,7 +15,7 @@ const MyLoginInfo = () => {
   return (
     <>
       <ProfileBox>
-        {userInfo?.image_url ? (
+        {userInfo?.accessToken ? (
           <ProfileImage>
             <img
               src={userInfo.image_url}
@@ -46,7 +46,9 @@ const MyLoginInfo = () => {
         )}
         <UserInfo>
           <UserName>
-            {userInfo ? `${userInfo.username} 님! 반가워요` : 'Unkown User 님!'}
+            {userInfo?.accessToken
+              ? `${userInfo.username} 님! 반가워요`
+              : 'Unkown User 님!'}
           </UserName>
           {userInfo?.accessToken ? (
             <span>{userInfo.email}</span>
@@ -66,7 +68,7 @@ const MyLoginInfo = () => {
           )}
         </UserInfo>
         <Message>
-          {userInfo?.message
+          {userInfo?.accessToken
             ? userInfo.message
             : "서비스를 이용하시려면 '회원가입' 또는 '로그인'을 해주셔야 합니다."}
         </Message>
