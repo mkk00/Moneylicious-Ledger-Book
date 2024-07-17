@@ -54,6 +54,7 @@ const ProfileImage = styled.div`
   background-color: ${({ theme }) => theme.color.white};
   border-radius: 100%;
   padding: 2px;
+  overflow: hidden;
 
   img {
     width: 100%;

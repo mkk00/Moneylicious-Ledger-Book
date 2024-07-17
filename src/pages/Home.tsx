@@ -10,15 +10,15 @@ import { useResponsive } from '@/hook/useMediaQuery'
 const Home = () => {
   const selectedDate = useDateStore(state => state.selectedDate)
   const { userInfo } = useAuthStore()
-  const { isNotMobile } = useResponsive()
+  const { isDesktopOrLaptop } = useResponsive()
 
   return (
     <PageLayout>
       <ContendsSplitLayout
         left={<Calendar />}
-        center={selectedDate && userInfo ? <LedgerList /> : <></>}
-        right={isNotMobile && <MyLoginInfo />}
-        flex={userInfo ? [2, 1, 1] : [4, 1, 2]}
+        center={selectedDate && userInfo?.accessToken ? <LedgerList /> : <></>}
+        right={isDesktopOrLaptop && <MyLoginInfo />}
+        flex={userInfo?.accessToken ? [2, 1, 1] : [4, 1, 2]}
       />
     </PageLayout>
   )

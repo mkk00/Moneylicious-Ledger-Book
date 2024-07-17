@@ -4,23 +4,25 @@ import { useResponsive } from '@/hook/useMediaQuery'
 import Header from '@/components/common/Header'
 
 const PageLayout = ({ children }: { children: ReactNode }) => {
-  const { isNotMobile } = useResponsive()
+  const { isDesktopOrLaptop } = useResponsive()
   return (
-    <Container $isNotMobile={isNotMobile}>
+    <Container $isDesktopOrLaptop={isDesktopOrLaptop}>
       <Header />
-      <Main $isNotMobile={isNotMobile}>{children}</Main>
+      <Main $isDesktopOrLaptop={isDesktopOrLaptop}>{children}</Main>
     </Container>
   )
 }
 
 export default PageLayout
 
-const Container = styled.div<{ $isNotMobile: boolean }>`
-  width: ${({ $isNotMobile }) => ($isNotMobile ? '100vw' : 'inherit')};
+const Container = styled.div<{ $isDesktopOrLaptop: boolean }>`
+  width: ${({ $isDesktopOrLaptop }) =>
+    $isDesktopOrLaptop ? '100vw' : 'inherit'};
   height: auto;
 `
 
-const Main = styled.main<{ $isNotMobile: boolean }>`
-  width: ${({ $isNotMobile }) => ($isNotMobile ? '1200px' : '100%')};
+const Main = styled.main<{ $isDesktopOrLaptop: boolean }>`
+  width: ${({ $isDesktopOrLaptop }) =>
+    $isDesktopOrLaptop ? '1200px' : '100%'};
   margin: 80px auto;
 `

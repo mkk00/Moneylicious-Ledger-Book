@@ -49,7 +49,7 @@ const AddLedgerModal = ({
   const handleAddLedgerItem = async () => {
     try {
       const { data, error } = await supabase
-        .from('amountbook')
+        .from('ledger')
         .insert({
           user_id: userInfo?.id,
           created_at: selectedDate,
@@ -97,7 +97,7 @@ const AddLedgerModal = ({
   const handleEditLedgerItem = async () => {
     try {
       const { data, error } = await supabase
-        .from('amountbook')
+        .from('ledger')
         .update([
           {
             user_id: userInfo?.id,
@@ -124,7 +124,7 @@ const AddLedgerModal = ({
 
   const handleDeleteLedgerItem = async () => {
     const { error } = await supabase
-      .from('amountbook')
+      .from('ledger')
       .delete()
       .eq('id', editData?.id)
 

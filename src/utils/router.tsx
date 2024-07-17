@@ -4,6 +4,8 @@ import Home from '@/pages/Home'
 import Dashboard from '@/pages/Dashboard'
 import Management from '@/pages/Management'
 import Board from '@/pages/Board'
+import BoardDetail from '@/components/board/BoardDetail'
+import BoardWrite from '@/pages/BoardWrite'
 import Mypage from '@/pages/Mypage'
 import Signup from '@/pages/Signup'
 
@@ -22,7 +24,17 @@ export const routerList: RouteObject[] = [
   },
   {
     path: '/board',
-    element: <Board />
+    element: <Board />,
+    children: [
+      {
+        path: ':id',
+        element: <BoardDetail />
+      }
+    ]
+  },
+  {
+    path: '/board/write',
+    element: <BoardWrite />
   },
   {
     path: '/mypage',

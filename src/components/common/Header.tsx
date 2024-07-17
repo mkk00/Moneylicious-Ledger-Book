@@ -36,12 +36,12 @@ const Header = () => {
               message: data[0].message
             })
         }
-        error && alert(`헤더오류:${error.message}`)
+        error && alert(error.message)
       } catch (error) {
         console.error(error)
       }
     }
-    userInfo && getUserInfo()
+    userInfo?.accessToken && getUserInfo()
   }, [])
 
   return (

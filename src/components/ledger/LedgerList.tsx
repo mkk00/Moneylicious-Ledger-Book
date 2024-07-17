@@ -43,7 +43,7 @@ const LedgerList = () => {
     try {
       if (!selectedDate) return null
       const { data, error } = await supabase
-        .from('amountbook')
+        .from('ledger')
         .select('*')
         .eq('created_at_year', selectedDate?.getFullYear())
         .eq('created_at_month', selectedDate?.getMonth() + 1)
@@ -72,7 +72,7 @@ const LedgerList = () => {
   const getLedgerItemData = async (id: string) => {
     try {
       const { data, error } = await supabase
-        .from('amountbook')
+        .from('ledger')
         .select('*')
         .eq('id', id)
         .returns<LedgerDataProps[] | null>()

@@ -11,15 +11,18 @@ import { PiPlusThin } from 'react-icons/pi'
 
 const IconButton = ({
   type,
+  submit,
   onClick
 }: {
   type: 'add' | 'edit' | 'del' | 'expense' | 'income' | 'plus'
-  onClick: (e: MouseEvent<HTMLButtonElement>) => void
+  submit?: boolean
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void
 }) => {
   return (
     <Button
-      type={type}
-      onClick={e => onClick(e)}>
+      type={submit ? 'submit' : 'button'}
+      $buttontype={type}
+      onClick={e => onClick && onClick(e)}>
       {type === 'add' && <CiSaveDown1 size={24} />}
       {type === 'edit' && <CiEdit size={24} />}
       {type === 'del' && <CiEraser size={24} />}
@@ -33,15 +36,17 @@ const IconButton = ({
 export default IconButton
 
 const Button = styled.button<{
-  type: 'add' | 'edit' | 'del' | 'expense' | 'income' | 'plus'
+  $buttontype: 'add' | 'edit' | 'del' | 'expense' | 'income' | 'plus'
 }>`
-  width: ${({ type }) =>
-    type === 'del' || type === 'expense' || type === 'income'
+  width: ${({ $buttontype }) =>
+    $buttontype === 'del' ||
+    $buttontype === 'expense' ||
+    $buttontype === 'income'
       ? 'initial'
       : '100%'};
   border: 1px solid ${({ theme }) => theme.gray.gray_200};
   border-radius: 8px;
-  padding: ${({ type }) => (type === 'plus' ? '6px' : '15px')};
+  padding: ${({ $buttontype }) => ($buttontype === 'plus' ? '6px' : '15px')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,13 +54,13 @@ const Button = styled.button<{
 
   &:hover {
     color: ${({ theme }) => theme.color.white};
-    background-color: ${({ type, theme }) =>
-      type === 'del' || type === 'expense'
+    background-color: ${({ $buttontype, theme }) =>
+      $buttontype === 'del' || $buttontype === 'expense'
         ? theme.color.sub
         : theme.color.main_light};
     border: 1px solid
-      ${({ type, theme }) =>
-        type === 'del' || type === 'expense'
+      ${({ $buttontype, theme }) =>
+        $buttontype === 'del' || $buttontype === 'expense'
           ? theme.color.sub
           : theme.color.main_light};
   }

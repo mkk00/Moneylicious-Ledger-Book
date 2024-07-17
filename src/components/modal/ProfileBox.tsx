@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 const ProfileBox = () => {
   const navigate = useNavigate()
-  const { setLogout, setUserInfo } = useAuthStore()
+  const { userInfo, setLogout, setUserInfo } = useAuthStore()
 
   const handleLogOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -22,14 +22,18 @@ const ProfileBox = () => {
   }
   return (
     <Container>
-      <Button onClick={handleLogOut}>
-        <RiLogoutBoxLine size={20} />
-        로그아웃
-      </Button>
-      <Button onClick={() => navigate('/mypage')}>
-        <RiHomeSmile2Line size={20} />
-        마이페이지
-      </Button>
+      {userInfo?.accessToken && (
+        <>
+          <Button onClick={handleLogOut}>
+            <RiLogoutBoxLine size={20} />
+            로그아웃
+          </Button>
+          <Button onClick={() => navigate('/mypage')}>
+            <RiHomeSmile2Line size={20} />
+            마이페이지
+          </Button>
+        </>
+      )}
     </Container>
   )
 }

@@ -8,7 +8,7 @@ import { supabase } from '@/supabaseconfig'
 export const getTotalAmount = async (year: number, month: number) => {
   try {
     const { data, error } = await supabase
-      .from('amountbook')
+      .from('ledger')
       .select('type, amount, created_at_month, created_at_day')
       .eq('created_at_year', year)
       .eq('created_at_month', month + 1)

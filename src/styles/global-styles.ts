@@ -22,6 +22,12 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'NanumSquareRound', sans-serif;
     max-width: 100vw;
+    overflow: scroll;
+    -ms-overflow-style: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   * {
