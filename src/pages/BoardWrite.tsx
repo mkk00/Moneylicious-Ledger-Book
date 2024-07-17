@@ -11,11 +11,7 @@ import { useEffect, useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import useAuthStore from '@/store/useAuthStore'
 import { supabase } from '@/supabaseconfig'
-import {
-  BoardProps,
-  BoardTitleProps,
-  BoardListProps
-} from '@/interface/BoardProps'
+import { BoardProps, BoardTitleProps } from '@/interface/BoardProps'
 
 const BoardWrite = () => {
   const { userInfo } = useAuthStore()
