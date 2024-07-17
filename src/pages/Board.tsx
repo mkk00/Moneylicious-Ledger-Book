@@ -64,26 +64,6 @@ const Board = () => {
     }
   }
 
-  // const fetchViewCount = async (uuid: string) => {
-  //   const { data, error } = await supabase
-  //     .from('board')
-  //     .select('*')
-  //     .eq('id', uuid)
-  //     .single()
-
-  //   if (!error) {
-  //     await supabase
-  //       .from('board')
-  //       .update({
-  //         views_count: data.views_count + 1
-  //       })
-  //       .eq('id', uuid)
-
-  //     setBoardData(data)
-  //     console.log(boardData)
-  //   }
-  // }
-
   const handleUpdate = () => {
     getBoardData()
   }

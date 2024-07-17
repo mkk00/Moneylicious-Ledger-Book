@@ -3,9 +3,11 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
 const TextEditor = ({
-  setValues
+  setValues,
+  initialValue
 }: {
   setValues: Dispatch<SetStateAction<null | string>>
+  initialValue: string
 }) => {
   const modules = useMemo(() => {
     return {
@@ -32,6 +34,7 @@ const TextEditor = ({
     <ReactQuill
       modules={modules}
       style={editorStyle}
+      value={initialValue}
       onChange={setValues}
     />
   )

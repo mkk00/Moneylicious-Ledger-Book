@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { useLocation } from 'react-router-dom'
+import styled, { css } from 'styled-components'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { formatDate } from '@/utils/formatDate'
 import DOMPurify from 'isomorphic-dompurify'
 import { GoThumbsup } from 'react-icons/go'
@@ -16,12 +16,14 @@ const BoardDetail = () => {
   const { handleUpdate } = useOutletContext<{ handleUpdate: () => void }>()
   const location = useLocation()
   const { item } = location.state || {}
+  const navigate = useNavigate()
   const { userInfo } = useAuthStore()
   const { isOpen, openModal, closeModal } = useModal()
 
   const [viewsCount, setViewsCount] = useState<number>(item.views_count)
   const [isLike, setIsLike] = useState(false)
   const [likesCount, setLikesCount] = useState<number>(item.likes_count)
+  // const [isEdit, setIsEdit] = useState(false)
 
   const fetchViewCount = async () => {
     const { data, error } = await supabase
@@ -90,6 +92,34 @@ const BoardDetail = () => {
     handleUpdate()
   }
 
+  const deleteBoard = async () => {
+    const isConfirmed = confirm('게시글을 삭제하시겠습니까?')
+    if (isConfirmed)
+      try {
+        const { error } = await supabase
+          .from('board')
+          .delete()
+          .eq('id', item.id)
+
+        if (!error) {
+          handleUpdate()
+          navigate('/board')
+        }
+      } catch (error) {
+        console.error(error)
+      }
+  }
+
+  const updateBoard = async () => {
+    console.log(item)
+    navigate('/board/write', {
+      state: {
+        item,
+        isEdit: true
+      }
+    })
+  }
+
   useEffect(() => {
     checkLiked()
     getLikesCount()
@@ -111,13 +141,29 @@ const BoardDetail = () => {
             <Tag>#{item.tag}</Tag>
           </Top>
           <Bottom>
-            <div>작성 {item.user_name}</div>
-            <CteatedAt>
-              작성일 {formatDate(new Date(item.created_at))}
-            </CteatedAt>
-            <div>조회 {viewsCount}</div>
-            <div>추천 {likesCount}</div>
-            <div>댓글 {item.comments_count}</div>
+            <BoardInfo>
+              <div>작성 {item.user_name}</div>
+              <CteatedAt>
+                작성일 {formatDate(new Date(item.created_at))}
+              </CteatedAt>
+              <div>조회 {viewsCount}</div>
+              <div>추천 {likesCount}</div>
+              <div>댓글 {item.comments_count}</div>
+            </BoardInfo>
+            {item.user_id === userInfo?.id && (
+              <Control>
+                <button
+                  type="button"
+                  onClick={updateBoard}>
+                  수정
+                </button>
+                <button
+                  type="button"
+                  onClick={deleteBoard}>
+                  삭제
+                </button>
+              </Control>
+            )}
           </Bottom>
         </Detailheader>
         {item?.content && (
@@ -149,6 +195,12 @@ const BoardDetail = () => {
 
 export default BoardDetail
 
+const flexStyle = css`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`
+
 const BoardContainer = styled.div`
   margin: 50px 0;
   border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
@@ -157,22 +209,29 @@ const BoardContainer = styled.div`
 const Detailheader = styled.div`
   border-top: 1px solid ${({ theme }) => theme.gray.gray_200};
   border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
-  padding: 15px 10px;
+  padding: 20px 10px;
 `
 
 const Top = styled.span`
-  display: flex;
-  gap: 10px;
-  align-items: center;
+  ${flexStyle}
 `
 
 const Bottom = styled.div`
-  display: flex;
-  gap: 20px;
-  align-items: flex-end;
+  ${flexStyle}
+  justify-content: space-between;
+`
+
+const BoardInfo = styled.div`
+  ${flexStyle}
   color: ${({ theme }) => theme.gray.gray_400};
   font-size: 0.8rem;
   margin-top: 5px;
+`
+
+const Control = styled.div`
+  display: flex;
+  gap: 10px;
+  color: ${({ theme }) => theme.gray.gray_400};
 `
 
 const Title = styled.h3`
@@ -222,12 +281,11 @@ const Content = styled.div`
 `
 
 const Button = styled.button<{ $isLike: boolean }>`
+  ${flexStyle}
   width: 65px;
   height: 65px;
-  display: flex;
   flex-direction: column;
   gap: 3px;
-  align-items: center;
   margin: 30px auto;
   border-radius: 100%;
   padding: 15px;

@@ -3,31 +3,44 @@ import TextEditor from '@/components/textEditor/TextEditor'
 import PageLayout from '@/layout/PageLayout'
 import styled from 'styled-components'
 import { FormRow, Input } from '@/components/input/FormRow'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useResponsive } from '@/hook/useMediaQuery'
 import SelectBox from '@/components/input/CustomSelect'
 import { TAG_LIST } from '@/data/boardTagList'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import useAuthStore from '@/store/useAuthStore'
 import { supabase } from '@/supabaseconfig'
-import { BoardProps, BoardTitleProps } from '@/interface/BoardProps'
+import {
+  BoardProps,
+  BoardTitleProps,
+  BoardListProps
+} from '@/interface/BoardProps'
 
 const BoardWrite = () => {
   const { userInfo } = useAuthStore()
+  const location = useLocation()
   const navigate = useNavigate()
   const { isDesktopOrLaptop } = useResponsive()
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm<BoardTitleProps>()
 
+  const isEdit = location.state?.isEdit || false
+  const existingItem = location.state?.item || null
+
   const [selectTag, setSelectTag] = useState<BoardProps>(TAG_LIST[0])
-  const [values, setValues] = useState<string | null>(null)
+  const [values, setValues] = useState<string | null>(
+    isEdit ? existingItem.content : null
+  )
 
   const onSubmit: SubmitHandler<BoardTitleProps> = async boardData => {
-    const isConfirmed = confirm('게시글을 작성하시겠습니까?')
+    const isConfirmed = confirm(
+      isEdit ? '게시글을 수정하시겠습니까?' : '게시글을 작성하시겠습니까?'
+    )
     if (isConfirmed)
       try {
         const postData = {
@@ -39,13 +52,24 @@ const BoardWrite = () => {
           content: values
         }
 
-        const { data, error } = await supabase
-          .from('board')
-          .insert([postData])
-          .select()
+        let data, error
+        if (isEdit && existingItem) {
+          ;({ data, error } = await supabase
+            .from('board')
+            .update(postData)
+            .eq('id', existingItem.id)
+            .select())
+        } else {
+          ;({ data, error } = await supabase
+            .from('board')
+            .insert([postData])
+            .select())
+        }
 
         if (data) {
-          alert('게시글이 작성되었습니다.')
+          alert(
+            isEdit ? '게시글이 수정되었습니다.' : '게시글이 작성되었습니다.'
+          )
           navigate('/board')
         }
         error && alert(error.message)
@@ -53,6 +77,14 @@ const BoardWrite = () => {
         console.error(error)
       }
   }
+
+  useEffect(() => {
+    if (isEdit) {
+      setValue('title', existingItem.title)
+      const prevTag = TAG_LIST.find(tag => tag.name === existingItem.tag)
+      prevTag && setSelectTag(prevTag)
+    }
+  }, [isEdit, existingItem, setValue])
 
   return (
     <PageLayout>
@@ -75,7 +107,10 @@ const BoardWrite = () => {
             </label>
           </FormRow>
         </BoardTitle>
-        <TextEditor setValues={setValues} />
+        <TextEditor
+          setValues={setValues}
+          initialValue={values || ''}
+        />
         <ButtonContainer>
           <IconButton
             type="del"
