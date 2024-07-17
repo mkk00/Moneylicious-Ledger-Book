@@ -1,6 +1,6 @@
 import authValidation from '@/utils/authValidation'
 import useAuthForm from '@/hook/useAuthForm'
-import { AuthProps } from '@/interface/authProps'
+import { AuthProps } from '@/interface/AuthProps'
 import ModalLayout from '@/components/modal/ModalLayout'
 import styled from 'styled-components'
 import Button from '@/components/button/Button'

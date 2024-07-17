@@ -9,7 +9,7 @@ import NavigationBar from '@/components/common/NavigationBar'
 import { RxHamburgerMenu } from 'react-icons/rx'
 import SideBar from '@/components/common/SideBar'
 import useAuthStore from '@/store/useAuthStore'
-import { UserInfoProps } from '@/interface/authProps'
+import { UserInfoProps } from '@/interface/AuthProps'
 import { supabase } from '@/supabaseconfig'
 
 const Header = () => {

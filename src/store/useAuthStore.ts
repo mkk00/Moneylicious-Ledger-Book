@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { UserInfoProps } from '@/interface/authProps'
+import { UserInfoProps } from '@/interface/AuthProps'
 
 export interface UserAuthProps {
   isLogin: boolean
