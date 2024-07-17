@@ -117,7 +117,7 @@ const BoardDetail = () => {
             </CteatedAt>
             <div>조회 {viewsCount}</div>
             <div>추천 {likesCount}</div>
-            <div>댓글 {likesCount}</div>
+            <div>댓글 {item.comments_count}</div>
           </Bottom>
         </Detailheader>
         {item?.content && (

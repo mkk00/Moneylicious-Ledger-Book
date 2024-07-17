@@ -13,7 +13,7 @@ import useAuthStore from '@/store/useAuthStore'
 import { supabase } from '@/supabaseconfig'
 import { BoardProps, BoardTitleProps } from '@/interface/BoardProps'
 
-const Board = () => {
+const BoardWrite = () => {
   const { userInfo } = useAuthStore()
   const navigate = useNavigate()
   const { isDesktopOrLaptop } = useResponsive()
@@ -49,8 +49,8 @@ const Board = () => {
           navigate('/board')
         }
         error && alert(error.message)
-      } catch (err) {
-        console.error(err)
+      } catch (error) {
+        console.error(error)
       }
   }
 
@@ -92,7 +92,7 @@ const Board = () => {
   )
 }
 
-export default Board
+export default BoardWrite
 
 const Container = styled.form<{ $responsive: boolean }>`
   width: ${({ $responsive }) => ($responsive ? '50%' : '90%')};

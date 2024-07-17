@@ -7,12 +7,11 @@ interface BoardTitleProps {
   title: string
 }
 
-interface BoardListProps {
+interface BoardListProps extends BoardTitleProps {
   id: string
   board_id: number
   user_id: string
   tag: string
-  title: string
   content: string
   comments_count: number
   user_name: string
@@ -21,18 +20,23 @@ interface BoardListProps {
   views_count: number
 }
 
-interface CommentProps {
+interface CommentProps extends CommentTextProps {
   id: string
   board_id: string
   user_id: string
-  content: string
   created_at: Date
-  parent_id: string
+  parent_id: string | null
   is_author: boolean
+  userinfo: {
+    username: string
+    image_url: string
+    message: string
+  }
 }
 
 interface CommentTextProps {
   content: string
+  recontent: string
 }
 
 export type {

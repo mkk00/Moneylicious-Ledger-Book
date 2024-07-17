@@ -59,8 +59,8 @@ const Board = () => {
 
       if (data) setBoardData(data)
       if (error) alert(error.message)
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      console.error(error)
     }
   }
 
