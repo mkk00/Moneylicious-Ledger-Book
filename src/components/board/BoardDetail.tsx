@@ -23,7 +23,6 @@ const BoardDetail = () => {
   const [viewsCount, setViewsCount] = useState<number>(item.views_count)
   const [isLike, setIsLike] = useState(false)
   const [likesCount, setLikesCount] = useState<number>(item.likes_count)
-  // const [isEdit, setIsEdit] = useState(false)
 
   const fetchViewCount = async () => {
     const { data, error } = await supabase
