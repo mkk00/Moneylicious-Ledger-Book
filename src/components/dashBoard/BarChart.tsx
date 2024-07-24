@@ -1,4 +1,4 @@
-import { getMaxAmountRatio, MonthlyDataProps } from '@/utils/getLedgerStats'
+import { getMaxAmountRatio, AmountDataProps } from '@/utils/getLedgerStats'
 import { useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { displayAmount } from '@/utils/getLedgerStats'
@@ -9,8 +9,8 @@ const BarChart = ({
   maxAmount
 }: {
   type: string
-  monthlyData: MonthlyDataProps[]
-  maxAmount: MonthlyDataProps
+  monthlyData: AmountDataProps[]
+  maxAmount: AmountDataProps
 }) => {
   const thisMonth = new Date().getMonth() + 1
   const amoutType = type === '수입' ? 'income' : 'expense'
