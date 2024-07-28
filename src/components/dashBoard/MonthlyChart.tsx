@@ -27,6 +27,9 @@ const MonthlyChart = ({
 
   const monthlyData = getMonthlyTrend(ledgerData, selectYear)
   const maxAmount = findMaxAmount(monthlyData)
+
+  const isCurrentYear = selectYear === new Date().getFullYear()
+
   return (
     <Container>
       <SelectWrapper>
@@ -40,10 +43,11 @@ const MonthlyChart = ({
           setSelectItem={setType}
           items={typeList}
         />
-        월별 내역
+        {isCurrentYear ? '최근 6개월 내역' : '월별 내역'}
       </SelectWrapper>
       <BarChart
         type={type}
+        isCurrentYear={isCurrentYear}
         monthlyData={monthlyData}
         maxAmount={maxAmount}
       />

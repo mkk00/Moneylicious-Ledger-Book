@@ -5,22 +5,56 @@ import { displayAmount } from '@/utils/getLedgerStats'
 
 const BarChart = ({
   type,
+  isCurrentYear,
   monthlyData,
   maxAmount
 }: {
   type: string
+  isCurrentYear: boolean
   monthlyData: AmountDataProps[]
   maxAmount: AmountDataProps
 }) => {
   const thisMonth = new Date().getMonth() + 1
   const amoutType = type === '수입' ? 'income' : 'expense'
 
-  useEffect(() => {}, [type, amoutType])
+  let startMonth = thisMonth - 6
+  if (startMonth < 1) {
+    startMonth = 1
+  }
+
+  /** 조회 조건에 따라 최근 6개월 또는 전체 월 내역 조회
+   *  @description 선택 년도가 현재 년도일 경우 최근 6개월 내역을 조회
+   *  @description 현재 년도가 아닐 경우에는 전체 월 내역 조회
+   */
+  const filterMonthsData = (prevData: AmountDataProps[]) => {
+    const newData: AmountDataProps[] = []
+    for (let i = 0; i < 6; i++) {
+      const index = (startMonth + i) % 12
+      newData.push(prevData[index])
+    }
+
+    if (isCurrentYear) return newData
+    else return prevData
+  }
+
+  /** 조회 조건에 따라 최근 6개월 또는 전체 월 숫자만 조회
+   *  @description 선택 년도가 현재 년도일 경우 최근 6개월의 월 숫자 조회
+   *  @description 현재 년도가 아닐 경우에는 전체 월 숫자 조회
+   */
+  const filterMonthsIndex = (data: AmountDataProps[]) => {
+    const indexArr = Object.keys(data)
+    const filteredindex = indexArr.filter(item => {
+      if (isCurrentYear)
+        return Number(item) >= startMonth && Number(item) <= thisMonth - 1
+      else return item
+    })
+    return filteredindex
+  }
 
   return (
     <>
       <Container>
-        {monthlyData.map((item, idx) => (
+        {filterMonthsData(monthlyData).map((item, idx) => (
           <BarWrapper key={idx}>
             <Bar
               $type={type}
@@ -31,7 +65,7 @@ const BarChart = ({
         ))}
       </Container>
       <Container>
-        {Object.keys(monthlyData).map(item => (
+        {filterMonthsIndex(monthlyData).map(item => (
           <Month
             key={item}
             $thisMonth={thisMonth === Number(item) + 1}
