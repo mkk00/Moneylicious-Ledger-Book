@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import styled from 'styled-components'
+import { BiDownArrow, BiSolidDownArrow } from 'react-icons/bi'
 import { FormRow } from '@/components/input/FormRow'
 
 const SelectBox = <T extends number | string>({
@@ -16,7 +17,10 @@ const SelectBox = <T extends number | string>({
   const [isOn, setIsOn] = useState(false)
   return (
     <Container $width={width}>
-      <Select onClick={() => setIsOn(prev => !prev)}>{selectItem}</Select>
+      <Select onClick={() => setIsOn(prev => !prev)}>
+        {selectItem}{' '}
+        {isOn ? <BiSolidDownArrow size={10} /> : <BiDownArrow size={10} />}
+      </Select>
       {isOn && (
         <Option>
           {items.map(item => (
@@ -44,8 +48,17 @@ const Container = styled.div<{ $width?: string }>`
   font-size: 0.9rem;
 `
 
-const Select = styled(FormRow)`
-  text-align: center;
+const Select = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
+  padding-bottom: 10px;
+
+  & svg {
+    transform: translateY(-1px);
+  }
 `
 
 const Option = styled.ul`

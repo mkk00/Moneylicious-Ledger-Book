@@ -86,7 +86,7 @@ const Container = styled.div`
 
 const BarWrapper = styled.div`
   width: 25px;
-  height: 180px;
+  height: 150px;
   background-color: ${({ theme }) => theme.gray.gray_100};
   border-radius: 10px;
   position: relative;
@@ -94,7 +94,7 @@ const BarWrapper = styled.div`
 
 const Amount = styled.span`
   position: absolute;
-  top: -15px;
+  top: -20px;
   font-size: 0.7rem;
   left: 50%;
   transform: translateX(-50%);

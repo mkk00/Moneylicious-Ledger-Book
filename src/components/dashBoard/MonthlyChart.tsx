@@ -32,6 +32,7 @@ const MonthlyChart = ({
 
   return (
     <Container>
+      <Title>{isCurrentYear ? '최근 6개월 내역' : '월별 내역'}</Title>
       <SelectWrapper>
         <SelectBox
           selectItem={selectYear}
@@ -43,7 +44,6 @@ const MonthlyChart = ({
           setSelectItem={setType}
           items={typeList}
         />
-        {isCurrentYear ? '최근 6개월 내역' : '월별 내역'}
       </SelectWrapper>
       <BarChart
         type={type}
@@ -63,11 +63,15 @@ const Container = styled.div`
   align-items: center;
   gap: 15px;
 `
+const Title = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 15px;
+`
 
 const SelectWrapper = styled.div`
-  font-size: 1.2rem;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 20px 0;
+  margin-bottom: 30px;
 `
