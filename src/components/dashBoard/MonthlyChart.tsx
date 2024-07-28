@@ -6,13 +6,22 @@ import {
 } from '@/utils/getLedgerStats'
 import { LedgerProps } from '@/interface/LedgerProps'
 import styled from 'styled-components'
-import { useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import BarChart from '@/components/dashBoard/BarChart'
 
-const MonthlyChart = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
-  const [selectYear, setSelectYear] = useState(new Date().getFullYear())
-  const [type, setType] = useState('지출')
-
+const MonthlyChart = ({
+  ledgerData,
+  selectYear,
+  setSelectYear,
+  type,
+  setType
+}: {
+  ledgerData: LedgerProps[] | null
+  selectYear: number
+  setSelectYear: Dispatch<SetStateAction<number>>
+  type: string
+  setType: Dispatch<SetStateAction<string>>
+}) => {
   const yearList = getUniqueYears(ledgerData)
   const typeList = ['수입', '지출']
 
@@ -52,6 +61,7 @@ const Container = styled.div`
 `
 
 const SelectWrapper = styled.div`
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
   gap: 10px;
