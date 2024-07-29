@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import styled from 'styled-components'
 import { BiDownArrow, BiSolidDownArrow } from 'react-icons/bi'
-import { FormRow } from '@/components/input/FormRow'
 
 const SelectBox = <T extends number | string>({
   items,

@@ -1,5 +1,4 @@
 import { getMaxAmountRatio, AmountDataProps } from '@/utils/getLedgerStats'
-import { useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import { displayAmount } from '@/utils/getLedgerStats'
 
