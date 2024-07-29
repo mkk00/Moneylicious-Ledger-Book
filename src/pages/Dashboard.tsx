@@ -39,6 +39,7 @@ const Dashboard = () => {
         setType={setType}
       />
       <YearlyCell
+        type={type}
         ledgerData={ledgerData}
         selectYear={selectYear}
       />

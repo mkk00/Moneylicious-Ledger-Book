@@ -14,10 +14,25 @@ export const getUniqueYears = (data: LedgerProps[] | null) => {
   return Array.from(new Set(years))
 }
 
+export function extractNumbers(input: string) {
+  return Number(input.match(/\d+/g)?.join('') || '')
+}
+
+export const transUnitOfAmount = (amount: number) => {
+  if (amount < 10000) {
+    return `${amount.toLocaleString()} 원`
+  } else if (amount < 100000000) {
+    return `${(amount / 10000).toFixed(1)} 만원`
+  } else if (amount < 10000000000) {
+    return `${(amount / 100000000).toFixed(1)} 억원`
+  } else {
+    return `${(amount / 1000000000).toFixed(1)} 천억원`
+  }
+}
+
 //#region 월별 통계 내역
 /** 월별 총 금액
- *  @description 가계부 데이터에서 월별 수입지출
- *  @description 총 금액의 누적 금액을 배열로 저장합니다.
+ *  @description 가계부 데이터에서 월별 수입지출 총 금액을 배열로 저장합니다.
  */
 export const getMonthlyTrend = (
   ledgerData: LedgerProps[] | null,
@@ -89,5 +104,41 @@ export const displayAmount = (item: AmountDataProps, type: string) => {
     return item.income.toLocaleString()
   }
   return null
+}
+//#endregion
+
+//#region 년도별 통계 내역
+/** 년도별 총 급액
+ *  @description 가계부 데이터에서 년도별 수입지출 총 금액을 배열로 저장합니다.
+ */
+export const getYearlyTrend = (ledgerData: LedgerProps[] | null) => {
+  const initialData: Record<number, AmountDataProps> = {}
+
+  const yearlyData = ledgerData?.reduce((acc, entry) => {
+    const yearKey = entry.created_at_year
+
+    if (!acc[yearKey]) {
+      acc[yearKey] = { income: 0, expense: 0 }
+    }
+
+    if (entry.type === '수입') {
+      acc[yearKey].income += parseAmount(entry.amount)
+    } else {
+      acc[yearKey].expense += parseAmount(entry.amount)
+    }
+    return acc
+  }, initialData)
+
+  return Object.keys(yearlyData || {})
+    .map(yearStr => {
+      const year = parseInt(yearStr, 10)
+      const data = yearlyData ? yearlyData[year] : { income: 0, expense: 0 }
+      return {
+        year,
+        diff: data.income - data.expense,
+        ...data
+      }
+    })
+    .sort((a, b) => a.year - b.year)
 }
 //#endregion
