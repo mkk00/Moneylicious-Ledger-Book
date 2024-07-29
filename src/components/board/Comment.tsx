@@ -13,6 +13,9 @@ import { useEffect, useState } from 'react'
 import { formatDate } from '@/utils/formatDate'
 import IconButton from '../button/IconButton'
 import DefaultProfile from '../userInfo/DefaultProfile'
+import useModal from '@/hook/useModal'
+import ModalPortal from '@/components/modal/ModalPortal'
+import LoginModal from '@/components/modal/LoginModal'
 
 const Comment = ({
   boardData,
@@ -24,6 +27,8 @@ const Comment = ({
   const { userInfo } = useAuthStore()
   const { register, reset, handleSubmit, setValue } =
     useForm<CommentTextProps>()
+  const { isOpen, openModal, closeModal } = useModal()
+
   const [commentData, setCommentData] = useState<CommentProps[] | null>(null)
   const [isRecomment, setIsRecomment] = useState(false)
   const [recommentId, setRecommentId] = useState<string | null>(null)
@@ -76,6 +81,10 @@ const Comment = ({
   }
 
   const onSubmit: SubmitHandler<CommentTextProps> = async commentData => {
+    if (!userInfo?.accessToken) {
+      confirm('로그인이 필요한 서비스입니다.') && openModal('로그인')
+      return null
+    }
     if (isEdit && editingCommentId) {
       try {
         const { data, error } = await supabase
@@ -241,6 +250,11 @@ const Comment = ({
           </CommentWrite>
         )}
       </form>
+      {isOpen('로그인') && (
+        <ModalPortal>
+          <LoginModal closeModal={() => closeModal('로그인')} />
+        </ModalPortal>
+      )}
     </Container>
   )
 }

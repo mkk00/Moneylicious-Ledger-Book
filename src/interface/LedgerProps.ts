@@ -1,5 +1,19 @@
 import { FormValues } from '@/hook/useFormControl'
 
+export interface LedgerProps {
+  id: string
+  user_id: string
+  title: string
+  amount: string
+  category: string
+  means: string
+  memo: string
+  type: string
+  creaated_at: string
+  created_at_year: number
+  created_at_month: number
+  created_at_day: number
+}
 export interface CategoryProps {
   id: number
   category: string

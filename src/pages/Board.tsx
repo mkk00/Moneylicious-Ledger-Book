@@ -8,13 +8,19 @@ import { supabase } from '@/supabaseconfig'
 import { BoardProps, BoardListProps } from '@/interface/BoardProps'
 import Pagination from '@/components/common/Pagination'
 import { Outlet } from 'react-router-dom'
+import useModal from '@/hook/useModal'
+import ModalPortal from '@/components/modal/ModalPortal'
+import LoginModal from '@/components/modal/LoginModal'
+import useAuthStore from '@/store/useAuthStore'
 
 const Board = () => {
+  const { userInfo } = useAuthStore()
   const navigate = useNavigate()
   const theme = useTheme()
+  const { isOpen, openModal, closeModal } = useModal()
+
   const [currentTag, setCurrentTag] = useState<BoardProps | null>(null)
   const [boardData, setBoardData] = useState<BoardListProps[] | null>(null)
-
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
   const pageGroupSize = 10
@@ -104,7 +110,13 @@ const Board = () => {
         <span>전체 {boardData ? boardData.length : 0}개</span>
         <Button
           type="button"
-          onClick={() => navigate('/board/write')}>
+          onClick={() => {
+            if (!userInfo?.accessToken) {
+              confirm('로그인이 필요한 서비스입니다.') && openModal('로그인')
+              return null
+            }
+            navigate('/board/write')
+          }}>
           글작성
         </Button>
       </PostHeader>
@@ -115,6 +127,11 @@ const Board = () => {
         onPageChange={setPage}
         pageSize={pageGroupSize}
       />
+      {isOpen('로그인') && (
+        <ModalPortal>
+          <LoginModal closeModal={() => closeModal('로그인')} />
+        </ModalPortal>
+      )}
     </PageLayout>
   )
 }
