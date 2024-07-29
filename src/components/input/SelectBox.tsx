@@ -17,7 +17,7 @@ const SelectBox = <T extends number | string>({
   return (
     <Container $width={width}>
       <Select onClick={() => setIsOn(prev => !prev)}>
-        {selectItem}{' '}
+        {selectItem}
         {isOn ? <BiSolidDownArrow size={10} /> : <BiDownArrow size={10} />}
       </Select>
       {isOn && (

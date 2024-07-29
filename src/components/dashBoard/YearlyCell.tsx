@@ -132,6 +132,7 @@ const YearlyCell = ({
 
   return (
     <Container>
+      <Title>연도별 {type} 추세</Title>
       {extractNumbers(yearExpenseDiff) !== 0 && (
         <YearSummary $type={type}>
           {selectYear - 1} 년도보다
@@ -166,7 +167,15 @@ const Container = styled.div`
   margin-top: 70px;
 `
 
+const Title = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 15px;
+`
+
 const YearSummary = styled.div<{ $type?: string }>`
+  margin-bottom: 10px;
+
   & span {
     position: relative;
     display: inline-block;
