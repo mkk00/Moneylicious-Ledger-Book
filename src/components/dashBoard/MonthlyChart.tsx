@@ -13,12 +13,14 @@ const MonthlyChart = ({
   ledgerData,
   selectYear,
   setSelectYear,
+  setSelectMonth,
   type,
   setType
 }: {
   ledgerData: LedgerProps[] | null
   selectYear: number
   setSelectYear: Dispatch<SetStateAction<number>>
+  setSelectMonth: Dispatch<SetStateAction<number>>
   type: string
   setType: Dispatch<SetStateAction<string>>
 }) => {
@@ -32,7 +34,7 @@ const MonthlyChart = ({
 
   return (
     <Container>
-      <Title>{isCurrentYear ? '최근 6개월 내역' : '월별 내역'}</Title>
+      <Title>월별 {type} 추세</Title>
       <SelectWrapper>
         <SelectBox
           selectItem={selectYear}
@@ -48,6 +50,7 @@ const MonthlyChart = ({
       <BarChart
         type={type}
         isCurrentYear={isCurrentYear}
+        setSelectMonth={setSelectMonth}
         monthlyData={monthlyData}
         maxAmount={maxAmount}
       />
@@ -62,9 +65,10 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  margin-bottom: 50px;
 `
 const Title = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   font-weight: bold;
   margin-top: 15px;
 `

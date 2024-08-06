@@ -10,7 +10,7 @@ const color = {
   white: '#ffffff'
 }
 
-const gray = {
+export const gray = {
   gray_100: '#e8ebed',
   gray_200: '#c9cdd2',
   gray_300: '#9ea4aa',
