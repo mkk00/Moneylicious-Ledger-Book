@@ -4,6 +4,7 @@ import { supabase } from '@/supabaseconfig'
 import { useEffect, useState } from 'react'
 import { LedgerProps } from '@/interface/LedgerProps'
 import YearlyCell from '@/components/dashBoard/YearlyCell'
+import CategoryChart from '@/components/dashBoard/CategoryChart'
 
 const Dashboard = () => {
   const [ledgerData, setLedgerData] = useState<LedgerProps[] | null>(null)
@@ -43,6 +44,7 @@ const Dashboard = () => {
         ledgerData={ledgerData}
         selectYear={selectYear}
       />
+      <CategoryChart ledgerData={ledgerData} />
     </PageLayout>
   )
 }

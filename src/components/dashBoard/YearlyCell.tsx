@@ -20,7 +20,6 @@ const YearlyCell = ({
 }) => {
   const theme = useTheme()
   const yearlyData = getYearlyTrend(ledgerData)
-  console.log(yearlyData)
 
   const currYearData = yearlyData.find(data => data.year === selectYear)
   const prevYearData = yearlyData.find(data => data.year === selectYear - 1)
@@ -46,7 +45,7 @@ const YearlyCell = ({
       ]
     }
   ]
-  console.log(yearExpenseDiff.match(/\d+/g)?.join(''))
+
   const data = {
     categories: [selectYear - 1, selectYear],
     series: series
