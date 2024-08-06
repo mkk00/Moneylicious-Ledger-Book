@@ -3,9 +3,12 @@ import '@toast-ui/chart/dist/toastui-chart.min.css'
 import { PieChart } from '@toast-ui/react-chart'
 import {
   getYearlyCategoryTrend,
-  transUnitOfAmount,
-  getUniqueYears
+  getMonthlyCategoryTrend,
+  getUniqueYears,
+  TypeProps,
+  MonthDataProps
 } from '@/utils/getLedgerStats'
+import { pieChartOptions } from '@/data/chartOptionsData'
 import { LedgerProps } from '@/interface/LedgerProps'
 import { useEffect, useState } from 'react'
 import SelectBox from '@/components/input/SelectBox'
@@ -21,13 +24,21 @@ interface ChartData {
 }
 
 const CategoryChart = ({
-  ledgerData
+  ledgerData,
+  monthlySelectYear,
+  selectMonth = null,
+  isSelect
 }: {
   ledgerData: LedgerProps[] | null
+  monthlySelectYear?: number
+  selectMonth?: number | null
+  isSelect: boolean
 }) => {
   const [isLoading, setIsLoading] = useState(true)
 
-  const [selectYear, setSelectYear] = useState(new Date().getFullYear())
+  const [yearlySelectYear, setyearlySelectYear] = useState(
+    new Date().getFullYear()
+  )
   const [type, setType] = useState('지출')
   const yearList = getUniqueYears(ledgerData)
   const typeList = ['수입', '지출']
@@ -40,20 +51,41 @@ const CategoryChart = ({
   const [dataNotFound, setDataNotFound] = useState(false)
 
   const loadChartData = () => {
-    const data = getYearlyCategoryTrend(ledgerData, selectYear)
-    const yearData = data?.[selectYear]
+    const yearData = getYearlyCategoryTrend(ledgerData, yearlySelectYear)
+    let data = yearData?.[yearlySelectYear]
+    let monthData: MonthDataProps | undefined | null = null
 
-    const getSeriesData = () => {
+    if (monthlySelectYear && selectMonth) {
+      monthData = getMonthlyCategoryTrend(
+        ledgerData,
+        monthlySelectYear,
+        selectMonth
+      )
+      if (
+        !monthData ||
+        !monthData[monthlySelectYear] ||
+        !monthData[monthlySelectYear][selectMonth]
+      ) {
+        setDataNotFound(true)
+        setChartData(null)
+        setIsLoading(false)
+        data = undefined
+        return
+      }
+      data = monthData?.[monthlySelectYear][selectMonth]
+    }
+
+    const getSeriesData = (data: TypeProps | undefined) => {
       if (type === '수입')
-        return yearData?.income
-          ? Object.entries(yearData.income).map(([key, value]) => ({
+        return data?.income
+          ? Object.entries(data.income).map(([key, value]) => ({
               name: key,
               data: value
             }))
           : []
       if (type === '지출')
-        return yearData?.expense
-          ? Object.entries(yearData.expense).map(([key, value]) => ({
+        return data?.expense
+          ? Object.entries(data.expense).map(([key, value]) => ({
               name: key,
               data: value
             }))
@@ -61,13 +93,13 @@ const CategoryChart = ({
       return []
     }
 
-    const seriesData = getSeriesData()
+    const seriesData = getSeriesData(data)
     setChartData({
       categories: [type],
       series: seriesData
     })
 
-    if (seriesData.length === 0) {
+    if (seriesData.length === 0 || data === undefined) {
       setDataNotFound(true)
       setChartData(null)
     } else {
@@ -78,38 +110,6 @@ const CategoryChart = ({
       })
     }
     setIsLoading(false)
-  }
-
-  const chartOptions = {
-    legend: {
-      visible: false
-    },
-    series: {
-      dataLabels: {
-        visible: true,
-        anchor: 'outer',
-        pieSeriesName: { visible: true }
-      }
-    },
-    exportMenu: {
-      visible: false
-    },
-    tooltip: {
-      offsetX: -80,
-      offsetY: -90,
-      formatter: (value: number) => {
-        return transUnitOfAmount(value)
-      }
-    },
-    lang: {
-      loData: '데이터가 없습니다.'
-    },
-    theme: {
-      chart: {
-        fontFamily: 'NanumSquareRound',
-        fontSize: 16
-      }
-    }
   }
 
   const containerStyle = {
@@ -125,31 +125,43 @@ const CategoryChart = ({
     setIsLoading(true)
     setDataNotFound(false)
     loadChartData()
-  }, [selectYear, type, isLoading, ledgerData])
+  }, [
+    monthlySelectYear,
+    yearlySelectYear,
+    selectMonth,
+    type,
+    isLoading,
+    ledgerData
+  ])
 
   return (
     <Container>
       <Title>
-        카테고리별 {selectYear}년 {type} 내역 비율
+        카테고리별 {type} 비율
+        {selectMonth && chartData && ` (${selectMonth}월)`}
       </Title>
-      <SelectWrapper>
-        <SelectBox
-          selectItem={selectYear}
-          setSelectItem={setSelectYear}
-          items={yearList}
-        />
-        <SelectBox
-          selectItem={type}
-          setSelectItem={setType}
-          items={typeList}
-        />
-      </SelectWrapper>
-      {dataNotFound && !isLoading && <span>데이터가 없습니다.</span>}
-      {!isLoading && !dataNotFound && (
+      {isSelect && (
+        <SelectWrapper>
+          <SelectBox
+            selectItem={yearlySelectYear}
+            setSelectItem={setyearlySelectYear}
+            items={yearList}
+          />
+          <SelectBox
+            selectItem={type}
+            setSelectItem={setType}
+            items={typeList}
+          />
+        </SelectWrapper>
+      )}
+      {dataNotFound && !isLoading && !chartData && (
+        <NoData>데이터가 없습니다.</NoData>
+      )}
+      {!isLoading && !dataNotFound && chartData && (
         <Wrapper>
           <PieChart
             data={chartData}
-            options={chartOptions}
+            options={pieChartOptions}
             style={containerStyle}
           />
         </Wrapper>
@@ -164,14 +176,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  span {
-    color: ${({ theme }) => theme.gray.gray_300};
-  }
 `
 
 const Title = styled.div`
-  font-size: 1.7rem;
-  margin-bottom: 15px;
+  font-size: 1.1rem;
   font-weight: bold;
 `
 
@@ -179,7 +187,13 @@ const SelectWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 30px;
+  margin-top: 15px;
+`
+
+const NoData = styled.span`
+  margin-top: 40px;
+  margin-bottom: 50px;
+  color: ${({ theme }) => theme.gray.gray_300};
 `
 
 const Wrapper = styled.div`

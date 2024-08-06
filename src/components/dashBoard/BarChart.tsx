@@ -1,34 +1,32 @@
 import { getMaxAmountRatio, AmountDataProps } from '@/utils/getLedgerStats'
 import styled, { css } from 'styled-components'
 import { displayAmount } from '@/utils/getLedgerStats'
+import { Dispatch, SetStateAction } from 'react'
 
 const BarChart = ({
   type,
   isCurrentYear,
   monthlyData,
-  maxAmount
+  maxAmount,
+  setSelectMonth
 }: {
   type: string
   isCurrentYear: boolean
   monthlyData: AmountDataProps[]
   maxAmount: AmountDataProps
+  setSelectMonth: Dispatch<SetStateAction<number>>
 }) => {
   const thisMonth = new Date().getMonth() + 1
   const amoutType = type === '수입' ? 'income' : 'expense'
 
-  let startMonth = thisMonth - 6
-  if (startMonth < 1) {
-    startMonth = 1
-  }
-
-  /** 조회 조건에 따라 최근 6개월 또는 전체 월 내역 조회
-   *  @description 선택 년도가 현재 년도일 경우 최근 6개월 내역을 조회
+  /** 조회 조건에 따라 현재 월까지의 내역 또는 전체 월 내역 조회
+   *  @description 선택 년도가 현재 년도일 경우 현재 월까지의 내역을 조회
    *  @description 현재 년도가 아닐 경우에는 전체 월 내역 조회
    */
   const filterMonthsData = (prevData: AmountDataProps[]) => {
     const newData: AmountDataProps[] = []
-    for (let i = 0; i < 6; i++) {
-      const index = (startMonth + i) % 12
+    for (let i = 0; i < thisMonth; i++) {
+      const index = i % 12
       newData.push(prevData[index])
     }
 
@@ -36,15 +34,15 @@ const BarChart = ({
     else return prevData
   }
 
-  /** 조회 조건에 따라 최근 6개월 또는 전체 월 숫자만 조회
-   *  @description 선택 년도가 현재 년도일 경우 최근 6개월의 월 숫자 조회
+  /** 조회 조건에 따라 현재 월까지의 내역 또는 전체 월 숫자만 조회
+   *  @description 선택 년도가 현재 년도일 경우 현재 월까지의 월 숫자 조회
    *  @description 현재 년도가 아닐 경우에는 전체 월 숫자 조회
    */
   const filterMonthsIndex = (data: AmountDataProps[]) => {
     const indexArr = Object.keys(data)
     const filteredindex = indexArr.filter(item => {
       if (isCurrentYear)
-        return Number(item) >= startMonth && Number(item) <= thisMonth - 1
+        return Number(item) >= 0 && Number(item) <= thisMonth - 1
       else return item
     })
     return filteredindex
@@ -57,7 +55,10 @@ const BarChart = ({
           <BarWrapper key={idx}>
             <Bar
               $type={type}
-              height={getMaxAmountRatio(amoutType, item, maxAmount)}>
+              height={getMaxAmountRatio(amoutType, item, maxAmount)}
+              onClick={() =>
+                setSelectMonth(Number(filterMonthsIndex(monthlyData)[idx]) + 1)
+              }>
               <Amount>{displayAmount(item, amoutType)}</Amount>
             </Bar>
           </BarWrapper>

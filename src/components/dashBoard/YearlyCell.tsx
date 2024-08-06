@@ -1,7 +1,6 @@
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 import {
   getYearlyTrend,
-  findMaxAmount,
   transUnitOfAmount,
   extractNumbers,
   getUniqueYears
@@ -11,9 +10,9 @@ import '@toast-ui/chart/dist/toastui-chart.min.css'
 import { LineChart } from '@toast-ui/react-chart'
 import SelectBox from '@/components/input/SelectBox'
 import { useState } from 'react'
+import { lineChartOptions } from '@/data/chartOptionsData'
 
 const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
-  const theme = useTheme()
   const yearlyData = getYearlyTrend(ledgerData)
 
   const [selectYear, setSelectYear] = useState(new Date().getFullYear())
@@ -51,79 +50,6 @@ const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
     series: series
   }
 
-  const options = {
-    series: {
-      spline: true,
-      eventDetectType: 'grouped'
-    },
-    xAxis: {
-      label: {
-        formatter: (value: number) => {
-          return `${value}년도`
-        }
-      },
-      pointOnColumn: true,
-      margin: 10
-    },
-    yAxis: {
-      label: {
-        formatter: (value: string) => {
-          return transUnitOfAmount(Number(value))
-        }
-      },
-      margin: 10
-    },
-    lang: {
-      loData: '데이터가 없습니다.'
-    },
-    legend: {
-      visible: false
-    },
-    tooltip: {
-      offsetX: -80,
-      offsetY: -90,
-      formatter: (value: number) => {
-        return transUnitOfAmount(value)
-      }
-    },
-    scale: {
-      min: 0,
-      max:
-        type === '지출'
-          ? findMaxAmount(yearlyData).expense
-          : findMaxAmount(yearlyData).income
-    },
-    plot: {
-      visible: false
-    },
-    exportMenu: {
-      visible: false
-    },
-    theme: {
-      chart: {
-        fontFamily: 'NanumSquareRound',
-        fontSize: 16
-      },
-      series: {
-        lineWidth: 5,
-        colors: [theme.gray.gray_400]
-      },
-      yAxis: {
-        width: 1,
-        color: theme.gray.gray_300
-      },
-      xAxis: {
-        width: 1,
-        color: theme.gray.gray_300
-      },
-      legend: {
-        label: {
-          fontSize: 16
-        }
-      }
-    }
-  }
-
   const containerStyle = {
     width: '350px',
     height: '250px'
@@ -157,20 +83,20 @@ const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
                 ? ' 수입 증가'
                 : ' 수입 감소'}
           </YearSummary>
-          {extractNumbers(yearExpenseDiff) === 0 && (
-            <NoData>데이터가 없습니다.</NoData>
-          )}
+          <Wrapper>
+            {ledgerData && (
+              <LineChart
+                data={data}
+                options={lineChartOptions}
+                style={containerStyle}
+              />
+            )}
+          </Wrapper>
         </>
       )}
-      <Wrapper>
-        {ledgerData && (
-          <LineChart
-            data={data}
-            options={options}
-            style={containerStyle}
-          />
-        )}
-      </Wrapper>
+      {extractNumbers(yearExpenseDiff) === 0 && (
+        <NoData>데이터가 없습니다.</NoData>
+      )}
     </Container>
   )
 }
@@ -179,15 +105,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-top: 70px;
+  gap: 15px;
+  margin-top: 20px;
   margin-bottom: 20px;
 `
 
 const Title = styled.div`
   font-size: 1.7rem;
   font-weight: bold;
-  margin-bottom: 15px;
 `
 
 const SelectWrapper = styled.div`

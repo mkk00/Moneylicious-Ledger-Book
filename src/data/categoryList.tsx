@@ -7,8 +7,7 @@ import {
   PiHandCoins,
   PiHandHeart,
   PiWallet,
-  PiStackOverflowLogo,
-  PiBuildings
+  PiStackOverflowLogo
 } from 'react-icons/pi'
 import { GiHealthPotion } from 'react-icons/gi'
 import { HiOutlineReceiptTax } from 'react-icons/hi'
@@ -129,7 +128,7 @@ export const CATEGORY_LIST = [
   },
   {
     id: 20,
-    category: '기타',
+    category: '기타(지출)',
     icon: <IoEllipsisHorizontal size={28} />
   }
 ]
@@ -162,17 +161,12 @@ export const INCOME_LIST = [
   },
   {
     id: 5,
-    category: '보험',
-    icon: <PiBuildings size={28} />
-  },
-  {
-    id: 6,
     category: '포인트',
     icon: <PiStackOverflowLogo size={28} />
   },
   {
-    id: 7,
-    category: '기타',
+    id: 6,
+    category: '기타(수입)',
     icon: <IoEllipsisHorizontal size={28} />
   }
 ]

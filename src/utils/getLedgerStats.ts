@@ -22,11 +22,14 @@ export const transUnitOfAmount = (amount: number) => {
   if (amount < 10000) {
     return `${amount.toLocaleString()} 원`
   } else if (amount < 100000000) {
-    return `${(amount / 10000).toFixed(1)} 만원`
+    const value = (amount / 10000).toFixed(1)
+    return `${value.endsWith('.0') ? value.slice(0, -2) : value} 만원`
   } else if (amount < 10000000000) {
-    return `${(amount / 100000000).toFixed(1)} 억원`
+    const value = (amount / 100000000).toFixed(1)
+    return `${value.endsWith('.0') ? value.slice(0, -2) : value} 억원`
   } else {
-    return `${(amount / 1000000000).toFixed(1)} 천억원`
+    const value = (amount / 1000000000).toFixed(1)
+    return `${value.endsWith('.0') ? value.slice(0, -2) : value} 천억원`
   }
 }
 
@@ -167,7 +170,7 @@ interface MonthProps {
   [month: number]: TypeProps
 }
 
-interface MonthDataProps {
+export interface MonthDataProps {
   [year: number]: MonthProps
 }
 
@@ -189,6 +192,17 @@ const filteredCategoryData = (
       month !== undefined ? month === item.created_at_month : true
     return yearCond && monthCond
   })
+}
+
+export const filteredMaxMonth = (
+  ledgerData: LedgerProps[] | null,
+  year: number
+) => {
+  const filteredMonth = filteredCategoryData(ledgerData, year)?.map(
+    item => item.created_at_month
+  )
+  if (filteredMonth) return Math.max.apply(null, filteredMonth)
+  else return null
 }
 
 /**
@@ -255,13 +269,6 @@ export const getMonthlyCategoryTrend = (
     }
     if (!acc[yearKey][monthKey]) {
       acc[yearKey][monthKey] = { income: {}, expense: {} }
-    }
-    if (
-      !acc[yearKey][monthKey].income[category] ||
-      !acc[yearKey][monthKey].expense[category]
-    ) {
-      acc[yearKey][monthKey].income[category] = 0
-      acc[yearKey][monthKey].expense[category] = 0
     }
 
     if (type === '수입') {
