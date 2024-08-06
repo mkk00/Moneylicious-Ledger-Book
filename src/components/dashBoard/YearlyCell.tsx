@@ -3,23 +3,23 @@ import {
   getYearlyTrend,
   findMaxAmount,
   transUnitOfAmount,
-  extractNumbers
+  extractNumbers,
+  getUniqueYears
 } from '@/utils/getLedgerStats'
 import { LedgerProps } from '@/interface/LedgerProps'
 import '@toast-ui/chart/dist/toastui-chart.min.css'
 import { LineChart } from '@toast-ui/react-chart'
+import SelectBox from '@/components/input/SelectBox'
+import { useState } from 'react'
 
-const YearlyCell = ({
-  type,
-  ledgerData,
-  selectYear
-}: {
-  type: string
-  ledgerData: LedgerProps[] | null
-  selectYear: number
-}) => {
+const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
   const theme = useTheme()
   const yearlyData = getYearlyTrend(ledgerData)
+
+  const [selectYear, setSelectYear] = useState(new Date().getFullYear())
+  const [type, setType] = useState('지출')
+  const yearList = getUniqueYears(ledgerData)
+  const typeList = ['수입', '지출']
 
   const currYearData = yearlyData.find(data => data.year === selectYear)
   const prevYearData = yearlyData.find(data => data.year === selectYear - 1)
@@ -132,18 +132,35 @@ const YearlyCell = ({
   return (
     <Container>
       <Title>연도별 {type} 추세</Title>
+      <SelectWrapper>
+        <SelectBox
+          selectItem={selectYear}
+          setSelectItem={setSelectYear}
+          items={yearList}
+        />
+        <SelectBox
+          selectItem={type}
+          setSelectItem={setType}
+          items={typeList}
+        />
+      </SelectWrapper>
       {extractNumbers(yearExpenseDiff) !== 0 && (
-        <YearSummary $type={type}>
-          {selectYear - 1} 년도보다
-          <span>{type === '지출' ? yearExpenseDiff : yearIncomeDiff}</span>
-          {type === '지출'
-            ? extractNumbers(yearExpenseDiff) > 0
-              ? ' 더 지출'
-              : ' 덜 지출'
-            : extractNumbers(yearIncomeDiff) > 0
-              ? ' 수입 증가'
-              : ' 수입 감소'}
-        </YearSummary>
+        <>
+          <YearSummary $type={type}>
+            {selectYear - 1} 년도보다
+            <span>{type === '지출' ? yearExpenseDiff : yearIncomeDiff}</span>
+            {type === '지출'
+              ? extractNumbers(yearExpenseDiff) > 0
+                ? ' 더 지출'
+                : ' 덜 지출'
+              : extractNumbers(yearIncomeDiff) > 0
+                ? ' 수입 증가'
+                : ' 수입 감소'}
+          </YearSummary>
+          {extractNumbers(yearExpenseDiff) === 0 && (
+            <NoData>데이터가 없습니다.</NoData>
+          )}
+        </>
       )}
       <Wrapper>
         {ledgerData && (
@@ -164,12 +181,25 @@ const Container = styled.div`
   align-items: center;
   gap: 10px;
   margin-top: 70px;
+  margin-bottom: 20px;
 `
 
 const Title = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   font-weight: bold;
-  margin-top: 15px;
+  margin-bottom: 15px;
+`
+
+const SelectWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+`
+
+const NoData = styled.span`
+  color: ${({ theme }) => theme.gray.gray_300};
+  margin-bottom: 50px;
 `
 
 const YearSummary = styled.div<{ $type?: string }>`

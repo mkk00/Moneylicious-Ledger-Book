@@ -165,14 +165,14 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   span {
-    text-align: center;
     color: ${({ theme }) => theme.gray.gray_300};
   }
 `
 
 const Title = styled.div`
-  font-size: 1.1rem;
+  font-size: 1.7rem;
   margin-bottom: 15px;
+  font-weight: bold;
 `
 
 const SelectWrapper = styled.div`
