@@ -55,15 +55,11 @@ const Dashboard = () => {
       />
       <CategoryChart
         ledgerData={ledgerData}
-        monthlySelectYear={selectYear}
         selectMonth={selectMonth}
-        isSelect={false}
+        setSelectMonth={setSelectMonth}
       />
       <YearlyCell ledgerData={ledgerData} />
-      <CategoryChart
-        ledgerData={ledgerData}
-        isSelect={true}
-      />
+      <CategoryChart ledgerData={ledgerData} />
       {isOpen('로그인') && (
         <ModalPortal>
           <LoginModal closeModal={() => closeModal('로그인')} />

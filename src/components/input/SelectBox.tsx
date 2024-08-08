@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { BiDownArrow, BiSolidDownArrow } from 'react-icons/bi'
 
@@ -14,8 +14,27 @@ const SelectBox = <T extends number | string>({
   width?: string
 }) => {
   const [isOn, setIsOn] = useState(false)
+  const selectBoxRef = useRef<HTMLDivElement>(null)
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (
+      selectBoxRef.current &&
+      !selectBoxRef.current.contains(event.target as Node)
+    ) {
+      setIsOn(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick)
+    }
+  }, [])
   return (
-    <Container $width={width}>
+    <Container
+      ref={selectBoxRef}
+      $width={width}>
       <Select onClick={() => setIsOn(prev => !prev)}>
         {selectItem}
         {isOn ? <BiSolidDownArrow size={10} /> : <BiDownArrow size={10} />}
@@ -62,6 +81,8 @@ const Select = styled.div`
 
 const Option = styled.ul`
   width: 100%;
+  max-height: 285px;
+  overflow-y: auto;
   position: absolute;
   left: 0;
   text-align: center;
@@ -70,6 +91,11 @@ const Option = styled.ul`
   border-radius: 6px;
   background-color: ${({ theme }) => theme.color.white};
   z-index: 1;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
 `
 
 const Li = styled.li`
