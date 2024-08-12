@@ -67,6 +67,7 @@ const Container = styled.div`
   gap: 15px;
   margin-bottom: 50px;
 `
+
 const Title = styled.div`
   font-size: 1.7rem;
   font-weight: bold;

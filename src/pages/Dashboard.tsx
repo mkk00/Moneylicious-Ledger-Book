@@ -9,6 +9,7 @@ import useAuthStore from '@/store/useAuthStore'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
+import Summary from '@/components/dashBoard/Summary'
 
 const Dashboard = () => {
   const { userInfo } = useAuthStore()
@@ -45,6 +46,7 @@ const Dashboard = () => {
 
   return (
     <PageLayout>
+      <Summary ledgerData={ledgerData} />
       <MonthlyChart
         ledgerData={ledgerData}
         selectYear={selectYear}
