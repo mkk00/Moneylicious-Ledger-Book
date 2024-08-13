@@ -1,13 +1,12 @@
 import styled from 'styled-components'
 import '@toast-ui/chart/dist/toastui-chart.min.css'
 import { PieChart } from '@toast-ui/react-chart'
+import { getUniqueYears } from '@/utils/getLedgerUtils'
 import {
   getYearlyCategoryTrend,
-  getMonthlyCategoryTrend,
-  getUniqueYears,
-  TypeProps,
-  MonthDataProps
-} from '@/utils/getLedgerStats'
+  getMonthlyCategoryTrend
+} from '@/utils/filterLedgerCategory'
+import { TypeProps, MonthDataProps } from '@/interface/DashBoardProps'
 import { pieChartOptions } from '@/data/chartOptionsData'
 import { LedgerProps } from '@/interface/LedgerProps'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'

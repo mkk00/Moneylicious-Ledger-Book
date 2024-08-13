@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import SummaryCard from './SummaryCard'
 import { LedgerProps } from '@/interface/LedgerProps'
-import { useTransformData } from '@/utils/getLedgerStats'
+import { useTransformData } from '@/hook/useTransformData'
 
 const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
   const currentYear = new Date().getFullYear()
