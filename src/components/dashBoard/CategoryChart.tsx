@@ -1,16 +1,15 @@
 import styled from 'styled-components'
 import '@toast-ui/chart/dist/toastui-chart.min.css'
 import { PieChart } from '@toast-ui/react-chart'
+import { getUniqueYears } from '@/utils/getLedgerUtils'
 import {
   getYearlyCategoryTrend,
-  getMonthlyCategoryTrend,
-  getUniqueYears,
-  TypeProps,
-  MonthDataProps
-} from '@/utils/getLedgerStats'
+  getMonthlyCategoryTrend
+} from '@/utils/filterLedgerCategory'
+import { TypeProps, MonthDataProps } from '@/interface/DashBoardProps'
 import { pieChartOptions } from '@/data/chartOptionsData'
 import { LedgerProps } from '@/interface/LedgerProps'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import SelectBox from '@/components/input/SelectBox'
 
 interface SeriesData {
@@ -25,23 +24,20 @@ interface ChartData {
 
 const CategoryChart = ({
   ledgerData,
-  monthlySelectYear,
   selectMonth = null,
-  isSelect
+  setSelectMonth = () => {}
 }: {
   ledgerData: LedgerProps[] | null
-  monthlySelectYear?: number
   selectMonth?: number | null
-  isSelect: boolean
+  setSelectMonth?: Dispatch<SetStateAction<number>>
 }) => {
   const [isLoading, setIsLoading] = useState(true)
 
-  const [yearlySelectYear, setyearlySelectYear] = useState(
-    new Date().getFullYear()
-  )
+  const [year, setYear] = useState(new Date().getFullYear())
   const [type, setType] = useState('지출')
   const yearList = getUniqueYears(ledgerData)
   const typeList = ['수입', '지출']
+  const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
   const [chartData, setChartData] = useState<ChartData | null>({
     categories: [],
@@ -51,28 +47,20 @@ const CategoryChart = ({
   const [dataNotFound, setDataNotFound] = useState(false)
 
   const loadChartData = () => {
-    const yearData = getYearlyCategoryTrend(ledgerData, yearlySelectYear)
-    let data = yearData?.[yearlySelectYear]
+    const yearData = getYearlyCategoryTrend(ledgerData, year)
+    let data = yearData?.[year]
     let monthData: MonthDataProps | undefined | null = null
 
-    if (monthlySelectYear && selectMonth) {
-      monthData = getMonthlyCategoryTrend(
-        ledgerData,
-        monthlySelectYear,
-        selectMonth
-      )
-      if (
-        !monthData ||
-        !monthData[monthlySelectYear] ||
-        !monthData[monthlySelectYear][selectMonth]
-      ) {
+    if (year && selectMonth) {
+      monthData = getMonthlyCategoryTrend(ledgerData, year, selectMonth)
+      if (!monthData || !monthData[year] || !monthData[year][selectMonth]) {
         setDataNotFound(true)
         setChartData(null)
         setIsLoading(false)
         data = undefined
         return
       }
-      data = monthData?.[monthlySelectYear][selectMonth]
+      data = monthData?.[year][selectMonth]
     }
 
     const getSeriesData = (data: TypeProps | undefined) => {
@@ -113,7 +101,7 @@ const CategoryChart = ({
   }
 
   const containerStyle = {
-    width: '400px',
+    width: '500px',
     height: '400px'
   }
 
@@ -125,35 +113,32 @@ const CategoryChart = ({
     setIsLoading(true)
     setDataNotFound(false)
     loadChartData()
-  }, [
-    monthlySelectYear,
-    yearlySelectYear,
-    selectMonth,
-    type,
-    isLoading,
-    ledgerData
-  ])
+  }, [year, selectMonth, type, isLoading, ledgerData])
 
   return (
     <Container>
       <Title>
-        카테고리별 {type} 비율
-        {selectMonth && chartData && ` (${selectMonth}월)`}
+        카테고리별 {type} 비율 {selectMonth && `(${selectMonth}월)`}
       </Title>
-      {isSelect && (
-        <SelectWrapper>
+      <SelectWrapper>
+        <SelectBox
+          selectItem={year}
+          setSelectItem={setYear}
+          items={yearList}
+        />
+        {selectMonth && setSelectMonth && (
           <SelectBox
-            selectItem={yearlySelectYear}
-            setSelectItem={setyearlySelectYear}
-            items={yearList}
+            selectItem={selectMonth}
+            setSelectItem={setSelectMonth}
+            items={monthList}
           />
-          <SelectBox
-            selectItem={type}
-            setSelectItem={setType}
-            items={typeList}
-          />
-        </SelectWrapper>
-      )}
+        )}
+        <SelectBox
+          selectItem={type}
+          setSelectItem={setType}
+          items={typeList}
+        />
+      </SelectWrapper>
       {dataNotFound && !isLoading && !chartData && (
         <NoData>데이터가 없습니다.</NoData>
       )}

@@ -9,6 +9,7 @@ import useAuthStore from '@/store/useAuthStore'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
+import Summary from '@/components/dashBoard/Summary'
 
 const Dashboard = () => {
   const { userInfo } = useAuthStore()
@@ -25,7 +26,6 @@ const Dashboard = () => {
 
       if (data) {
         setLedgerData(data)
-        ledgerData && console.log(ledgerData)
       } else {
         setLedgerData(null)
       }
@@ -45,6 +45,7 @@ const Dashboard = () => {
 
   return (
     <PageLayout>
+      <Summary ledgerData={ledgerData} />
       <MonthlyChart
         ledgerData={ledgerData}
         selectYear={selectYear}
@@ -55,15 +56,11 @@ const Dashboard = () => {
       />
       <CategoryChart
         ledgerData={ledgerData}
-        monthlySelectYear={selectYear}
         selectMonth={selectMonth}
-        isSelect={false}
+        setSelectMonth={setSelectMonth}
       />
       <YearlyCell ledgerData={ledgerData} />
-      <CategoryChart
-        ledgerData={ledgerData}
-        isSelect={true}
-      />
+      <CategoryChart ledgerData={ledgerData} />
       {isOpen('로그인') && (
         <ModalPortal>
           <LoginModal closeModal={() => closeModal('로그인')} />

@@ -1,5 +1,5 @@
 import { gray } from '@/styles/theme'
-import { transUnitOfAmount } from '@/utils/getLedgerStats'
+import { transUnitOfAmount } from '@/utils/getLedgerUtils'
 
 export const lineChartOptions = {
   series: {

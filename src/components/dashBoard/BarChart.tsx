@@ -1,7 +1,8 @@
-import { getMaxAmountRatio, AmountDataProps } from '@/utils/getLedgerStats'
+import { getMaxAmountRatio } from '@/utils/calculationLedgerAmount'
 import styled, { css } from 'styled-components'
-import { displayAmount } from '@/utils/getLedgerStats'
+import { displayAmount } from '@/utils/getLedgerUtils'
 import { Dispatch, SetStateAction } from 'react'
+import { AmountDataProps } from '@/interface/DashBoardProps'
 
 const BarChart = ({
   type,

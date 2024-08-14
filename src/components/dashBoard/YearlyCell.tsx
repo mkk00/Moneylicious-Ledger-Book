@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import {
-  getYearlyTrend,
   transUnitOfAmount,
   extractNumbers,
   getUniqueYears
-} from '@/utils/getLedgerStats'
+} from '@/utils/getLedgerUtils'
+import { getYearlyTrend } from '@/utils/getLedgerTrends'
 import { LedgerProps } from '@/interface/LedgerProps'
 import '@toast-ui/chart/dist/toastui-chart.min.css'
 import { LineChart } from '@toast-ui/react-chart'
