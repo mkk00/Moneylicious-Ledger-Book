@@ -3,14 +3,16 @@ import styled from 'styled-components'
 const SummaryCard = ({
   title,
   content,
-  description
+  description,
+  onClick
 }: {
   title: string
   content?: string
   description: () => string
+  onClick?: () => void
 }) => {
   return (
-    <Container>
+    <Container onClick={onClick}>
       <Title>{title}</Title>
       <Content>{content}</Content>
       <Description>{description()}</Description>

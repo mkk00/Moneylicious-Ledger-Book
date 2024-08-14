@@ -8,3 +8,12 @@ export interface AssetsProps {
   updated_at: string
   amount: number
 }
+
+export interface AssetsTargetProps {
+  id: string
+  user_id: string
+  email: string
+  expense: string
+  saving: string
+  created_at: string
+}
