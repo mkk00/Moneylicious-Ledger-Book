@@ -28,15 +28,15 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
     {
       id: 0,
       title: '지금까지의 소비',
-      content: `${totalExpense}원`,
+      content: `${totalExpense?.toLocaleString() || 0}원`,
       description: () => {
-        return `지금까지의 소득은 ${totalIncome}원입니다.`
+        return `지금까지의 소득은 ${totalIncome?.toLocaleString() || 0}원입니다.`
       }
     },
     {
       id: 1,
       title: '가장 큰 지출',
-      content: `${maxExpenseData?.title} (${maxExpenseData?.amount}원)`,
+      content: `${maxExpenseData?.title || '-'} (${maxExpenseData?.amount || '0'}원)`,
       description: () => {
         const year = maxExpenseData?.created_at_year
         const month = maxExpenseData?.created_at_month
@@ -46,24 +46,24 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           Number(max?.replace(/,/g, '')) - Number(min?.replace(/,/g, ''))
         ).toLocaleString()
 
-        return `${year}년 ${month}월에 가장 큰 소비 금액은 ${max}원입니다. 가장 적은 소비 금액인 ${min}원에 비해 ${diff}원의 차이가 있습니다.`
+        return `${year}년 ${month}월에 가장 큰 소비 금액은 ${max || 0}원입니다. 가장 적은 소비 금액인 ${min || 0}원에 비해 ${diff || 0}원의 차이가 있습니다.`
       }
     },
     {
       id: 2,
       title: '가장 많이 소비한 달',
-      content: `${maxExpenseMonthData?.key}월`,
+      content: `${maxExpenseMonthData?.key || '-'}월`,
       description: () => {
         const data = maxExpenseMonthData
         const month = data?.key
         const amount = data?.value.toLocaleString()
-        return `${month}월의 소비 금액은 ${amount}원 입니다.`
+        return `${month || '-'}월의 소비 금액은 ${amount || 0}원 입니다.`
       }
     },
     {
       id: 3,
       title: '가장 많이 소비한 카테고리',
-      content: maxCategoryData?.key,
+      content: maxCategoryData?.key || '-',
       description: () => {
         const maxCategory = maxCategoryData?.key
         const maxAmount = maxCategoryData?.value.toLocaleString()
@@ -73,7 +73,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           Number(maxAmount?.replace(/,/g, '')) -
             Number(minAmount?.replace(/,/g, ''))
         ).toLocaleString()
-        return `${maxCategory} 카테고리의 총 소비 금액은 ${maxAmount}원 입니다. 가장 적게 소비한 ${minCategory}(${minAmount}원) 보다 ${diff}원의 차이가 있습니다.`
+        return `${maxCategory || '-'} 카테고리의 총 소비 금액은 ${maxAmount || 0}원 입니다. 가장 적게 소비한 ${minCategory || '-'}(${minAmount || 0}원) 보다 ${diff || 0}원의 차이가 있습니다.`
       }
     }
   ]

@@ -26,7 +26,6 @@ const Dashboard = () => {
 
       if (data) {
         setLedgerData(data)
-        ledgerData && console.log(ledgerData)
       } else {
         setLedgerData(null)
       }

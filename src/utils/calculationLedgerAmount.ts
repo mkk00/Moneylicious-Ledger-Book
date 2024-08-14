@@ -68,9 +68,7 @@ export const getTotal = (
   year: number,
   key: 'income' | 'expense'
 ) => {
-  return getYearlyTrend(data)
-    .find(data => data.year === year)
-    ?.[key]?.toLocaleString()
+  return getYearlyTrend(data).find(data => data.year === year)?.[key]
 }
 
 /**
