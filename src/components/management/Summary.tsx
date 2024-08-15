@@ -3,13 +3,21 @@ import styled from 'styled-components'
 import { LedgerProps } from '@/interface/LedgerProps'
 import { useTransformData } from '@/hook/useTransformData'
 import { supabase } from '@/supabaseconfig'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { AssetsProps, AssetsTargetProps } from '@/interface/AssetsProps'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import AssetsSummaryModal from '@/components/modal/AssetsSummaryModal'
 
-const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
+const Summary = ({
+  ledgerData,
+  setOpenCash,
+  setOpenAssets
+}: {
+  ledgerData: LedgerProps[] | null
+  setOpenCash: Dispatch<SetStateAction<boolean>>
+  setOpenAssets: Dispatch<SetStateAction<boolean>>
+}) => {
   const { isOpen, openModal, closeModal } = useModal()
 
   const currentYear = new Date().getFullYear()
@@ -92,11 +100,19 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
         description={() => {
           return currentCash < 0 ? '지출 금액이 더 많습니다.' : ''
         }}
+        onClick={() => {
+          setOpenCash(prev => !prev)
+          setOpenAssets(false)
+        }}
       />
       <SummaryCard
         title="내 자산"
         content={`${assetsAmount.toLocaleString() || 0}원`}
         description={() => ''}
+        onClick={() => {
+          setOpenAssets(prev => !prev)
+          setOpenCash(false)
+        }}
       />
       <SummaryCard
         title="한달 소비 계획 설정"

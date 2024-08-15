@@ -9,7 +9,7 @@ export interface LedgerProps {
   means: string
   memo: string
   type: string
-  creaated_at: string
+  created_at: string
   created_at_year: number
   created_at_month: number
   created_at_day: number

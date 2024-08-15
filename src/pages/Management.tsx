@@ -8,11 +8,15 @@ import useAuthStore from '@/store/useAuthStore'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
+import LedgerDetailList from '@/components/management/LedgerDetailList'
+import AssetsDetailList from '@/components/management/AssetsDetailList'
 
 const Management = () => {
   const { userInfo } = useAuthStore()
   const { isOpen, openModal, closeModal } = useModal()
 
+  const [isOpenDetail, setIsOpenDetail] = useState(false)
+  const [isOpenAssets, setIsOpenAssets] = useState(false)
   const [ledgerData, setLedgerData] = useState<LedgerProps[] | null>(null)
 
   const getLederData = async () => {
@@ -41,8 +45,14 @@ const Management = () => {
     <PageLayout>
       <Title>자산</Title>
       <SummaryWrapper>
-        <Summary ledgerData={ledgerData} />
+        <Summary
+          ledgerData={ledgerData}
+          setOpenCash={setIsOpenDetail}
+          setOpenAssets={setIsOpenAssets}
+        />
       </SummaryWrapper>
+      {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
+      {isOpenAssets && <AssetsDetailList ledgerData={ledgerData} />}
       {isOpen('로그인') && (
         <ModalPortal>
           <LoginModal closeModal={() => closeModal('로그인')} />
