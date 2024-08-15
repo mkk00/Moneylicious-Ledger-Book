@@ -38,15 +38,10 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
 
       if (data) {
         setAssetsData(data)
-        if (assetsData) {
-          const total =
-            assetsData?.reduce((acc, obj) => {
-              return acc + obj.amount
-            }, 0) || 0
-          return setAssetsAmount(total)
-        }
-      } else {
-        setAssetsData(null)
+        const total = assetsData?.reduce((acc, obj) => {
+          return acc + obj.amount
+        }, 0)
+        total && setAssetsAmount(total)
       }
       if (error) throw error
     } catch (error) {
@@ -59,7 +54,6 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
       if (obj.category === '저축' || obj.category === '보험') {
         return acc + Number(obj.amount.replace(/,/g, ''))
       }
-
       return acc
     }, 0)
 
@@ -72,8 +66,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
         .from('assetsTarget')
         .select()
         .returns<AssetsTargetProps[] | null>()
-
-      if (data && data.length > 0) {
+      if (data) {
         setAssetsTargetData(data[0])
       }
       if (error) throw error
@@ -89,7 +82,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
 
   useEffect(() => {
     getAssetsData()
-  }, [isOpen])
+  }, [])
 
   return (
     <Wrapper>
@@ -126,6 +119,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           <AssetsSummaryModal
             type="소비"
             assetsTargetData={assetsTargetData}
+            getAssetsData={getAssetsData}
             closeModal={() => closeModal('소비')}
           />
         </ModalPortal>
@@ -135,6 +129,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           <AssetsSummaryModal
             type="저축"
             assetsTargetData={assetsTargetData}
+            getAssetsData={getAssetsData}
             closeModal={() => closeModal('저축')}
           />
         </ModalPortal>
