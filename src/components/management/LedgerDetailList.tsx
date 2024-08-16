@@ -52,7 +52,6 @@ const LedgerDetailList = ({
       },
       {} as Record<string, (typeof groupByDate)[string]>
     )
-  console.log(sortedGroupByDate)
 
   return (
     <Container>
