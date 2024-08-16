@@ -3,13 +3,22 @@ import styled from 'styled-components'
 import { LedgerProps } from '@/interface/LedgerProps'
 import { useTransformData } from '@/hook/useTransformData'
 import { supabase } from '@/supabaseconfig'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { AssetsProps, AssetsTargetProps } from '@/interface/AssetsProps'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import AssetsSummaryModal from '@/components/modal/AssetsSummaryModal'
+import { parseAmount } from '@/utils/getLedgerUtils'
 
-const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
+const Summary = ({
+  ledgerData,
+  setOpenCash,
+  setOpenAssets
+}: {
+  ledgerData: LedgerProps[] | null
+  setOpenCash: Dispatch<SetStateAction<boolean>>
+  setOpenAssets: Dispatch<SetStateAction<boolean>>
+}) => {
   const { isOpen, openModal, closeModal } = useModal()
 
   const currentYear = new Date().getFullYear()
@@ -38,15 +47,6 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
 
       if (data) {
         setAssetsData(data)
-        if (assetsData) {
-          const total =
-            assetsData?.reduce((acc, obj) => {
-              return acc + obj.amount
-            }, 0) || 0
-          return setAssetsAmount(total)
-        }
-      } else {
-        setAssetsData(null)
       }
       if (error) throw error
     } catch (error) {
@@ -59,7 +59,6 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
       if (obj.category === '저축' || obj.category === '보험') {
         return acc + Number(obj.amount.replace(/,/g, ''))
       }
-
       return acc
     }, 0)
 
@@ -72,8 +71,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
         .from('assetsTarget')
         .select()
         .returns<AssetsTargetProps[] | null>()
-
-      if (data && data.length > 0) {
+      if (data) {
         setAssetsTargetData(data[0])
       }
       if (error) throw error
@@ -89,7 +87,16 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
 
   useEffect(() => {
     getAssetsData()
-  }, [isOpen])
+  }, [])
+
+  useEffect(() => {
+    if (assetsData) {
+      const total = assetsData.reduce((acc, obj) => {
+        return acc + parseAmount(obj.amount)
+      }, 0)
+      setAssetsAmount(total)
+    }
+  }, [assetsData])
 
   return (
     <Wrapper>
@@ -99,11 +106,19 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
         description={() => {
           return currentCash < 0 ? '지출 금액이 더 많습니다.' : ''
         }}
+        onClick={() => {
+          setOpenCash(prev => !prev)
+          setOpenAssets(false)
+        }}
       />
       <SummaryCard
         title="내 자산"
         content={`${assetsAmount.toLocaleString() || 0}원`}
         description={() => ''}
+        onClick={() => {
+          setOpenAssets(prev => !prev)
+          setOpenCash(false)
+        }}
       />
       <SummaryCard
         title="한달 소비 계획 설정"
@@ -126,6 +141,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           <AssetsSummaryModal
             type="소비"
             assetsTargetData={assetsTargetData}
+            getAssetsData={getAssetsData}
             closeModal={() => closeModal('소비')}
           />
         </ModalPortal>
@@ -135,6 +151,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           <AssetsSummaryModal
             type="저축"
             assetsTargetData={assetsTargetData}
+            getAssetsData={getAssetsData}
             closeModal={() => closeModal('저축')}
           />
         </ModalPortal>

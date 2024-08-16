@@ -10,10 +10,12 @@ import { AssetsTargetProps } from '@/interface/AssetsProps'
 const AssetsSummaryModal = ({
   closeModal,
   assetsTargetData,
+  getAssetsData,
   type
 }: {
   closeModal: (key: string) => void
   assetsTargetData: AssetsTargetProps | null
+  getAssetsData: () => Promise<void>
   type: '소비' | '저축'
 }) => {
   const [inputValue, setInputValue] = useState('')
@@ -47,6 +49,7 @@ const AssetsSummaryModal = ({
           .returns<AssetsTargetProps | null>()
         if (data) {
           alert('목표 설정이 완료되었습니다.')
+          getAssetsData()
           closeModal(type)
         }
         if (error) throw error
@@ -59,6 +62,7 @@ const AssetsSummaryModal = ({
           .returns<AssetsTargetProps | null>()
         if (data) {
           alert('목표 설정이 수정되었습니다.')
+          getAssetsData()
           closeModal(type)
         }
         if (error) throw error
