@@ -47,10 +47,6 @@ const Summary = ({
 
       if (data) {
         setAssetsData(data)
-        const total = assetsData?.reduce((acc, obj) => {
-          return acc + parseAmount(obj.amount)
-        }, 0)
-        total && setAssetsAmount(total)
       }
       if (error) throw error
     } catch (error) {
@@ -92,6 +88,15 @@ const Summary = ({
   useEffect(() => {
     getAssetsData()
   }, [])
+
+  useEffect(() => {
+    if (assetsData) {
+      const total = assetsData.reduce((acc, obj) => {
+        return acc + parseAmount(obj.amount)
+      }, 0)
+      setAssetsAmount(total)
+    }
+  }, [assetsData])
 
   return (
     <Wrapper>
