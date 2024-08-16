@@ -10,6 +10,7 @@ import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
 import Summary from '@/components/dashBoard/Summary'
+import MetaTags from '@/components/common/MetaTag'
 
 const Dashboard = () => {
   const { userInfo } = useAuthStore()
@@ -45,6 +46,11 @@ const Dashboard = () => {
 
   return (
     <PageLayout>
+      <MetaTags
+        title="Moneylicious - 대시보드"
+        description="가계부 내역을 차트를 통해 한눈에 확인해보세요."
+        url="https://moneylicious.vercel.app/dashboard"
+      />
       <Summary ledgerData={ledgerData} />
       <MonthlyChart
         ledgerData={ledgerData}
