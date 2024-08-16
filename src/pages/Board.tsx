@@ -12,6 +12,7 @@ import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
 import useAuthStore from '@/store/useAuthStore'
+import MetaTags from '@/components/common/MetaTag'
 
 const Board = () => {
   const { userInfo } = useAuthStore()
@@ -81,6 +82,11 @@ const Board = () => {
 
   return (
     <PageLayout>
+      <MetaTags
+        title="Moneylicious - 커뮤니티"
+        description="커뮤니티 페이지에서 다른 이용자들과 소통해보세요."
+        url="https://moneylicious.vercel.app/board"
+      />
       <PageTitle>커뮤니티</PageTitle>
       <CategoryList>
         {TAG_LIST.map(list => (

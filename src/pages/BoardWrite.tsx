@@ -12,6 +12,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import useAuthStore from '@/store/useAuthStore'
 import { supabase } from '@/supabaseconfig'
 import { BoardProps, BoardTitleProps } from '@/interface/BoardProps'
+import MetaTags from '@/components/common/MetaTag'
 
 const BoardWrite = () => {
   const { userInfo } = useAuthStore()
@@ -84,6 +85,11 @@ const BoardWrite = () => {
 
   return (
     <PageLayout>
+      <MetaTags
+        title="Moneylicious - 게시글 작성"
+        description="커뮤니티에 공유할 게시글을 작성해보세요."
+        url="https://moneylicious.vercel.app/board/write"
+      />
       <Container
         $responsive={isDesktopOrLaptop}
         onSubmit={handleSubmit(onSubmit)}>

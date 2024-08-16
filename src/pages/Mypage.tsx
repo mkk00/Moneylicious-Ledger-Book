@@ -9,6 +9,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import mypageValidation from '@/utils/mypageValidation'
 import { FaCloudUploadAlt } from 'react-icons/fa'
 import { supabase, supabaseUrl } from '@/supabaseconfig'
+import MetaTags from '@/components/common/MetaTag'
 
 const Mypage = () => {
   const { isMobile } = useResponsive()
@@ -133,6 +134,11 @@ const Mypage = () => {
 
   return (
     <PageLayout>
+      <MetaTags
+        title="Moneylicious - 마이페이지"
+        description="개인정보를 수정할 수 있습니다."
+        url="https://moneylicious.vercel.app/mypage"
+      />
       <Container $isMobile={isMobile}>
         <Title>{edit ? '개인정보 수정' : '마이페이지'}</Title>
         <InputWrapper>

@@ -6,6 +6,7 @@ import authValidation from '@/utils/authValidation'
 import Button from '@/components/button/Button'
 import { supabase } from '@/supabaseconfig'
 import { useNavigate } from 'react-router-dom'
+import MetaTags from '@/components/common/MetaTag'
 
 const Signup = () => {
   const navigate = useNavigate()
@@ -51,6 +52,11 @@ const Signup = () => {
 
   return (
     <PageLayout>
+      <MetaTags
+        title="Moneylicious - 회원가입"
+        description="Moenylicious 가계부를 이용하시려면 회원가입을 진행해주세요."
+        url="https://moneylicious.vercel.app/signup"
+      />
       <Container>
         <h2>회원가입</h2>
         <FormWrapper>
