@@ -17,20 +17,20 @@ import { AssetsDataItemProps } from '@/interface/AssetsProps'
 
 const AddAssetsModal = ({
   closeModal,
-  isEdit,
-  setIsEdit,
+  modalType,
+  setModalType,
   getAssetsData,
   editAssetData
 }: {
   closeModal: () => void
-  isEdit: boolean
-  setIsEdit: Dispatch<SetStateAction<boolean>>
+  modalType: 'add' | 'edit' | null
+  setModalType: Dispatch<SetStateAction<'add' | 'edit' | null>>
   getAssetsData: () => Promise<void>
   editAssetData: AssetsDataItemProps | null
 }) => {
   const { userInfo } = useAuthStore()
 
-  const edit = isEdit ? '자산수정' : '자산추가'
+  const edit = modalType === 'edit' ? '자산수정' : '자산추가'
 
   const [selectType, setSelectType] = useState('저축')
   const [titleValue, setTitleValue] = useState('')
@@ -54,7 +54,7 @@ const AddAssetsModal = ({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      if (isEdit) {
+      if (modalType) {
         const insertData = {
           type: '비유동자산',
           name: selectType,
@@ -73,7 +73,7 @@ const AddAssetsModal = ({
           alert('수정되었습니다.')
           getAssetsData()
           closeModal()
-          setIsEdit(false)
+          setModalType(null)
         }
 
         if (error) throw error
@@ -113,6 +113,7 @@ const AddAssetsModal = ({
 
       alert('삭제되었습니다.')
       getAssetsData()
+      setModalType(null)
       closeModal()
 
       if (error) throw error
@@ -122,12 +123,12 @@ const AddAssetsModal = ({
   }
 
   useEffect(() => {
-    if (isEdit && editAssetData) {
+    if (modalType && editAssetData) {
       setSelectType(editAssetData.name)
       setTitleValue(editAssetData.title)
       setInputValue(editAssetData.amount)
     }
-  }, [editAssetData, isEdit])
+  }, [editAssetData, modalType])
 
   return (
     <ModalLayout closeModal={closeModal}>

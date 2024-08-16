@@ -16,8 +16,7 @@ const LedgerDetailList = () => {
   const { isOpen, openModal, closeModal } = useModal()
 
   const [assetsData, setAssetsData] = useState<AssetsDataProps | null>(null)
-  const [isEdit, setIsEdit] = useState(false)
-  const edit = isEdit ? '자산수정' : '자산추가'
+  const [modalType, setModalType] = useState<'add' | 'edit' | null>(null)
   const [editAssetData, setEditAssetData] =
     useState<AssetsDataItemProps | null>(null)
 
@@ -61,11 +60,7 @@ const LedgerDetailList = () => {
     getAssetsData()
   }, [])
 
-  useEffect(() => {
-    if (isEdit) {
-      openModal(edit)
-    }
-  }, [isEdit])
+  useEffect(() => {}, [modalType])
 
   return (
     <Container>
@@ -88,9 +83,9 @@ const LedgerDetailList = () => {
                   <AssetsDetailList
                     key={index}
                     onClick={() => {
-                      setIsEdit(true)
                       setEditAssetData({ name: key, ...item })
-                      openModal(edit)
+                      setModalType('edit')
+                      openModal('자산수정')
                     }}>
                     <div>{item.title}</div>
                     <div>{item.amount}</div>
@@ -101,18 +96,21 @@ const LedgerDetailList = () => {
           ))}
         <IconButton
           type="plus"
-          onClick={() => openModal(edit)}
+          onClick={() => {
+            setEditAssetData(null)
+            setModalType('add')
+            openModal('자산추가')
+          }}
         />
       </Wrapper>
-      {isEdit && isOpen(edit) && (
+      {isOpen(modalType === 'edit' ? '자산수정' : '자산추가') && (
         <ModalPortal>
           <AddAssetsModal
             closeModal={() => {
-              setIsEdit(false)
-              closeModal(edit)
+              closeModal(modalType === 'edit' ? '자산수정' : '자산추가')
             }}
-            isEdit={isEdit}
-            setIsEdit={setIsEdit}
+            modalType={modalType}
+            setModalType={setModalType}
             getAssetsData={getAssetsData}
             editAssetData={editAssetData}
           />
@@ -121,7 +119,9 @@ const LedgerDetailList = () => {
     </Container>
   )
 }
+
 export default LedgerDetailList
+
 const Container = styled.div`
   width: 600px;
   margin: 50px auto;
