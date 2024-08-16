@@ -16,7 +16,7 @@ const Management = () => {
   const { isOpen, openModal, closeModal } = useModal()
 
   const [isOpenDetail, setIsOpenDetail] = useState(false)
-  const [isOpenAssets, setIsOpenAssets] = useState(false)
+  const [isOpenAssets, setIsOpenAssets] = useState(true)
   const [ledgerData, setLedgerData] = useState<LedgerProps[] | null>(null)
 
   const getLederData = async () => {
@@ -52,7 +52,7 @@ const Management = () => {
         />
       </SummaryWrapper>
       {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
-      {isOpenAssets && <AssetsDetailList ledgerData={ledgerData} />}
+      {isOpenAssets && <AssetsDetailList />}
       {isOpen('로그인') && (
         <ModalPortal>
           <LoginModal closeModal={() => closeModal('로그인')} />

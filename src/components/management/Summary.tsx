@@ -8,6 +8,7 @@ import { AssetsProps, AssetsTargetProps } from '@/interface/AssetsProps'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import AssetsSummaryModal from '@/components/modal/AssetsSummaryModal'
+import { parseAmount } from '@/utils/getLedgerUtils'
 
 const Summary = ({
   ledgerData,
@@ -47,7 +48,7 @@ const Summary = ({
       if (data) {
         setAssetsData(data)
         const total = assetsData?.reduce((acc, obj) => {
-          return acc + obj.amount
+          return acc + parseAmount(obj.amount)
         }, 0)
         total && setAssetsAmount(total)
       }
