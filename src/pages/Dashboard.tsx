@@ -6,15 +6,13 @@ import { LedgerProps } from '@/interface/LedgerProps'
 import YearlyCell from '@/components/dashBoard/YearlyCell'
 import CategoryChart from '@/components/dashBoard/CategoryChart'
 import useAuthStore from '@/store/useAuthStore'
-import useModal from '@/hook/useModal'
-import ModalPortal from '@/components/modal/ModalPortal'
-import LoginModal from '@/components/modal/LoginModal'
 import Summary from '@/components/dashBoard/Summary'
 import MetaTags from '@/components/common/MetaTag'
+import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
   const { userInfo } = useAuthStore()
-  const { isOpen, openModal, closeModal } = useModal()
+  const navigate = useNavigate()
 
   const [ledgerData, setLedgerData] = useState<LedgerProps[] | null>(null)
   const [selectYear, setSelectYear] = useState(new Date().getFullYear())
@@ -38,7 +36,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!userInfo?.accessToken) {
-      confirm('로그인이 필요한 서비스입니다.') && openModal('로그인')
+      navigate('/loginRequired')
     } else {
       getLederData()
     }
@@ -67,11 +65,6 @@ const Dashboard = () => {
       />
       <YearlyCell ledgerData={ledgerData} />
       <CategoryChart ledgerData={ledgerData} />
-      {isOpen('로그인') && (
-        <ModalPortal>
-          <LoginModal closeModal={() => closeModal('로그인')} />
-        </ModalPortal>
-      )}
     </PageLayout>
   )
 }

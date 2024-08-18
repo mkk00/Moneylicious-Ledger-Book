@@ -8,6 +8,7 @@ import BoardDetail from '@/components/board/BoardDetail'
 import BoardWrite from '@/pages/BoardWrite'
 import Mypage from '@/pages/Mypage'
 import Signup from '@/pages/Signup'
+import LoginRequired from '@/pages/LoginRequired'
 
 export const routerList: RouteObject[] = [
   {
@@ -43,5 +44,9 @@ export const routerList: RouteObject[] = [
   {
     path: '/signup',
     element: <Signup />
+  },
+  {
+    path: '/loginRequired',
+    element: <LoginRequired />
   }
 ]

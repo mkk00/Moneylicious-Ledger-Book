@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import styled from 'styled-components'
 import { useResponsive } from '@/hook/useMediaQuery'
 import Header from '@/components/common/Header'
+import Footer from '@/components/common/Footer'
 
 const PageLayout = ({ children }: { children: ReactNode }) => {
   const { isDesktopOrLaptop } = useResponsive()
@@ -9,6 +10,7 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
     <Container $isDesktopOrLaptop={isDesktopOrLaptop}>
       <Header />
       <Main $isDesktopOrLaptop={isDesktopOrLaptop}>{children}</Main>
+      <Footer />
     </Container>
   )
 }
@@ -24,5 +26,5 @@ const Container = styled.div<{ $isDesktopOrLaptop: boolean }>`
 const Main = styled.main<{ $isDesktopOrLaptop: boolean }>`
   width: ${({ $isDesktopOrLaptop }) =>
     $isDesktopOrLaptop ? '1200px' : '100%'};
-  margin: 80px auto;
+  margin: 80px auto 180px auto;
 `

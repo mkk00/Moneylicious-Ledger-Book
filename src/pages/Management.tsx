@@ -5,15 +5,13 @@ import { supabase } from '@/supabaseconfig'
 import { useEffect, useState } from 'react'
 import { LedgerProps } from '@/interface/LedgerProps'
 import useAuthStore from '@/store/useAuthStore'
-import useModal from '@/hook/useModal'
-import ModalPortal from '@/components/modal/ModalPortal'
-import LoginModal from '@/components/modal/LoginModal'
 import LedgerDetailList from '@/components/management/LedgerDetailList'
 import AssetsDetailList from '@/components/management/AssetsDetailList'
+import { useNavigate } from 'react-router-dom'
 
 const Management = () => {
   const { userInfo } = useAuthStore()
-  const { isOpen, openModal, closeModal } = useModal()
+  const navigate = useNavigate()
 
   const [isOpenDetail, setIsOpenDetail] = useState(false)
   const [isOpenAssets, setIsOpenAssets] = useState(true)
@@ -36,7 +34,7 @@ const Management = () => {
 
   useEffect(() => {
     if (!userInfo?.accessToken) {
-      confirm('로그인이 필요한 서비스입니다.') && openModal('로그인')
+      navigate('/loginRequired')
     } else {
       getLederData()
     }
@@ -53,11 +51,6 @@ const Management = () => {
       </SummaryWrapper>
       {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
       {isOpenAssets && <AssetsDetailList />}
-      {isOpen('로그인') && (
-        <ModalPortal>
-          <LoginModal closeModal={() => closeModal('로그인')} />
-        </ModalPortal>
-      )}
     </PageLayout>
   )
 }
