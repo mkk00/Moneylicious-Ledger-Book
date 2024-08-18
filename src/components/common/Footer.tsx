@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { memo } from 'react'
-import { NotMobile, Mobile, useResponsive } from '@/hook/useMediaQuery'
+import { useResponsive } from '@/hook/useMediaQuery'
 import CopyToClipboard from '@/components/CopyToClipboard'
 import { NavLink } from 'react-router-dom'
 
@@ -67,12 +67,6 @@ const Logo = styled.img`
   width: 80px;
   height: 80px;
   filter: brightness(1000%);
-`
-
-const Left = styled.div`
-  display: flex;
-  gap: 40px;
-  align-items: center;
 `
 
 const Info = styled.div`
