@@ -8,6 +8,7 @@ import useAuthStore from '@/store/useAuthStore'
 import LedgerDetailList from '@/components/management/LedgerDetailList'
 import AssetsDetailList from '@/components/management/AssetsDetailList'
 import { useNavigate } from 'react-router-dom'
+import NoData from '@/components/common/NoData'
 
 const Management = () => {
   const { userInfo } = useAuthStore()
@@ -21,10 +22,8 @@ const Management = () => {
     try {
       const { data, error } = await supabase.from('ledger').select('*')
 
-      if (data) {
+      if (data && data?.length > 0) {
         setLedgerData(data)
-      } else {
-        setLedgerData(null)
       }
       if (error) throw error
     } catch (error) {
@@ -39,18 +38,24 @@ const Management = () => {
       getLederData()
     }
   }, [])
+
   return (
     <PageLayout>
-      <Title>자산</Title>
-      <SummaryWrapper>
-        <Summary
-          ledgerData={ledgerData}
-          setOpenCash={setIsOpenDetail}
-          setOpenAssets={setIsOpenAssets}
-        />
-      </SummaryWrapper>
-      {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
-      {isOpenAssets && <AssetsDetailList />}
+      {ledgerData && (
+        <>
+          <Title>자산</Title>
+          <SummaryWrapper>
+            <Summary
+              ledgerData={ledgerData}
+              setOpenCash={setIsOpenDetail}
+              setOpenAssets={setIsOpenAssets}
+            />
+          </SummaryWrapper>
+          {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
+          {isOpenAssets && <AssetsDetailList />}
+        </>
+      )}
+      {!ledgerData && <NoData />}
     </PageLayout>
   )
 }
