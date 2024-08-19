@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { memo } from 'react'
 import { useResponsive } from '@/hook/useMediaQuery'
-import CopyToClipboard from '@/components/CopyToClipboard'
+import CopyToClipboard from '@/components/common/CopyToClipboard'
 import { NavLink } from 'react-router-dom'
 
 const Footer = () => {
