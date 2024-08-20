@@ -9,6 +9,8 @@ import LedgerDetailList from '@/components/management/LedgerDetailList'
 import AssetsDetailList from '@/components/management/AssetsDetailList'
 import { useNavigate } from 'react-router-dom'
 import NoData from '@/components/common/NoData'
+import { selectIlliquidAsset } from '@/api/assetsApi'
+import { AssetsProps } from '@/interface/AssetsProps'
 
 const Management = () => {
   const { userInfo } = useAuthStore()
@@ -17,8 +19,9 @@ const Management = () => {
   const [isOpenDetail, setIsOpenDetail] = useState(false)
   const [isOpenAssets, setIsOpenAssets] = useState(true)
   const [ledgerData, setLedgerData] = useState<LedgerProps[] | null>(null)
+  const [assetsData, setAssetsData] = useState<AssetsProps[] | null>(null)
 
-  const getLederData = async () => {
+  const fetchLederData = async () => {
     try {
       const { data, error } = await supabase.from('ledger').select('*')
 
@@ -31,11 +34,20 @@ const Management = () => {
     }
   }
 
+  const fetchAssetsData = async () => {
+    const assets = await selectIlliquidAsset()
+
+    if (assets) {
+      setAssetsData(assets)
+    }
+  }
+
   useEffect(() => {
     if (!userInfo?.accessToken) {
       navigate('/loginRequired')
     } else {
-      getLederData()
+      fetchLederData()
+      fetchAssetsData()
     }
   }, [])
 
@@ -47,12 +59,19 @@ const Management = () => {
           <SummaryWrapper>
             <Summary
               ledgerData={ledgerData}
+              assetsData={assetsData}
               setOpenCash={setIsOpenDetail}
               setOpenAssets={setIsOpenAssets}
+              fetchAssetsData={fetchAssetsData}
             />
           </SummaryWrapper>
           {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
-          {isOpenAssets && <AssetsDetailList />}
+          {isOpenAssets && (
+            <AssetsDetailList
+              assetsData={assetsData}
+              fetchAssetsData={fetchAssetsData}
+            />
+          )}
         </>
       )}
       {!ledgerData && <NoData />}

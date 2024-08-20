@@ -4,7 +4,6 @@ import IconButton from '../button/IconButton'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import AddAssetsModal from '@/components/modal/AddAssetsModal'
-import { supabase } from '@/supabaseconfig'
 import {
   AssetsProps,
   AssetsDataProps,
@@ -12,16 +11,26 @@ import {
 } from '@/interface/AssetsProps'
 import { parseAmount } from '@/utils/getLedgerUtils'
 
-const LedgerDetailList = () => {
+const AssetsDetailList = ({
+  assetsData,
+  fetchAssetsData
+}: {
+  assetsData: AssetsProps[] | null
+  fetchAssetsData: () => Promise<void>
+}) => {
   const { isOpen, openModal, closeModal } = useModal()
 
-  const [assetsData, setAssetsData] = useState<AssetsDataProps | null>(null)
+  const [detailData, setdetailData] = useState<AssetsDataProps | null>(null)
   const [modalType, setModalType] = useState<'add' | 'edit' | null>(null)
   const [editAssetData, setEditAssetData] =
     useState<AssetsDataItemProps | null>(null)
 
-  const transformAssetsData = (assets: AssetsProps[]) => {
-    return assets.reduce((acc, asset) => {
+  const selectList = ['저축', '보험', '투자']
+
+  const transformAssetsData = (assets: AssetsProps[] | null) => {
+    if (!assets) return null
+
+    const groupedData = assets.reduce((acc, asset) => {
       const name = asset.name
 
       if (!acc[name]) {
@@ -36,29 +45,21 @@ const LedgerDetailList = () => {
 
       return acc
     }, {} as AssetsDataProps)
-  }
 
-  const getAssetsData = async () => {
-    try {
-      const { data: assets, error } = await supabase
-        .from('assets')
-        .select('*')
-        .eq('type', '비유동자산')
-        .returns<AssetsProps[] | null>()
+    const sortedData: AssetsDataProps = {}
 
-      if (assets) {
-        setAssetsData(transformAssetsData(assets))
+    selectList.forEach(key => {
+      if (groupedData[key]) {
+        sortedData[key] = groupedData[key]
       }
+    })
 
-      if (error) throw error
-    } catch (error) {
-      console.error(error)
-    }
+    return sortedData
   }
 
   useEffect(() => {
-    getAssetsData()
-  }, [])
+    setdetailData(transformAssetsData(assetsData))
+  }, [assetsData])
 
   useEffect(() => {}, [modalType])
 
@@ -66,21 +67,21 @@ const LedgerDetailList = () => {
     <Container>
       <Title>내 자산 목록</Title>
       <Wrapper>
-        {assetsData &&
-          Object.keys(assetsData).map(key => (
+        {detailData &&
+          Object.keys(detailData).map(key => (
             <Assets key={key}>
               <AssetsTotal>
                 <div>{key}</div>
                 <span>
-                  {assetsData[key]
+                  {detailData[key]
                     .reduce((sum, item) => sum + parseAmount(item.amount), 0)
                     .toLocaleString()}
                   원
                 </span>
               </AssetsTotal>
               <AssetsDetail>
-                {assetsData[key].map((item, index) => (
-                  <AssetsDetailList
+                {detailData[key].map((item, index) => (
+                  <AssetsDetailListItem
                     key={index}
                     onClick={() => {
                       setEditAssetData({ name: key, ...item })
@@ -88,8 +89,8 @@ const LedgerDetailList = () => {
                       openModal('자산수정')
                     }}>
                     <div>{item.title}</div>
-                    <div>{item.amount}</div>
-                  </AssetsDetailList>
+                    <div>{item.amount}원</div>
+                  </AssetsDetailListItem>
                 ))}
               </AssetsDetail>
             </Assets>
@@ -109,9 +110,10 @@ const LedgerDetailList = () => {
             closeModal={() => {
               closeModal(modalType === 'edit' ? '자산수정' : '자산추가')
             }}
+            selectList={selectList}
             modalType={modalType}
             setModalType={setModalType}
-            getAssetsData={getAssetsData}
+            fetchAssetsData={fetchAssetsData}
             editAssetData={editAssetData}
           />
         </ModalPortal>
@@ -120,7 +122,7 @@ const LedgerDetailList = () => {
   )
 }
 
-export default LedgerDetailList
+export default AssetsDetailList
 
 const Container = styled.div`
   width: 600px;
@@ -176,15 +178,22 @@ const AssetsDetail = styled.ul`
   font-size: 0.8rem;
 `
 
-const AssetsDetailList = styled.div`
+const AssetsDetailListItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 0.9rem;
   cursor: pointer;
+  padding: 2px 12px;
+  border-radius: 3px;
 
   & span {
     font-size: 0.7rem;
     color: ${({ theme }) => theme.gray.gray_300};
+  }
+
+  &:hover {
+    font-weight: bold;
+    background-color: ${({ theme }) => theme.gray.gray_50};
   }
 `

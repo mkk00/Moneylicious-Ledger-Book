@@ -2,22 +2,26 @@ import SummaryCard from '@/components/dashBoard/SummaryCard'
 import styled from 'styled-components'
 import { LedgerProps } from '@/interface/LedgerProps'
 import { useTransformData } from '@/hook/useTransformData'
-import { supabase } from '@/supabaseconfig'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { AssetsProps, AssetsTargetProps } from '@/interface/AssetsProps'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import AssetsSummaryModal from '@/components/modal/AssetsSummaryModal'
 import { parseAmount } from '@/utils/getLedgerUtils'
+import { selectAssetsTarget } from '@/api/assetsApi'
 
 const Summary = ({
   ledgerData,
+  assetsData,
   setOpenCash,
-  setOpenAssets
+  setOpenAssets,
+  fetchAssetsData
 }: {
   ledgerData: LedgerProps[] | null
+  assetsData: AssetsProps[] | null
   setOpenCash: Dispatch<SetStateAction<boolean>>
   setOpenAssets: Dispatch<SetStateAction<boolean>>
+  fetchAssetsData: () => Promise<void>
 }) => {
   const { isOpen, openModal, closeModal } = useModal()
 
@@ -30,29 +34,11 @@ const Summary = ({
   const currentCash =
     (totalIncome ? totalIncome : 0) - (totalExpense ? totalExpense : 0)
 
-  const [assetsData, setAssetsData] = useState<AssetsProps[] | null>(null)
   const [assetsAmount, setAssetsAmount] = useState(0)
   const [currentSaving, setCurrentSaving] = useState(0)
 
   const [assetsTargetData, setAssetsTargetData] =
     useState<AssetsTargetProps | null>(null)
-
-  const getIlliquidAssetsData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('assets')
-        .select('*')
-        .eq('type', '비유동자산')
-        .returns<AssetsProps[] | null>()
-
-      if (data) {
-        setAssetsData(data)
-      }
-      if (error) throw error
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   const getSavingMoney = () => {
     const total = ledgerData?.reduce((acc, obj) => {
@@ -65,37 +51,33 @@ const Summary = ({
     total && setCurrentSaving(total)
   }
 
-  const getAssetsData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('assetsTarget')
-        .select()
-        .returns<AssetsTargetProps[] | null>()
-      if (data) {
-        setAssetsTargetData(data[0])
-      }
-      if (error) throw error
-    } catch (error) {
-      console.error(error)
+  const getAssetsTargetData = async () => {
+    const data = await selectAssetsTarget()
+    if (data) {
+      setAssetsTargetData(data[0])
     }
   }
 
-  useEffect(() => {
-    getIlliquidAssetsData()
-    getSavingMoney()
-  }, [ledgerData])
-
-  useEffect(() => {
-    getAssetsData()
-  }, [])
-
-  useEffect(() => {
+  const getTotalAssetsAmount = (assetsData: AssetsProps[] | null) => {
     if (assetsData) {
       const total = assetsData.reduce((acc, obj) => {
         return acc + parseAmount(obj.amount)
       }, 0)
       setAssetsAmount(total)
     }
+  }
+
+  useEffect(() => {
+    fetchAssetsData()
+    getSavingMoney()
+  }, [ledgerData])
+
+  useEffect(() => {
+    getAssetsTargetData()
+  }, [])
+
+  useEffect(() => {
+    getTotalAssetsAmount(assetsData)
   }, [assetsData])
 
   return (
@@ -141,7 +123,7 @@ const Summary = ({
           <AssetsSummaryModal
             type="소비"
             assetsTargetData={assetsTargetData}
-            getAssetsData={getAssetsData}
+            getAssetsTargetData={getAssetsTargetData}
             closeModal={() => closeModal('소비')}
           />
         </ModalPortal>
@@ -151,7 +133,7 @@ const Summary = ({
           <AssetsSummaryModal
             type="저축"
             assetsTargetData={assetsTargetData}
-            getAssetsData={getAssetsData}
+            getAssetsTargetData={getAssetsTargetData}
             closeModal={() => closeModal('저축')}
           />
         </ModalPortal>

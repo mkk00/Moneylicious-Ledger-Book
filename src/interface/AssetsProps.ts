@@ -1,4 +1,4 @@
-export interface AssetsProps {
+interface AssetsProps {
   id: string
   user_id: string
   email: string
@@ -10,14 +10,14 @@ export interface AssetsProps {
   title: string
 }
 
-export interface AssetsDataItemProps {
+interface AssetsDataItemProps {
   id: string
   name: string
   title: string
   amount: string
 }
 
-export interface AssetsDataProps {
+interface AssetsDataProps {
   [name: string]: {
     id: string
     title: string
@@ -25,11 +25,27 @@ export interface AssetsDataProps {
   }[]
 }
 
-export interface AssetsTargetProps {
+interface AssetsTargetProps {
   id: string
   user_id: string
   email: string
   expense: string
   saving: string
   created_at: string
+}
+
+interface UpdateAssetsProps {
+  type: string
+  name: string
+  updated_at: string
+  amount: string
+  title: string
+}
+
+export type {
+  AssetsProps,
+  AssetsDataItemProps,
+  AssetsDataProps,
+  AssetsTargetProps,
+  UpdateAssetsProps
 }
