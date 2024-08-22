@@ -4,7 +4,7 @@ import {
   MonthlyMaxExpenseProps,
   CategoryExpenseProps
 } from '@/interface/DashBoardProps'
-import { getYearlyTrend } from './getLedgerTrends'
+import { getYearlyTrend, getMonthlyTrend } from './getLedgerTrends'
 
 /**
  * 월별 최대 금액
@@ -69,6 +69,21 @@ export const getTotal = (
   key: 'income' | 'expense'
 ) => {
   return getYearlyTrend(data).find(data => data.year === year)?.[key]
+}
+
+/**
+ * 현재 년도의 현재 월가지의 지출, 수입 금액의 합계
+ */
+export const getTotalToCurrentMonth = (
+  data: LedgerProps[] | null,
+  key: 'income' | 'expense'
+) => {
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth()
+  return getMonthlyTrend(data, year).reduce((acc, obj, index) => {
+    if (index <= month) acc += obj[key]
+    return acc
+  }, 0)
 }
 
 /**

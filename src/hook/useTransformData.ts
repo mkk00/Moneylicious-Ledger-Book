@@ -2,7 +2,8 @@ import { LedgerProps } from '@/interface/LedgerProps'
 import {
   calculateExpenses,
   getTotal,
-  findMinMax
+  findMinMax,
+  getTotalToCurrentMonth
 } from '@/utils/calculationLedgerAmount'
 /**
  * 가계부 요약 데이터
@@ -26,6 +27,8 @@ export const useTransformData = (data: LedgerProps[] | null) => {
   return {
     totalExpense: getTotal(data, currentYear, 'expense'),
     totalIncome: getTotal(data, currentYear, 'income'),
+    totalToMonthExpense: getTotalToCurrentMonth(data, 'expense'),
+    totalToMonthIncome: getTotalToCurrentMonth(data, 'income'),
     maxExpenseData: data ? findMinMax(true, filteredData) : undefined,
     minExpenseData: data ? findMinMax(false, filteredData) : undefined,
     maxExpenseMonthData: Object.entries(monthly).reduce(

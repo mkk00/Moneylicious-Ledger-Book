@@ -32,9 +32,11 @@ const Summary = ({
     ? ledgerData?.filter(data => data.created_at_year === currentYear)
     : null
 
-  const { totalExpense, totalIncome } = useTransformData(currentData)
+  const { totalToMonthExpense, totalToMonthIncome } =
+    useTransformData(currentData)
   const currentCash =
-    (totalIncome ? totalIncome : 0) - (totalExpense ? totalExpense : 0)
+    (totalToMonthIncome ? totalToMonthIncome : 0) -
+    (totalToMonthExpense ? totalToMonthExpense : 0)
 
   const monthTrend = getMonthlyTrend(ledgerData, currentYear)
   const currentMonthexpense = monthTrend[currentMonth].expense
