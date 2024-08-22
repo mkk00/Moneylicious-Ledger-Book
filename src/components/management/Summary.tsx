@@ -9,6 +9,7 @@ import ModalPortal from '@/components/modal/ModalPortal'
 import AssetsSummaryModal from '@/components/modal/AssetsSummaryModal'
 import { parseAmount } from '@/utils/getLedgerUtils'
 import { selectAssetsTarget } from '@/api/assetsApi'
+import { getMonthlyTrend } from '@/utils/getLedgerTrends'
 
 const Summary = ({
   ledgerData,
@@ -26,6 +27,7 @@ const Summary = ({
   const { isOpen, openModal, closeModal } = useModal()
 
   const currentYear = new Date().getFullYear()
+  const currentMonth = new Date().getMonth()
   const currentData = ledgerData
     ? ledgerData?.filter(data => data.created_at_year === currentYear)
     : null
@@ -33,6 +35,9 @@ const Summary = ({
   const { totalExpense, totalIncome } = useTransformData(currentData)
   const currentCash =
     (totalIncome ? totalIncome : 0) - (totalExpense ? totalExpense : 0)
+
+  const monthTrend = getMonthlyTrend(ledgerData, currentYear)
+  const currentMonthexpense = monthTrend[currentMonth].expense
 
   const [assetsAmount, setAssetsAmount] = useState(0)
   const [currentSaving, setCurrentSaving] = useState(0)
@@ -106,7 +111,7 @@ const Summary = ({
         title="한달 소비 계획 설정"
         content={`${assetsTargetData?.expense || 0}원`}
         description={() => {
-          return `현재 지출 금액은 ${totalExpense?.toLocaleString() || '0'}원 입니다.`
+          return `현재 지출 금액은 ${currentMonthexpense?.toLocaleString() || '0'}원 입니다.`
         }}
         onClick={() => openModal('소비')}
       />
