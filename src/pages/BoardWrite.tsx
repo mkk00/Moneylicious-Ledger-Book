@@ -138,7 +138,7 @@ const Container = styled.form<{ $responsive: boolean }>`
 
 const PageTitle = styled.h2`
   text-align: center;
-  margin-top: 100px;
+  margin-top: 20px;
 `
 
 const BoardTitle = styled.div`
@@ -153,8 +153,7 @@ const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
   justify-content: center;
-  margin: 20px auto 0 auto;
-  margin-top: 60px;
+  margin: 90px auto 0 auto;
 `
 
 const ErrorMessage = styled.span`

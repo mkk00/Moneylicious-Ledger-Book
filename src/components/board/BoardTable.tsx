@@ -2,8 +2,10 @@ import { formatDate } from '@/utils/formatDate'
 import styled, { css, useTheme } from 'styled-components'
 import { BoardListProps } from '@/interface/BoardProps'
 import { NavLink } from 'react-router-dom'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
+  const { isMobile, isDesktopOrLaptop } = useResponsive()
   const today = new Date()
   const { color } = useTheme()
 
@@ -19,24 +21,26 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
   })
 
   return (
-    <Table>
+    <Table $isMobile={isMobile}>
       <Thead>
         <tr>
-          <Th $width="md">No</Th>
-          <Th $width="md">태그</Th>
+          {!isMobile && <Th $width={isMobile ? 'ss' : 'md'}>No</Th>}
+          <Th $width={isMobile ? 'sm' : 'md'}>태그</Th>
           <Th $width="wide">제목</Th>
-          <Th $width="lg">작성자</Th>
+          <Th $width={isMobile ? 'md' : 'lg'}>작성자</Th>
           <Th $width="md">작성일</Th>
-          <Th $width="md">추천수</Th>
-          <Th $width="md">조회수</Th>
+          <Th $width={isMobile ? 'ss' : 'md'}>추천수</Th>
+          <Th $width={isMobile ? 'ss' : 'md'}>조회수</Th>
         </tr>
       </Thead>
-      <Tbody>
+      <Tbody $isDesktopOrLaptop={isDesktopOrLaptop}>
         {post?.map(item => (
           <tr key={item.board_id}>
-            <td>{item.board_id}</td>
+            {!isMobile && <td>{item.board_id}</td>}
             <td>{item.tag}</td>
-            <Title onClick={handleScrollToTop}>
+            <Title
+              onClick={handleScrollToTop}
+              $isMobile={isMobile}>
               <NavLink
                 to={`/board/${item.board_id}`}
                 state={{ item }}
@@ -49,7 +53,7 @@ const BoardTable = ({ post }: { post?: BoardListProps[] | null }) => {
                 </span>
               </NavLink>
             </Title>
-            <Name>{item.user_name}</Name>
+            <Name $isMobile={isMobile}>{item.user_name}</Name>
             <WriteDate>
               {formatDate(new Date(item.created_at)) === formatDate(today)
                 ? '오늘'
@@ -74,22 +78,27 @@ const spanStyle = css`
 const omiss = css`
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 `
 
 const widthSize = {
-  sm: '50px',
-  md: '90px',
+  ss: '35px',
+  sm: '55px',
+  md: '80px',
   lg: '150px',
   wide: 'auto'
 }
 
-const Table = styled.table`
+const Table = styled.table<{ $isMobile: boolean }>`
   text-align: center;
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
   border-bottom: 1px solid ${({ theme }) => theme.gray.gray_100};
+
+  & th {
+    padding: ${({ $isMobile }) => ($isMobile ? '10px 0px' : '10px')};
+    font-size: ${({ $isMobile }) => ($isMobile ? '0.7rem' : '0.8rem')};
+  }
 `
 
 const Thead = styled.thead`
@@ -97,27 +106,32 @@ const Thead = styled.thead`
 `
 
 const Th = styled.th<{ $width?: string }>`
-  padding: 10px;
   font-weight: normal;
-  font-size: 0.8rem;
 
   width: ${({ $width }) =>
+    ($width === 'ss' && widthSize.ss) ||
     ($width === 'sm' && widthSize.sm) ||
     ($width === 'md' && widthSize.md) ||
     ($width === 'lg' && widthSize.lg) ||
     ($width === 'wide' && widthSize.wide)};
 `
 
-const Tbody = styled.tbody`
+const Tbody = styled.tbody<{ $isDesktopOrLaptop: boolean }>`
   width: 100%;
+  font-size: ${({ $isDesktopOrLaptop }) =>
+    $isDesktopOrLaptop ? '0.9rem' : '0.7rem'};
+
   & td {
-    padding: 3px 10px;
+    padding: ${({ $isDesktopOrLaptop }) =>
+      $isDesktopOrLaptop ? '3px 10px' : '3px 0px'};
   }
-  font-size: 0.9rem;
 `
 
-const Title = styled.td`
+const Title = styled.td<{ $isMobile: boolean }>`
   ${omiss}
+  white-space: ${({ $isMobile }) => ($isMobile ? 'wrap' : 'nowrap')};
+  line-height: ${({ $isMobile }) => $isMobile && '1.5'};
+  font-size: ${({ $isMobile }) => $isMobile && '0.8rem'};
   text-align: start;
 
   & span {
@@ -125,8 +139,9 @@ const Title = styled.td`
   }
 `
 
-const Name = styled.td`
+const Name = styled.td<{ $isMobile: boolean }>`
   ${omiss}
+  white-space: ${({ $isMobile }) => ($isMobile ? 'wrap' : 'nowrap')};
   line-height: 44px;
 `
 

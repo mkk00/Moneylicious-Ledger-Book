@@ -10,6 +10,7 @@ import {
   AssetsDataItemProps
 } from '@/interface/AssetsProps'
 import { parseAmount } from '@/utils/getLedgerUtils'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const AssetsDetailList = ({
   assetsData,
@@ -18,6 +19,7 @@ const AssetsDetailList = ({
   assetsData: AssetsProps[] | null
   fetchAssetsData: () => Promise<void>
 }) => {
+  const { isMobile } = useResponsive()
   const { isOpen, openModal, closeModal } = useModal()
 
   const [detailData, setdetailData] = useState<AssetsDataProps | null>(null)
@@ -64,7 +66,7 @@ const AssetsDetailList = ({
   useEffect(() => {}, [modalType])
 
   return (
-    <Container>
+    <Container $isMobile={isMobile}>
       <Title>내 자산 목록</Title>
       <Wrapper>
         {detailData &&
@@ -124,9 +126,10 @@ const AssetsDetailList = ({
 
 export default AssetsDetailList
 
-const Container = styled.div`
-  width: 600px;
-  margin: 50px auto;
+const Container = styled.div<{ $isMobile: boolean }>`
+  width: ${({ $isMobile }) => ($isMobile ? '100%' : '600px')};
+  margin: 50px auto 0 auto;
+  padding: ${({ $isMobile }) => $isMobile && '20px'};
 `
 const Title = styled.div`
   font-size: 1.4rem;

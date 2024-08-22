@@ -10,6 +10,7 @@ import AssetsSummaryModal from '@/components/modal/AssetsSummaryModal'
 import { parseAmount } from '@/utils/getLedgerUtils'
 import { selectAssetsTarget } from '@/api/assetsApi'
 import { getMonthlyTrend } from '@/utils/getLedgerTrends'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const Summary = ({
   ledgerData,
@@ -24,6 +25,7 @@ const Summary = ({
   setOpenAssets: Dispatch<SetStateAction<boolean>>
   fetchAssetsData: () => Promise<void>
 }) => {
+  const { isMobile } = useResponsive()
   const { isOpen, openModal, closeModal } = useModal()
 
   const currentYear = new Date().getFullYear()
@@ -88,7 +90,7 @@ const Summary = ({
   }, [assetsData])
 
   return (
-    <Wrapper>
+    <Wrapper $isMobile={isMobile}>
       <SummaryCard
         title="현금"
         content={`${currentCash.toLocaleString() || 0}원`}
@@ -151,8 +153,9 @@ const Summary = ({
 
 export default Summary
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isMobile: boolean }>`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: ${({ $isMobile }) =>
+    $isMobile ? 'repeat(1, 1fr)' : 'repeat(2, 1fr)'};
   gap: 30px;
 `

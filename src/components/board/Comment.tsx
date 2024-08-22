@@ -16,6 +16,7 @@ import DefaultProfile from '../userInfo/DefaultProfile'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const Comment = ({
   boardData,
@@ -24,6 +25,7 @@ const Comment = ({
   boardData: BoardListProps
   handleUpdate: () => void
 }) => {
+  const { isMobile } = useResponsive()
   const { userInfo } = useAuthStore()
   const { register, reset, handleSubmit, setValue } =
     useForm<CommentTextProps>()
@@ -196,7 +198,7 @@ const Comment = ({
   }, [boardData.id])
 
   return (
-    <Container>
+    <Container $isMobile={isMobile}>
       <div>
         댓글 {commentData ? commentData.length : 0}개
         {commentData && renderComments(commentData, null)}
@@ -261,8 +263,9 @@ const Comment = ({
 
 export default Comment
 
-const Container = styled.div`
+const Container = styled.div<{ $isMobile: boolean }>`
   margin: 50px 0;
+  padding: ${({ $isMobile }) => $isMobile && '0 20px'};
 `
 
 const CommentList = styled.div<{ $isRecomment?: boolean }>`

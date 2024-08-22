@@ -11,8 +11,10 @@ import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
 import Comment from '@/components/board/Comment'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const BoardDetail = () => {
+  const { isMobile } = useResponsive()
   const { handleUpdate } = useOutletContext<{ handleUpdate: () => void }>()
   const location = useLocation()
   const { item } = location.state || {}
@@ -130,9 +132,9 @@ const BoardDetail = () => {
 
   return (
     <>
-      <BoardContainer>
+      <BoardContainer $isMobile={isMobile}>
         <Detailheader>
-          <Top>
+          <Top $isMobile={isMobile}>
             <Title>
               {item.title}
               {item.comments_count ? ' [' + item.comments_count + ']' : null}
@@ -200,8 +202,8 @@ const flexStyle = css`
   gap: 20px;
 `
 
-const BoardContainer = styled.div`
-  margin: 50px 0;
+const BoardContainer = styled.div<{ $isMobile: boolean }>`
+  margin: ${({ $isMobile }) => ($isMobile ? '50px 20px' : '50px 0')};
   border-bottom: 1px solid ${({ theme }) => theme.gray.gray_200};
 `
 
@@ -211,8 +213,16 @@ const Detailheader = styled.div`
   padding: 20px 10px;
 `
 
-const Top = styled.span`
+const Top = styled.span<{ $isMobile: boolean }>`
   ${flexStyle}
+
+  ${({ $isMobile }) =>
+    $isMobile &&
+    css`
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    `}
 `
 
 const Bottom = styled.div`

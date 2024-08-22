@@ -3,12 +3,15 @@ import { LedgerProps } from '@/interface/LedgerProps'
 import { useState } from 'react'
 import SelectBox from '@/components/input/SelectBox'
 import { getUniqueYears } from '@/utils/getLedgerUtils'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const LedgerDetailList = ({
   ledgerData
 }: {
   ledgerData: LedgerProps[] | null
 }) => {
+  const { isMobile } = useResponsive()
+
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().getMonth() + 1
 
@@ -54,7 +57,7 @@ const LedgerDetailList = ({
     )
 
   return (
-    <Container>
+    <Container $isMobile={isMobile}>
       <Title>
         현금 이용 내역
         <SelectWrapper>
@@ -103,9 +106,10 @@ const LedgerDetailList = ({
 
 export default LedgerDetailList
 
-const Container = styled.div`
-  width: 600px;
-  margin: 50px auto;
+const Container = styled.div<{ $isMobile: boolean }>`
+  width: ${({ $isMobile }) => ($isMobile ? '100%' : '600px')};
+  margin: 50px auto 0 auto;
+  padding: ${({ $isMobile }) => $isMobile && '20px'};
 `
 
 const Title = styled.div`

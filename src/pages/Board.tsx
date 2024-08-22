@@ -13,8 +13,10 @@ import ModalPortal from '@/components/modal/ModalPortal'
 import LoginModal from '@/components/modal/LoginModal'
 import useAuthStore from '@/store/useAuthStore'
 import MetaTags from '@/components/common/MetaTag'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const Board = () => {
+  const { isMobile } = useResponsive()
   const { userInfo } = useAuthStore()
   const navigate = useNavigate()
   const theme = useTheme()
@@ -112,7 +114,7 @@ const Board = () => {
         ))}
       </CategoryList>
       <Outlet context={{ handleUpdate }} />
-      <PostHeader>
+      <PostHeader $isMobile={isMobile}>
         <span>전체 {boardData ? boardData.length : 0}개</span>
         <Button
           type="button"
@@ -154,7 +156,7 @@ const buttonStyle = css`
 
 const PageTitle = styled.h2`
   text-align: center;
-  margin-top: 100px;
+  padding: 20px 0;
 `
 
 const CategoryList = styled.ul`
@@ -169,10 +171,11 @@ const List = styled.li`
   ${buttonStyle}
 `
 
-const PostHeader = styled.div`
+const PostHeader = styled.div<{ $isMobile: boolean }>`
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+  padding: ${({ $isMobile }) => $isMobile && '0 10px'};
 
   & span {
     font-size: 0.9rem;

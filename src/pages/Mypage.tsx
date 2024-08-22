@@ -287,7 +287,7 @@ export default Mypage
 const Container = styled.div<{ $isMobile?: boolean }>`
   width: ${({ $isMobile }) => ($isMobile ? '100%' : '400px')};
   padding: ${({ $isMobile }) => ($isMobile ? '0 30px' : '0')};
-  margin: ${({ $isMobile }) => ($isMobile ? '100px auto' : '130px auto')};
+  margin: 0 auto;
 `
 
 const Title = styled.div`
@@ -296,6 +296,7 @@ const Title = styled.div`
   font-weight: bold;
   font-size: 1.8rem;
   margin-bottom: 30px;
+  padding: 20px 0;
 `
 
 const InputWrapper = styled.form`
