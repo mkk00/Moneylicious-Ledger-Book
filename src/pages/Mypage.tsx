@@ -145,7 +145,7 @@ const Mypage = () => {
 
     return (
       <NoProfileImage
-        src="/public/moneylicious.svg"
+        src="/moneylicious.svg"
         alt="uploadImage"
       />
     )
