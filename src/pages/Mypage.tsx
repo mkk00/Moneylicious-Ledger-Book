@@ -124,6 +124,33 @@ const Mypage = () => {
     validate: mypageValidation
   })
 
+  const renderProfilImage = () => {
+    if (previewImg) {
+      return (
+        <img
+          src={previewImg}
+          alt="uploadImage"
+        />
+      )
+    }
+
+    if (userInfo?.image_url) {
+      return (
+        <img
+          src={userInfo?.image_url}
+          alt="uploadImage"
+        />
+      )
+    }
+
+    return (
+      <NoProfileImage
+        src="/moneylicious.svg"
+        alt="uploadImage"
+      />
+    )
+  }
+
   useEffect(() => {
     if (!edit) {
       delete errors.name
@@ -145,20 +172,9 @@ const Mypage = () => {
           <InputRows>
             프로필
             <Profile>
-              {previewImg && (
-                <img
-                  src={previewImg}
-                  alt="uploadImage"
-                />
-              )}
-              {!previewImg && (
-                <img
-                  src={userInfo?.image_url}
-                  alt="uploadImage"
-                />
-              )}
+              {renderProfilImage()}
               {edit && (
-                <UploadIcon edit={edit}>
+                <UploadIcon>
                   <FaCloudUploadAlt size={35} />
                 </UploadIcon>
               )}
@@ -247,7 +263,10 @@ const Mypage = () => {
                 text="취소"
                 type="button"
                 size="small"
-                onClick={() => setEdit(false)}
+                onClick={() => {
+                  setEdit(false)
+                  setPreviewImg(null)
+                }}
               />
               <Button
                 text="수정완료"
@@ -268,7 +287,7 @@ export default Mypage
 const Container = styled.div<{ $isMobile?: boolean }>`
   width: ${({ $isMobile }) => ($isMobile ? '100%' : '400px')};
   padding: ${({ $isMobile }) => ($isMobile ? '0 30px' : '0')};
-  margin: ${({ $isMobile }) => ($isMobile ? '100px auto' : '130px auto')};
+  margin: 0 auto;
 `
 
 const Title = styled.div`
@@ -277,6 +296,7 @@ const Title = styled.div`
   font-weight: bold;
   font-size: 1.8rem;
   margin-bottom: 30px;
+  padding: 20px 0;
 `
 
 const InputWrapper = styled.form`
@@ -351,7 +371,13 @@ const Profile = styled.label`
   }
 `
 
-const UploadIcon = styled.div<{ edit?: boolean }>`
+const NoProfileImage = styled.img`
+  width: 70%;
+  height: 70%;
+  filter: brightness(1000%);
+`
+
+const UploadIcon = styled.div`
   position: absolute;
   top: 0;
   left: 0;

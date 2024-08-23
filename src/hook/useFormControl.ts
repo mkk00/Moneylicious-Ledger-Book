@@ -9,6 +9,7 @@ export interface FormValues {
   category: string
   means: string
   memo?: string
+  fixed_amount: boolean
 }
 
 interface FormProps {

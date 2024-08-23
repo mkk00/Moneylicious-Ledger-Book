@@ -8,8 +8,10 @@ import AuthButton from '@/components/button/AuthButton'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '@/store/useAuthStore'
 import { useEffect } from 'react'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const LoginRequired = () => {
+  const { isDesktopOrLaptop } = useResponsive()
   const { isOpen, openModal, closeModal } = useModal()
   const navigate = useNavigate()
   const { isLogin, userInfo } = useAuthStore()
@@ -23,7 +25,7 @@ const LoginRequired = () => {
 
   return (
     <PageLayout>
-      <Container>
+      <Container $isDesktopOrLaptop={isDesktopOrLaptop}>
         <RiLoginBoxLine size={40} />
         <Title>로그인이 필요한 서비스입니다.</Title>
         <span>
@@ -58,9 +60,9 @@ const LoginRequired = () => {
 
 export default LoginRequired
 
-const Container = styled.div`
+const Container = styled.div<{ $isDesktopOrLaptop: boolean }>`
   margin: 120px auto;
-  width: 500px;
+  width: ${({ $isDesktopOrLaptop }) => ($isDesktopOrLaptop ? '500px' : '100%')};
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -2,57 +2,52 @@ import SummaryCard from '@/components/dashBoard/SummaryCard'
 import styled from 'styled-components'
 import { LedgerProps } from '@/interface/LedgerProps'
 import { useTransformData } from '@/hook/useTransformData'
-import { supabase } from '@/supabaseconfig'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { AssetsProps, AssetsTargetProps } from '@/interface/AssetsProps'
 import useModal from '@/hook/useModal'
 import ModalPortal from '@/components/modal/ModalPortal'
 import AssetsSummaryModal from '@/components/modal/AssetsSummaryModal'
 import { parseAmount } from '@/utils/getLedgerUtils'
+import { selectAssetsTarget } from '@/api/assetsApi'
+import { getMonthlyTrend } from '@/utils/getLedgerTrends'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const Summary = ({
   ledgerData,
+  assetsData,
   setOpenCash,
-  setOpenAssets
+  setOpenAssets,
+  fetchAssetsData
 }: {
   ledgerData: LedgerProps[] | null
+  assetsData: AssetsProps[] | null
   setOpenCash: Dispatch<SetStateAction<boolean>>
   setOpenAssets: Dispatch<SetStateAction<boolean>>
+  fetchAssetsData: () => Promise<void>
 }) => {
+  const { isMobile } = useResponsive()
   const { isOpen, openModal, closeModal } = useModal()
 
   const currentYear = new Date().getFullYear()
+  const currentMonth = new Date().getMonth()
   const currentData = ledgerData
     ? ledgerData?.filter(data => data.created_at_year === currentYear)
     : null
 
-  const { totalExpense, totalIncome } = useTransformData(currentData)
+  const { totalToMonthExpense, totalToMonthIncome } =
+    useTransformData(currentData)
   const currentCash =
-    (totalIncome ? totalIncome : 0) - (totalExpense ? totalExpense : 0)
+    (totalToMonthIncome ? totalToMonthIncome : 0) -
+    (totalToMonthExpense ? totalToMonthExpense : 0)
 
-  const [assetsData, setAssetsData] = useState<AssetsProps[] | null>(null)
+  const monthTrend = getMonthlyTrend(ledgerData, currentYear)
+  const currentMonthexpense = monthTrend[currentMonth].expense
+
   const [assetsAmount, setAssetsAmount] = useState(0)
   const [currentSaving, setCurrentSaving] = useState(0)
 
   const [assetsTargetData, setAssetsTargetData] =
     useState<AssetsTargetProps | null>(null)
-
-  const getIlliquidAssetsData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('assets')
-        .select('*')
-        .eq('type', '비유동자산')
-        .returns<AssetsProps[] | null>()
-
-      if (data) {
-        setAssetsData(data)
-      }
-      if (error) throw error
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   const getSavingMoney = () => {
     const total = ledgerData?.reduce((acc, obj) => {
@@ -65,41 +60,37 @@ const Summary = ({
     total && setCurrentSaving(total)
   }
 
-  const getAssetsData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('assetsTarget')
-        .select()
-        .returns<AssetsTargetProps[] | null>()
-      if (data) {
-        setAssetsTargetData(data[0])
-      }
-      if (error) throw error
-    } catch (error) {
-      console.error(error)
+  const getAssetsTargetData = async () => {
+    const data = await selectAssetsTarget()
+    if (data) {
+      setAssetsTargetData(data[0])
     }
   }
 
-  useEffect(() => {
-    getIlliquidAssetsData()
-    getSavingMoney()
-  }, [ledgerData])
-
-  useEffect(() => {
-    getAssetsData()
-  }, [])
-
-  useEffect(() => {
+  const getTotalAssetsAmount = (assetsData: AssetsProps[] | null) => {
     if (assetsData) {
       const total = assetsData.reduce((acc, obj) => {
         return acc + parseAmount(obj.amount)
       }, 0)
       setAssetsAmount(total)
     }
+  }
+
+  useEffect(() => {
+    fetchAssetsData()
+    getSavingMoney()
+  }, [ledgerData])
+
+  useEffect(() => {
+    getAssetsTargetData()
+  }, [])
+
+  useEffect(() => {
+    getTotalAssetsAmount(assetsData)
   }, [assetsData])
 
   return (
-    <Wrapper>
+    <Wrapper $isMobile={isMobile}>
       <SummaryCard
         title="현금"
         content={`${currentCash.toLocaleString() || 0}원`}
@@ -124,7 +115,7 @@ const Summary = ({
         title="한달 소비 계획 설정"
         content={`${assetsTargetData?.expense || 0}원`}
         description={() => {
-          return `현재 지출 금액은 ${totalExpense?.toLocaleString() || '0'}원 입니다.`
+          return `현재 지출 금액은 ${currentMonthexpense?.toLocaleString() || '0'}원 입니다.`
         }}
         onClick={() => openModal('소비')}
       />
@@ -141,7 +132,7 @@ const Summary = ({
           <AssetsSummaryModal
             type="소비"
             assetsTargetData={assetsTargetData}
-            getAssetsData={getAssetsData}
+            getAssetsTargetData={getAssetsTargetData}
             closeModal={() => closeModal('소비')}
           />
         </ModalPortal>
@@ -151,7 +142,7 @@ const Summary = ({
           <AssetsSummaryModal
             type="저축"
             assetsTargetData={assetsTargetData}
-            getAssetsData={getAssetsData}
+            getAssetsTargetData={getAssetsTargetData}
             closeModal={() => closeModal('저축')}
           />
         </ModalPortal>
@@ -162,8 +153,9 @@ const Summary = ({
 
 export default Summary
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isMobile: boolean }>`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: ${({ $isMobile }) =>
+    $isMobile ? 'repeat(1, 1fr)' : 'repeat(2, 1fr)'};
   gap: 30px;
 `

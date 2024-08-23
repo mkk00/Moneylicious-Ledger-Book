@@ -10,12 +10,12 @@ import { AssetsTargetProps } from '@/interface/AssetsProps'
 const AssetsSummaryModal = ({
   closeModal,
   assetsTargetData,
-  getAssetsData,
+  getAssetsTargetData,
   type
 }: {
   closeModal: (key: string) => void
   assetsTargetData: AssetsTargetProps | null
-  getAssetsData: () => Promise<void>
+  getAssetsTargetData: () => Promise<void>
   type: '소비' | '저축'
 }) => {
   const [inputValue, setInputValue] = useState('')
@@ -34,41 +34,37 @@ const AssetsSummaryModal = ({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    try {
-      const insertData = {
-        user_id: userInfo?.id,
-        email: userInfo?.email,
-        ...(type === '소비' && { expense: inputValue }),
-        ...(type === '저축' && { saving: inputValue })
+    const insertData = {
+      user_id: userInfo?.id,
+      email: userInfo?.email,
+      ...(type === '소비' && { expense: inputValue }),
+      ...(type === '저축' && { saving: inputValue })
+    }
+    if (!assetsTargetData) {
+      const { data, error } = await supabase
+        .from('assetsTarget')
+        .insert(insertData)
+        .select('*')
+        .returns<AssetsTargetProps | null>()
+      if (data) {
+        alert('목표 설정이 완료되었습니다.')
+        getAssetsTargetData()
+        closeModal(type)
       }
-      if (!assetsTargetData) {
-        const { data, error } = await supabase
-          .from('assetsTarget')
-          .insert(insertData)
-          .select('*')
-          .returns<AssetsTargetProps | null>()
-        if (data) {
-          alert('목표 설정이 완료되었습니다.')
-          getAssetsData()
-          closeModal(type)
-        }
-        if (error) throw error
-      } else {
-        const { data, error } = await supabase
-          .from('assetsTarget')
-          .update(insertData)
-          .eq('user_id', userInfo?.id)
-          .select('*')
-          .returns<AssetsTargetProps | null>()
-        if (data) {
-          alert('목표 설정이 수정되었습니다.')
-          getAssetsData()
-          closeModal(type)
-        }
-        if (error) throw error
+      if (error) throw error
+    } else {
+      const { data, error } = await supabase
+        .from('assetsTarget')
+        .update(insertData)
+        .eq('user_id', userInfo?.id)
+        .select('*')
+        .returns<AssetsTargetProps | null>()
+      if (data) {
+        alert('목표 설정이 수정되었습니다.')
+        getAssetsTargetData()
+        closeModal(type)
       }
-    } catch (error) {
-      console.error(error)
+      if (error) throw error
     }
   }
 

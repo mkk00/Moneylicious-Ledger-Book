@@ -18,13 +18,16 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
 export default PageLayout
 
 const Container = styled.div<{ $isDesktopOrLaptop: boolean }>`
+  display: flex;
+  flex-direction: column;
   width: ${({ $isDesktopOrLaptop }) =>
     $isDesktopOrLaptop ? '100vw' : 'inherit'};
-  height: auto;
+  min-height: 100vh;
 `
 
 const Main = styled.main<{ $isDesktopOrLaptop: boolean }>`
   width: ${({ $isDesktopOrLaptop }) =>
     $isDesktopOrLaptop ? '1200px' : '100%'};
   margin: 80px auto 180px auto;
+  flex: 1;
 `

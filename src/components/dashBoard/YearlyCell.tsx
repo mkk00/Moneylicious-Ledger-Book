@@ -23,6 +23,9 @@ const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
   const currYearData = yearlyData.find(data => data.year === selectYear)
   const prevYearData = yearlyData.find(data => data.year === selectYear - 1)
 
+  const isPrevYearData = yearList.includes(selectYear - 1)
+  const isCurrYearData = yearList.includes(selectYear)
+
   let yearExpenseDiff = '0원'
   let yearIncomeDiff = '0원'
 
@@ -33,14 +36,25 @@ const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
     yearIncomeDiff = transUnitOfAmount(
       currYearData.income - prevYearData.income
     )
+  } else if (currYearData && !prevYearData) {
+    yearExpenseDiff = Number(currYearData?.expense).toLocaleString()
+    yearIncomeDiff = Number(currYearData?.income).toLocaleString()
   }
 
   const series = [
     {
       name: type,
       data: [
-        type === '지출' ? prevYearData?.expense : prevYearData?.income,
-        type === '지출' ? currYearData?.expense : currYearData?.income
+        isPrevYearData
+          ? type === '지출'
+            ? prevYearData?.expense
+            : prevYearData?.income
+          : 0,
+        isCurrYearData
+          ? type === '지출'
+            ? currYearData?.expense
+            : currYearData?.income
+          : 0
       ]
     }
   ]
@@ -70,11 +84,11 @@ const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           items={typeList}
         />
       </SelectWrapper>
-      {extractNumbers(yearExpenseDiff) !== 0 && (
+      {(isPrevYearData || isCurrYearData) && (
         <>
           <YearSummary $type={type}>
             {selectYear - 1} 년도보다
-            <span>{type === '지출' ? yearExpenseDiff : yearIncomeDiff}</span>
+            <span>{type === '지출' ? yearExpenseDiff : yearIncomeDiff} 원</span>
             {type === '지출'
               ? extractNumbers(yearExpenseDiff) > 0
                 ? ' 더 지출'
@@ -94,7 +108,7 @@ const YearlyCell = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
           </Wrapper>
         </>
       )}
-      {extractNumbers(yearExpenseDiff) === 0 && (
+      {!isPrevYearData && !isCurrYearData && (
         <NoData>데이터가 없습니다.</NoData>
       )}
     </Container>

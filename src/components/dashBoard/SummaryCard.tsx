@@ -38,6 +38,7 @@ const Description = styled.span`
 
 const Container = styled.div`
   width: 300px;
+  min-height: 180px;
   display: flex;
   gap: 20px;
   flex-direction: column;

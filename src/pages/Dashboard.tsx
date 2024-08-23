@@ -9,6 +9,7 @@ import useAuthStore from '@/store/useAuthStore'
 import Summary from '@/components/dashBoard/Summary'
 import MetaTags from '@/components/common/MetaTag'
 import { useNavigate } from 'react-router-dom'
+import NoData from '@/components/common/NoData'
 
 const Dashboard = () => {
   const { userInfo } = useAuthStore()
@@ -23,10 +24,8 @@ const Dashboard = () => {
     try {
       const { data, error } = await supabase.from('ledger').select('*')
 
-      if (data) {
+      if (data && data?.length > 0) {
         setLedgerData(data)
-      } else {
-        setLedgerData(null)
       }
       if (error) throw error
     } catch (error) {
@@ -49,22 +48,27 @@ const Dashboard = () => {
         description="가계부 내역을 차트를 통해 한눈에 확인해보세요."
         url="https://moneylicious.vercel.app/dashboard"
       />
-      <Summary ledgerData={ledgerData} />
-      <MonthlyChart
-        ledgerData={ledgerData}
-        selectYear={selectYear}
-        setSelectYear={setSelectYear}
-        setSelectMonth={setSelectMonth}
-        type={type}
-        setType={setType}
-      />
-      <CategoryChart
-        ledgerData={ledgerData}
-        selectMonth={selectMonth}
-        setSelectMonth={setSelectMonth}
-      />
-      <YearlyCell ledgerData={ledgerData} />
-      <CategoryChart ledgerData={ledgerData} />
+      {ledgerData && (
+        <>
+          <Summary ledgerData={ledgerData} />
+          <MonthlyChart
+            ledgerData={ledgerData}
+            selectYear={selectYear}
+            setSelectYear={setSelectYear}
+            setSelectMonth={setSelectMonth}
+            type={type}
+            setType={setType}
+          />
+          <CategoryChart
+            ledgerData={ledgerData}
+            selectMonth={selectMonth}
+            setSelectMonth={setSelectMonth}
+          />
+          <YearlyCell ledgerData={ledgerData} />
+          <CategoryChart ledgerData={ledgerData} />
+        </>
+      )}
+      {!ledgerData && <NoData />}
     </PageLayout>
   )
 }

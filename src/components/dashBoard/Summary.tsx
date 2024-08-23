@@ -2,8 +2,10 @@ import styled from 'styled-components'
 import SummaryCard from './SummaryCard'
 import { LedgerProps } from '@/interface/LedgerProps'
 import { useTransformData } from '@/hook/useTransformData'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
+  const { isMobile } = useResponsive()
   const currentYear = new Date().getFullYear()
   const currentData = ledgerData
     ? ledgerData?.filter(data => data.created_at_year === currentYear)
@@ -80,7 +82,7 @@ const Summary = ({ ledgerData }: { ledgerData: LedgerProps[] | null }) => {
   return (
     <Container>
       <Title>가계부 요약</Title>
-      <Wrapper>
+      <Wrapper $isMobile={isMobile}>
         {title_content.map(content => (
           <SummaryCard
             key={content.id}
@@ -110,8 +112,9 @@ const Title = styled.div`
   font-weight: bold;
 `
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isMobile: boolean }>`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: ${({ $isMobile }) =>
+    $isMobile ? 'repeat(1, 1fr)' : 'repeat(2, 1fr)'};
   gap: 30px;
 `

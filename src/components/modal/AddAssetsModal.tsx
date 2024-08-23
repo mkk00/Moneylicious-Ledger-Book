@@ -12,20 +12,22 @@ import SelectBox from '@/components/input/SelectBox'
 import { FormRow, Input } from '@/components/input/FormRow'
 import Button from '@/components/button/Button'
 import useAuthStore from '@/store/useAuthStore'
-import { supabase } from '@/supabaseconfig'
 import { AssetsDataItemProps } from '@/interface/AssetsProps'
+import { insertAsset, updateAsset, deleteAsset } from '@/api/assetsApi'
 
 const AddAssetsModal = ({
   closeModal,
+  selectList,
   modalType,
   setModalType,
-  getAssetsData,
+  fetchAssetsData,
   editAssetData
 }: {
   closeModal: () => void
+  selectList: string[]
   modalType: 'add' | 'edit' | null
   setModalType: Dispatch<SetStateAction<'add' | 'edit' | null>>
-  getAssetsData: () => Promise<void>
+  fetchAssetsData: () => Promise<void>
   editAssetData: AssetsDataItemProps | null
 }) => {
   const { userInfo } = useAuthStore()
@@ -35,7 +37,6 @@ const AddAssetsModal = ({
   const [selectType, setSelectType] = useState('저축')
   const [titleValue, setTitleValue] = useState('')
   const [inputValue, setInputValue] = useState('')
-  const selectList = ['저축', '보험', '투자']
 
   const handleInputTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitleValue(e.target.value)
@@ -53,72 +54,41 @@ const AddAssetsModal = ({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    try {
-      if (modalType) {
-        const insertData = {
-          type: '비유동자산',
-          name: selectType,
-          amount: inputValue,
-          title: titleValue,
-          updated_at: new Date()
-        }
-        const { data, error } = await supabase
-          .from('assets')
-          .update(insertData)
-          .eq('user_id', userInfo?.id)
-          .eq('id', editAssetData?.id)
-          .select()
-
-        if (data) {
-          alert('수정되었습니다.')
-          getAssetsData()
-          closeModal()
-          setModalType(null)
-        }
-
-        if (error) throw error
-      } else {
-        const insertData = {
-          user_id: userInfo?.id,
-          email: userInfo?.email,
-          type: '비유동자산',
-          name: selectType,
-          amount: inputValue,
-          title: titleValue
-        }
-        const { data, error } = await supabase
-          .from('assets')
-          .insert(insertData)
-          .select()
-
-        if (data) {
-          alert('추가되었습니다.')
-          getAssetsData()
-          closeModal()
-        }
-
-        if (error) throw error
-      }
-    } catch (error) {
-      console.error(error)
+    if (modalType === 'edit' && editAssetData?.id) {
+      const data = await updateAsset(editAssetData?.id, {
+        type: '비유동자산',
+        name: selectType,
+        amount: inputValue,
+        title: titleValue,
+        updated_at: new Date().toISOString()
+      })
+      if (data) alert('수정되었습니다.')
     }
+
+    if (modalType === 'add') {
+      const data = await insertAsset({
+        user_id: userInfo?.id,
+        email: userInfo?.email,
+        type: '비유동자산',
+        name: selectType,
+        amount: inputValue,
+        title: titleValue
+      })
+      if (data) alert('추가되었습니다.')
+    }
+
+    fetchAssetsData()
+    setModalType(null)
+    closeModal()
   }
 
   const handleRemoveAsset = async () => {
-    try {
-      const { error } = await supabase
-        .from('assets')
-        .delete()
-        .eq('id', editAssetData?.id)
-
+    if (editAssetData?.id) {
+      await deleteAsset(editAssetData.id)
       alert('삭제되었습니다.')
-      getAssetsData()
+      fetchAssetsData()
       setModalType(null)
       closeModal()
-
-      if (error) throw error
-    } catch (error) {
-      console.error(error)
     }
   }
 
