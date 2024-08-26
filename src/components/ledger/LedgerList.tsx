@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { supabase } from '@/supabaseconfig'
 import LedgerListItem from '@/components/ledger/LedgerListItem'
 import { LedgerDataProps } from '@/interface/LedgerProps'
 import { FaCircle } from 'react-icons/fa'
@@ -8,12 +7,19 @@ import useDateStore from '@/store/useDateStore'
 import useModal from '@/hook/useModal'
 import AddLedgerModal from '@/components/modal/AddLedgerModal'
 import ModalPortal from '@/components/modal/ModalPortal'
-import { getTotalAmount, calculateSummary } from '@/utils/totalAccount'
+import { calculateSummary } from '@/utils/totalAccount'
+import { getTotalAmount } from '@/api/calendarApi'
 import { getHolidayData } from '@/lib/holiday'
 import { HolidayProps } from '@/interface/HolidayProps'
 import { filterHoliday } from '@/utils/calendarUtils'
 import HolidayList from '@/components/ledger/HolidayList'
 import IconButton from '@/components/button/IconButton'
+import { selectAmountList, selectLedgerItemData } from '@/api/ledgerApi'
+
+const INITIAL_SUMMARY_VALUE = {
+  expense: '0',
+  income: '0'
+}
 
 const LedgerList = () => {
   const { isOpen, openModal, closeModal } = useModal()
@@ -21,10 +27,7 @@ const LedgerList = () => {
   const [summary, setSummary] = useState<{
     expense: string
     income: string
-  } | null>({
-    expense: '0',
-    income: '0'
-  })
+  } | null>(INITIAL_SUMMARY_VALUE)
   const [isEdit, setIsEdit] = useState(false)
   const [editData, setEditData] = useState<LedgerDataProps | null>(null)
   const [holiday, setHoliday] = useState<HolidayProps[] | HolidayProps | null>(
@@ -34,29 +37,15 @@ const LedgerList = () => {
     HolidayProps[] | HolidayProps | null
   >(null)
 
-  const selectedDate = useDateStore(state => state.selectedDate)
-  const currentDate = useDateStore(state => state.currentDate)
-  const setCurrentDate = useDateStore(state => state.setCurrentDate)
-  const formatSelectedDate = useDateStore(state => state.formatSelectedDate)
+  const { selectedDate, currentDate, setCurrentDate, formatSelectedDate } =
+    useDateStore(state => ({
+      selectedDate: state.selectedDate,
+      currentDate: state.currentDate,
+      setCurrentDate: state.setCurrentDate,
+      formatSelectedDate: state.formatSelectedDate
+    }))
 
-  const getAmountList = async () => {
-    try {
-      if (!selectedDate) return null
-      const { data, error } = await supabase
-        .from('ledger')
-        .select('*')
-        .eq('created_at_year', selectedDate?.getFullYear())
-        .eq('created_at_month', selectedDate?.getMonth() + 1)
-        .eq('created_at_day', selectedDate?.getDate())
-        .returns<LedgerDataProps[] | null>()
-
-      setDataList(data)
-      error && alert(error?.message)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
+  //#region 가계부 내역 추가/수정 모달 관련
   const handleIsOpenAdd = () => {
     openModal('내역추가')
     setCurrentDate(
@@ -69,57 +58,69 @@ const LedgerList = () => {
     setIsEdit(false)
   }
 
-  const getLedgerItemData = async (id: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('ledger')
-        .select('*')
-        .eq('id', id)
-        .returns<LedgerDataProps[] | null>()
-
-      data && setEditData(data[0])
-      error && alert(error.message)
-    } catch (error) {
-      console.error(error)
+  const getEditData = async (id: string) => {
+    const data = await selectLedgerItemData(id)
+    if (data) {
+      setEditData(data)
+      openModal('내역추가')
     }
   }
 
   const handleIsOpenEdit = (id: string) => {
     setIsEdit(true)
-    getLedgerItemData(id).then(() => openModal('내역추가'))
+    getEditData(id)
   }
+  //#endregion
 
-  useEffect(() => {
+  //#region 공휴일 api 관련
+  const fetchHolidays = async () => {
     getHolidayData(currentDate.getFullYear(), currentDate.getMonth()).then(
       res => {
         setHoliday(res.data.response.body.items.item)
       }
     )
-  }, [currentDate.getFullYear(), currentDate.getMonth()])
+  }
 
-  useEffect(() => {
+  const updateSelectedHolidays = () => {
     if (selectedDate && holiday) {
       setSelectHoliday(filterHoliday(holiday, selectedDate))
     }
+  }
+  //#endregion
+
+  //#region 가계부 내역 조회 관련
+  const fetchTotalAmount = async () => {
+    const data = await getTotalAmount(
+      currentDate.getFullYear(),
+      currentDate.getMonth()
+    )
+    if (data) {
+      setSummary(calculateSummary(data))
+    }
+  }
+
+  const fetchDataList = async () => {
+    if (selectedDate) {
+      const data = await selectAmountList(selectedDate)
+      if (data) setDataList(data)
+    }
+  }
+  //#endregion
+
+  useEffect(() => {
+    fetchHolidays()
+  }, [currentDate.getFullYear(), currentDate.getMonth()])
+
+  useEffect(() => {
+    updateSelectedHolidays()
   }, [selectedDate, holiday])
 
   useEffect(() => {
-    const totalAmount = async () => {
-      const data = await getTotalAmount(
-        currentDate.getFullYear(),
-        currentDate.getMonth()
-      )
-      if (data) {
-        const total = calculateSummary(data)
-        setSummary(total)
-      }
-    }
-
-    totalAmount()
+    fetchTotalAmount()
   }, [currentDate.getFullYear(), currentDate.getMonth(), selectHoliday])
 
   useEffect(() => {
-    getAmountList()
+    fetchDataList()
   }, [selectedDate])
 
   return (
@@ -130,7 +131,7 @@ const LedgerList = () => {
             isClose={() => closeModal('내역추가')}
             isEdit={isEdit}
             editData={editData}
-            updateData={getAmountList}
+            updateData={fetchDataList}
           />
         </ModalPortal>
       )}

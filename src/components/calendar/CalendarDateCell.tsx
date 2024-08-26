@@ -6,7 +6,8 @@ import useDateStore from '@/store/useDateStore'
 import { isToday, findHoliday, getCalendarInfo } from '@/utils/calendarUtils'
 import CreateDateItem from '@/components/calendar/CreateDateItem'
 import { DailySummaryProps } from '@/interface/LedgerProps'
-import { getTotalAmount, calculateDailySummary } from '@/utils/totalAccount'
+import { calculateDailySummary } from '@/utils/totalAccount'
+import { getTotalAmount } from '@/api/calendarApi'
 import useAuthStore from '@/store/useAuthStore'
 
 const CalendarDateCell = () => {

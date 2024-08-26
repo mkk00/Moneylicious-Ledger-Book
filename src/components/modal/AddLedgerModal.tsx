@@ -26,7 +26,7 @@ const AddLedgerModal = ({
   isClose: () => void
   isEdit: boolean
   editData: LedgerDataProps | null
-  updateData: () => Promise<null | undefined>
+  updateData: () => Promise<void>
 }) => {
   const { isOpen, openModal, closeModal } = useModal()
   const { userInfo } = useAuthStore()
