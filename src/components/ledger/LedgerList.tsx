@@ -21,7 +21,11 @@ const INITIAL_SUMMARY_VALUE = {
   income: '0'
 }
 
-const LedgerList = () => {
+const LedgerList = ({
+  getDailyTotal
+}: {
+  getDailyTotal: () => Promise<void>
+}) => {
   const { isOpen, openModal, closeModal } = useModal()
   const [dataList, setDataList] = useState<LedgerDataProps[] | null>(null)
   const [summary, setSummary] = useState<{
@@ -132,6 +136,7 @@ const LedgerList = () => {
             isEdit={isEdit}
             editData={editData}
             updateData={fetchDataList}
+            getDailyTotal={getDailyTotal}
           />
         </ModalPortal>
       )}

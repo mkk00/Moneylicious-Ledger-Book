@@ -6,21 +6,23 @@ import useDateStore from '@/store/useDateStore'
 import { isToday, findHoliday, getCalendarInfo } from '@/utils/calendarUtils'
 import CreateDateItem from '@/components/calendar/CreateDateItem'
 import { DailySummaryProps } from '@/interface/LedgerProps'
-import { calculateDailySummary } from '@/utils/totalAccount'
-import { getTotalAmount } from '@/api/calendarApi'
 import useAuthStore from '@/store/useAuthStore'
 
-const CalendarDateCell = () => {
+const CalendarDateCell = ({
+  getDailyTotal,
+  dailyTotalAmount
+}: {
+  getDailyTotal: () => Promise<void>
+  dailyTotalAmount: DailySummaryProps[] | null
+}) => {
   const { isLogin } = useAuthStore()
   const [holiday, setHoliday] = useState<HolidayProps[] | HolidayProps | null>(
     null
   )
-  const [total, setTotal] = useState<DailySummaryProps[] | null>(null)
 
   const selectedDate = useDateStore(state => state.selectedDate)
   const setSelectedDate = useDateStore(state => state.setSelectedDate)
 
-  const currentDate = useDateStore(state => state.currentDate)
   const currentFullDate = useDateStore(state => state.currentDate)
   const currentYear = currentFullDate.getFullYear()
   const currentMonth = currentFullDate.getMonth()
@@ -29,7 +31,8 @@ const CalendarDateCell = () => {
 
   /** 캘린더에서 선택된 날짜를 표시
    *  이미 선택된 날짜를 다시 클릭하면, 선택 해제
-   *  @param {number} date 선택된 날짜의 일
+   *
+   *  @param date 선택된 날짜의 일
    */
   const handleSelectDate = (date: number) => {
     const select = new Date(currentYear, currentMonth, date)
@@ -41,6 +44,7 @@ const CalendarDateCell = () => {
   /** 현재 설정된 연도, 월에 대한 캘린더 데이터 생성
    *  1. 배열을 캘린더가 시작되는 요일 전까지 빈 요소로 채움
    *  2. 실제 날짜를 나타내는 요소들을 배열에 추가
+   *
    * @return JSX.Element[] : 캘린더 데이터의 일자 요소들의 JSX 배열 반환
    */
   const createDateArr = () => {
@@ -68,6 +72,7 @@ const CalendarDateCell = () => {
 
   /** 캘린더 데이터를 주단위로 캘린더로 변환
    *  CalendarWeekArr 배열을 순환하여 7일 단위로 주를 나눔
+   *
    * @return JSX.Element[] : 캘린더의 각 주를 나타내는 JSX 배열 반환
    */
   const createWeekArr = () => {
@@ -83,23 +88,10 @@ const CalendarDateCell = () => {
     return weeksArr
   }
 
-  const getDailyTotal = async () => {
-    const totalAmount = async () => {
-      const data = await getTotalAmount(
-        currentDate.getFullYear(),
-        currentDate.getMonth()
-      )
-      if (data) {
-        const total = calculateDailySummary(data)
-        setTotal(total)
-      }
-    }
-
-    totalAmount()
-  }
-
   const findDailyTotal = (date: number, month: number) => {
-    return total?.find(item => item.date === date && item.month === month)
+    return dailyTotalAmount?.find(
+      item => item.date === date && item.month === month
+    )
   }
 
   useEffect(() => {
