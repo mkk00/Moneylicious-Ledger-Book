@@ -84,7 +84,7 @@ const ProfileImage = styled.div`
 
   svg,
   img {
-    height: 100%;
+    object-fit: contain;
     max-width: 300px;
     max-height: 250px;
   }

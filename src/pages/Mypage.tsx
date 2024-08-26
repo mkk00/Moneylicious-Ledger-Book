@@ -3,21 +3,50 @@ import styled from 'styled-components'
 import { useResponsive } from '@/hook/useMediaQuery'
 import useAuthStore from '@/store/useAuthStore'
 import useAuthForm from '@/hook/useAuthForm'
-import { AuthProps, MypageProps } from '@/interface/AuthProps'
+import { MypageProps, UserInfoProps } from '@/interface/AuthProps'
 import Button from '@/components/button/Button'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
 import mypageValidation from '@/utils/mypageValidation'
-import { FaCloudUploadAlt } from 'react-icons/fa'
-import { supabase, supabaseUrl } from '@/supabaseconfig'
+import { MdOutlineCancel } from 'react-icons/md'
 import MetaTags from '@/components/common/MetaTag'
+import imageCompression from 'browser-image-compression'
+import { getUserInfo } from '@/api/userDataApi'
+import {
+  uploadImage,
+  updateUserProfile,
+  updateMetaData,
+  deleteFolder
+} from '@/api/mypageApi'
+
+const renderProfilImage = (
+  userInfo: UserInfoProps | null,
+  previewImg: string | null
+) => {
+  const url =
+    previewImg === '/moneylicious.svg' || (!previewImg && !userInfo?.image_url)
+      ? '/moneylicious.svg'
+      : previewImg || userInfo?.image_url
+
+  return url ? (
+    <img
+      src={url}
+      alt={url === '/moneylicious.svg' ? 'noImage' : 'uploadImage'}
+    />
+  ) : (
+    <NoProfileImage
+      src="/moneylicious.svg"
+      alt="noImage"
+    />
+  )
+}
 
 const Mypage = () => {
   const { isMobile } = useResponsive()
-  const { userInfo } = useAuthStore()
+  const { userInfo, setUserInfo } = useAuthStore()
 
   const [edit, setEdit] = useState(false)
 
-  const [file, setFile] = useState<File>()
+  const [file, setFile] = useState<File | null>(null)
   const [previewImg, setPreviewImg] = useState<string | null>(null)
 
   const initialValue = {
@@ -27,81 +56,64 @@ const Mypage = () => {
     message: userInfo?.message
   }
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     const imageFile = e.target.files?.[0]
-    setFile(imageFile)
+    const regex = /^[a-zA-Z0-9_.-]+$/
 
-    if (imageFile) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewImg(reader.result as string)
-      }
-      reader.readAsDataURL(imageFile)
-    } else {
-      setPreviewImg(null)
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 400,
+      fileType: 'image/webp'
     }
-  }
 
-  const uploadImage = async (file?: File) => {
-    if (file)
-      try {
-        const { data, error } = await supabase.storage
-          .from('profile')
-          .upload(`${userInfo?.email?.split('@')[0]}/${file.name}`, file, {
-            cacheControl: '3600',
-            upsert: false
-          })
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp']
 
-        error && alert(error.message)
+    if (!imageFile) {
+      setPreviewImg(null)
+      return
+    }
 
-        if (data) return data.path
-        else return null
-      } catch (error) {
-        console.error(error)
-        return null
-      }
-    else return null
-  }
-
-  const updateUserProfile = async (
-    values: MypageProps,
-    imagePath: string | null
-  ) => {
-    const imageUrl = `${supabaseUrl}/storage/v1/object/public/profile/${imagePath}`
-    try {
-      const { data, error } = await supabase
-        .from('userinfo')
-        .update({
-          image_url: imagePath ? imageUrl : userInfo?.image_url,
-          username: values.name,
-          message: values.message
-        })
-        .eq('id', userInfo?.id)
-        .select()
-        .returns<AuthProps | null>()
-
-      error && alert(error.message)
-      return data ? data : null
-    } catch (error) {
-      console.error(error)
+    if (!regex.test(imageFile.name)) {
+      alert('파일명은 영문자, 숫자, -, _, . 만 가능합니다.')
       return null
     }
+
+    if (!validTypes.includes(imageFile?.type)) {
+      alert(
+        '지원하지 않는 파일 형식입니다. JPEG, PNG, WEBP 파일만 업로드 가능합니다.'
+      )
+      setPreviewImg(null)
+      return
+    }
+    try {
+      const compressionFiles = await imageCompression(imageFile, options)
+
+      setFile(compressionFiles)
+      const reader = new FileReader()
+      reader.onloadend = async () => {
+        setPreviewImg(reader.result as string)
+      }
+      reader.readAsDataURL(compressionFiles)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const updateMetaData = async (imagePath: string | null) => {
-    const imageUrl = `${supabaseUrl}/storage/v1/object/public/profile/${imagePath}`
+  const handleCancelIcon = (e: MouseEvent<SVGAElement>) => {
+    e.preventDefault()
+    setFile(null)
+    setPreviewImg('/moneylicious.svg')
+  }
+
+  /** 유저정보 변경 시 store 의 userInfo 업데이트
+   */
+  const updateUserInfo = async () => {
     try {
-      const { data, error } = await supabase.auth.updateUser({
-        password: values.password,
-        data: {
-          user_name: values?.name,
-          message: values?.message,
-          image_url: imagePath ? imageUrl : userInfo?.image_url
-        }
-      })
-      data && setEdit(false)
-      error && alert(error.message)
+      if (userInfo?.id) {
+        const userData = await getUserInfo(userInfo)
+        if (userData) setUserInfo(userData)
+      }
     } catch (error) {
       console.error(error)
     }
@@ -109,9 +121,22 @@ const Mypage = () => {
 
   const onSubmit = async (values: MypageProps) => {
     try {
-      const imagePath: string | null = await uploadImage(file)
-      await updateUserProfile(values, imagePath)
-      await updateMetaData(imagePath)
+      if (!file) return null
+      if (!userInfo?.email) return null
+
+      const userEmail = userInfo.email.split('@')[0]
+      const imagePath: string | null = await uploadImage(userEmail, file)
+
+      if (imagePath) {
+        await updateUserProfile(values, imagePath, userInfo?.id)
+        await updateMetaData(imagePath, values)
+      } else {
+        deleteFolder(userEmail)
+        setFile(null)
+        setPreviewImg(null)
+      }
+
+      updateUserInfo()
     } catch (error) {
       console.error(error)
     }
@@ -123,33 +148,6 @@ const Mypage = () => {
     onSubmit,
     validate: mypageValidation
   })
-
-  const renderProfilImage = () => {
-    if (previewImg) {
-      return (
-        <img
-          src={previewImg}
-          alt="uploadImage"
-        />
-      )
-    }
-
-    if (userInfo?.image_url) {
-      return (
-        <img
-          src={userInfo?.image_url}
-          alt="uploadImage"
-        />
-      )
-    }
-
-    return (
-      <NoProfileImage
-        src="/moneylicious.svg"
-        alt="uploadImage"
-      />
-    )
-  }
 
   useEffect(() => {
     if (!edit) {
@@ -171,11 +169,14 @@ const Mypage = () => {
         <InputWrapper>
           <InputRows>
             프로필
-            <Profile>
-              {renderProfilImage()}
+            <Profile $isEdit={edit}>
+              {renderProfilImage(userInfo, previewImg)}
               {edit && (
                 <UploadIcon>
-                  <FaCloudUploadAlt size={35} />
+                  <MdOutlineCancel
+                    size={35}
+                    onClick={handleCancelIcon}
+                  />
                 </UploadIcon>
               )}
               <input
@@ -344,6 +345,7 @@ const InputRows = styled.div`
     width: 1px;
     height: 1px;
     margin: -1px;
+    z-index: 1;
 
     ::file-selector-button {
       border: none;
@@ -354,12 +356,12 @@ const InputRows = styled.div`
   }
 `
 
-const Profile = styled.label`
+const Profile = styled.label<{ $isEdit: boolean }>`
   width: 200px;
   height: 200px;
   background-color: ${({ theme }) => theme.gray.gray_100};
   border-radius: 20px;
-  cursor: pointer;
+  cursor: ${({ $isEdit }) => ($isEdit ? 'pointer' : 'default')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -380,17 +382,20 @@ const NoProfileImage = styled.img`
 const UploadIcon = styled.div`
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
+  z-index: 10;
+  pointer-events: auto;
 
   svg {
-    color: ${({ theme }) => theme.color.main_light};
-    margin-top: 4px;
-    margin-right: 8px;
+    color: ${({ theme }) => theme.color.white};
+    margin-top: 5px;
+    margin-right: 5px;
+    cursor: grab;
   }
 `
 
