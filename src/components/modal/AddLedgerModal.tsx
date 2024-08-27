@@ -21,15 +21,17 @@ const AddLedgerModal = ({
   isClose,
   isEdit,
   editData,
-  updateData
+  updateData,
+  getDailyTotal
 }: {
   isClose: () => void
   isEdit: boolean
   editData: LedgerDataProps | null
-  updateData: () => Promise<null | undefined>
+  updateData: () => Promise<void>
+  getDailyTotal: () => Promise<void>
 }) => {
   const { isOpen, openModal, closeModal } = useModal()
-  const { userInfo } = useAuthStore()
+  const { userInfo, isLogin } = useAuthStore()
 
   const [amountType, setAmountType] = useState<'지출' | '수입'>('지출')
 
@@ -48,6 +50,10 @@ const AddLedgerModal = ({
 
   const selectedDay = selectedDate?.getDate()
   const selectedYear = selectedDate?.getFullYear()
+
+  const currentFullDate = useDateStore(state => state.currentDate)
+  const currentYear = currentFullDate.getFullYear()
+  const currentMonth = currentFullDate.getMonth()
 
   const handleAmountType = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -91,6 +97,7 @@ const AddLedgerModal = ({
       }
 
       await updateData()
+      getDailyTotal()
       isClose()
     } catch (error) {
       console.error(error)
@@ -183,6 +190,10 @@ const AddLedgerModal = ({
       console.error(error)
     }
   }
+
+  useEffect(() => {
+    getDailyTotal()
+  }, [currentYear, currentMonth, isLogin])
 
   useEffect(() => {
     if (isEdit && editData) {

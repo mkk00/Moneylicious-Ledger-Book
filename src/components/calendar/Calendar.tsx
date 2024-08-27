@@ -2,14 +2,24 @@ import styled from 'styled-components'
 import CalendarHeader from '@/components/calendar/CalendarHeader'
 import CalendarWeekDays from '@/components/calendar/CalendarWeekDays'
 import CalendarDateCell from '@/components/calendar/CalendarDateCell'
+import { DailySummaryProps } from '@/interface/LedgerProps'
 
-const Calendar = () => {
+const Calendar = ({
+  getDailyTotal,
+  dailyTotalAmount
+}: {
+  getDailyTotal: () => Promise<void>
+  dailyTotalAmount: DailySummaryProps[] | null
+}) => {
   return (
     <>
       <CalendarHeader />
       <CalendarTable>
         <CalendarWeekDays />
-        <CalendarDateCell />
+        <CalendarDateCell
+          getDailyTotal={getDailyTotal}
+          dailyTotalAmount={dailyTotalAmount}
+        />
       </CalendarTable>
     </>
   )

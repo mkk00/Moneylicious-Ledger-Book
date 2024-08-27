@@ -3,26 +3,16 @@ import {
   DailySummaryProps,
   SummaryProps
 } from '@/interface/LedgerProps'
-import { supabase } from '@/supabaseconfig'
 
-export const getTotalAmount = async (year: number, month: number) => {
-  try {
-    const { data, error } = await supabase
-      .from('ledger')
-      .select('type, amount, created_at_month, created_at_day')
-      .eq('created_at_year', year)
-      .eq('created_at_month', month + 1)
-      .returns<TypeAmountProps[] | null>()
-
-    error && alert(error?.message)
-    if (data) return data
-    return null
-  } catch (error) {
-    console.error(error)
-    return null
-  }
-}
-
+/**
+ * 조회한 가계부 내역 데이터 배열에서 `월별` 수입/지출의 총 합계를 구하는 함수
+ *
+ * @param data - 사용자의 해당 월(selectMonth)의 가계부 데이터
+ * @returns 수입/지출의 총 합계를 포함한 객체(0원인 경우에도 포함)
+ *
+ * @description 이 함수는 `getTotalAmount` 함수에서 반환된 데이터를 사용합니다.
+ * @see getTotalAmount
+ */
 export const calculateSummary = (data: TypeAmountProps[] | null) => {
   if (!data) return null
 
@@ -50,6 +40,15 @@ export const calculateSummary = (data: TypeAmountProps[] | null) => {
   return formattedResult
 }
 
+/**
+ * 조회한 가계부 내역 데이터 배열에서 `일별` 수입/지출의 총 합계를 구하는 함수
+ *
+ * @param data - 사용자의 해당 월(selectMonth)의 가계부 데이터
+ * @returns
+ *
+ * @description 이 함수는 `getTotalAmount` 함수에서 반환된 데이터를 사용합니다.
+ * @see getTotalAmount
+ */
 export const calculateDailySummary = (data: TypeAmountProps[] | null) => {
   if (!data) return null
 
