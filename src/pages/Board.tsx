@@ -179,7 +179,7 @@ const PostHeader = styled.div<{ $isMobile: boolean }>`
 
   & span {
     font-size: 0.9rem;
-    color: ${({ theme }) => theme.gray.gray_400};
+    color: ${({ theme }) => theme.gray.gray_500};
     align-self: flex-end;
   }
 `

@@ -70,7 +70,7 @@ const Container = styled.div<{ $isDesktopOrLaptop: boolean }>`
   text-align: center;
 
   span {
-    color: ${({ theme }) => theme.gray.gray_300};
+    color: ${({ theme }) => theme.gray.gray_500};
   }
 `
 

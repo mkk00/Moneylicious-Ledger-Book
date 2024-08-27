@@ -16,6 +16,7 @@ export default CopyToClipboard
 
 const Button = styled.button`
   text-decoration: underline;
+  margin: 2px 3px;
 
   &:hover {
     font-weight: bold;

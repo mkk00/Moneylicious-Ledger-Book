@@ -11,10 +11,11 @@ const SideBarModalLayout = ({
 }) => {
   return (
     <Overlay onClick={() => closeModal()}>
-      <IoCloseOutline
-        size={36}
+      <button
         onClick={() => closeModal()}
-      />
+        aria-label="사이드바 닫기">
+        <IoCloseOutline size={36} />
+      </button>
       <Container onClick={e => e.stopPropagation()}>{children}</Container>
     </Overlay>
   )
@@ -35,13 +36,16 @@ const Overlay = styled.div`
   z-index: 100;
   backdrop-filter: blur(2px);
 
-  & > svg {
-    color: initial;
+  & > button {
     position: absolute;
     top: 15px;
     right: 15px;
     z-index: 102;
     cursor: pointer;
+
+    svg {
+      color: initial;
+    }
   }
 `
 

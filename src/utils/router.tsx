@@ -1,14 +1,15 @@
 import { RouteObject } from 'react-router-dom'
+import { lazy } from 'react'
 
-import Home from '@/pages/Home'
-import Dashboard from '@/pages/Dashboard'
-import Management from '@/pages/Management'
-import Board from '@/pages/Board'
-import BoardDetail from '@/components/board/BoardDetail'
-import BoardWrite from '@/pages/BoardWrite'
-import Mypage from '@/pages/Mypage'
-import Signup from '@/pages/Signup'
-import LoginRequired from '@/pages/LoginRequired'
+const Home = lazy(() => import('@/pages/Home'))
+const Dashboard = lazy(() => import('@/pages/Dashboard'))
+const Management = lazy(() => import('@/pages/Management'))
+const Board = lazy(() => import('@/pages/Board'))
+const BoardDetail = lazy(() => import('@/components/board/BoardDetail'))
+const BoardWrite = lazy(() => import('@/pages/BoardWrite'))
+const Mypage = lazy(() => import('@/pages/Mypage'))
+const Signup = lazy(() => import('@/pages/Signup'))
+const LoginRequired = lazy(() => import('@/pages/LoginRequired'))
 
 export const routerList: RouteObject[] = [
   {

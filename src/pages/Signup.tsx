@@ -7,8 +7,10 @@ import Button from '@/components/button/Button'
 import { supabase } from '@/supabaseconfig'
 import { useNavigate } from 'react-router-dom'
 import MetaTags from '@/components/common/MetaTag'
+import { useResponsive } from '@/hook/useMediaQuery'
 
 const Signup = () => {
+  const { isMobile } = useResponsive()
   const navigate = useNavigate()
   const initialValue = {
     email: '',
@@ -57,7 +59,7 @@ const Signup = () => {
         description="Moenylicious 가계부를 이용하시려면 회원가입을 진행해주세요."
         url="https://moneylicious.vercel.app/signup"
       />
-      <Container>
+      <Container $responsive={isMobile}>
         <h2>회원가입</h2>
         <FormWrapper>
           <InputWrapper>
@@ -169,10 +171,11 @@ const Signup = () => {
 
 export default Signup
 
-const Container = styled.div`
-  width: 450px;
+const Container = styled.div<{ $responsive: boolean }>`
+  width: ${({ $responsive }) => ($responsive ? '100%' : '450px')};
   height: auto;
-  margin: 120px auto;
+  margin: 20px auto;
+  padding: ${({ $responsive }) => ($responsive ? '0 20px' : '0')};
 
   h2 {
     text-align: center;

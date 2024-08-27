@@ -97,7 +97,7 @@ const UserInfo = styled.div`
   margin-top: 15px;
 
   & span {
-    color: ${({ theme }) => theme.gray.gray_300};
+    color: ${({ theme }) => theme.gray.gray_500};
     font-size: 0.9rem;
   }
 `
@@ -117,7 +117,7 @@ const AuthButtons = styled.div`
 `
 
 const Message = styled.div`
-  color: ${({ theme }) => theme.gray.gray_400};
+  color: ${({ theme }) => theme.gray.gray_500};
   padding: 15px;
   background-color: ${({ theme }) => theme.gray.gray_100};
   font-size: 0.9rem;

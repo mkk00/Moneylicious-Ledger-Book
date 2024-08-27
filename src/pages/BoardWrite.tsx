@@ -116,10 +116,12 @@ const BoardWrite = () => {
         <ButtonContainer>
           <IconButton
             type="del"
+            ariaLabel="게시글 작성 취소"
             onClick={() => navigate('/board')}
           />
           <IconButton
             type="add"
+            ariaLabel="게시글 작성 완료"
             submit
           />
         </ButtonContainer>

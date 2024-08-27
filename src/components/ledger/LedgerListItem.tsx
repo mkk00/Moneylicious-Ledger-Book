@@ -52,5 +52,5 @@ const Detail = styled.div<{ $memo?: string }>`
   align-items: center;
   font-size: 0.7rem;
   margin-top: 5px;
-  color: ${({ theme }) => theme.gray.gray_300};
+  color: ${({ theme }) => theme.gray.gray_500};
 `

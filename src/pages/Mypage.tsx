@@ -100,7 +100,7 @@ const Mypage = () => {
     }
   }
 
-  const handleCancelIcon = (e: MouseEvent<SVGAElement>) => {
+  const handleCancelIcon = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setFile(null)
     setPreviewImg('/moneylicious.svg')
@@ -172,12 +172,11 @@ const Mypage = () => {
             <Profile $isEdit={edit}>
               {renderProfilImage(userInfo, previewImg)}
               {edit && (
-                <UploadIcon>
-                  <MdOutlineCancel
-                    size={35}
-                    onClick={handleCancelIcon}
-                  />
-                </UploadIcon>
+                <RemoveIcon
+                  onClick={handleCancelIcon}
+                  aria-label="프로필 이미지 삭제">
+                  <MdOutlineCancel size={35} />
+                </RemoveIcon>
               )}
               <input
                 type="file"
@@ -379,7 +378,7 @@ const NoProfileImage = styled.img`
   filter: brightness(1000%);
 `
 
-const UploadIcon = styled.div`
+const RemoveIcon = styled.button`
   position: absolute;
   top: 0;
   right: 0;

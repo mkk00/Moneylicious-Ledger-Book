@@ -30,7 +30,7 @@ const Footer = () => {
           <p>
             link :{' '}
             <a href="https://github.com/mkk00/Moneylicious-Ledger-Book">
-              https://github.com/mkk00/Moneylicious-Ledger-Book
+              github.com/mkk00/Moneylicious-Ledger-Book
             </a>
           </p>
         </Info>
@@ -45,7 +45,7 @@ const Container = styled.footer`
   width: 100vw;
   height: 200px;
   background: ${({ theme }) => theme.gray.gray_50};
-  color: ${({ theme }) => theme.gray.gray_300};
+  color: ${({ theme }) => theme.gray.gray_500};
 `
 
 const Wrapper = styled.div<{ $isMobile: boolean }>`
@@ -83,6 +83,7 @@ const Info = styled.div`
 
   & a {
     text-decoration: underline;
+
     &:hover {
       font-weight: bold;
     }
