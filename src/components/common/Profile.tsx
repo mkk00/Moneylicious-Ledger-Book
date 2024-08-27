@@ -9,7 +9,9 @@ const Profile = ({ userInfo }: { userInfo: UserAuthProps['userInfo'] }) => {
   const { isOpen, openModal, closeModal } = useModal()
   return (
     <Container>
-      <ProfileWrapper onClick={() => openModal('프로필')}>
+      <ProfileWrapper
+        onClick={() => openModal('프로필')}
+        aria-label="프로필 박스 열기">
         {userInfo?.image_url ? (
           <ProfileImage>
             <img
@@ -40,7 +42,7 @@ const Container = styled.div`
   cursor: pointer;
 `
 
-const ProfileWrapper = styled.div`
+const ProfileWrapper = styled.button`
   display: flex;
   justify-content: space-between;
   align-items: center;

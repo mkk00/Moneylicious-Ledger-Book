@@ -214,6 +214,7 @@ const Comment = ({
             </label>
             <IconButton
               type="del"
+              ariaLabel="작성 댓글 삭제"
               onClick={() => {
                 setIsRecomment(false)
                 setRecommentId(null)
@@ -237,6 +238,7 @@ const Comment = ({
             {isEdit && (
               <IconButton
                 type="del"
+                ariaLabel="댓글 수정 취소"
                 onClick={() => {
                   setIsEdit(false)
                   setEditingCommentId(null)

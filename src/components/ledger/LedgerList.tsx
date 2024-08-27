@@ -160,6 +160,7 @@ const LedgerList = ({
         ))}
         <IconButton
           type="plus"
+          ariaLabel="새 가계부 내역 추가"
           onClick={handleIsOpenAdd}
         />
       </LedgerListWrapper>

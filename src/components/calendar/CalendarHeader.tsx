@@ -37,7 +37,7 @@ const CalendarHeader = () => {
   return (
     <>
       <SelectedDateWrapper>
-        <BackTodayButton>
+        <BackTodayButton aria-label="오늘 날짜로 가기">
           <RiHome5Line
             size={16}
             onClick={() => {
@@ -50,10 +50,14 @@ const CalendarHeader = () => {
           {currentYear}년 {currentMonth + 1}월
         </SelectDateButton>
         <SelectMonthButton>
-          <button onClick={() => handleChangeMonth(-1)}>
+          <button
+            onClick={() => handleChangeMonth(-1)}
+            aria-label="이전 월">
             <BiSolidLeftArrow size={12} />
           </button>
-          <button onClick={() => handleChangeMonth(1)}>
+          <button
+            onClick={() => handleChangeMonth(1)}
+            aria-label="다음 월">
             <BiSolidRightArrow size={12} />
           </button>
         </SelectMonthButton>

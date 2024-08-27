@@ -99,6 +99,7 @@ const AssetsDetailList = ({
           ))}
         <IconButton
           type="plus"
+          ariaLabel="새 자산 항목 추가"
           onClick={() => {
             setEditAssetData(null)
             setModalType('add')

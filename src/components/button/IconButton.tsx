@@ -12,17 +12,20 @@ import { PiPlusThin } from 'react-icons/pi'
 const IconButton = ({
   type,
   submit,
-  onClick
+  onClick,
+  ariaLabel
 }: {
   type: 'add' | 'edit' | 'del' | 'expense' | 'income' | 'plus'
   submit?: boolean
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void
+  ariaLabel: string
 }) => {
   return (
     <Button
       type={submit ? 'submit' : 'button'}
       $buttontype={type}
-      onClick={e => onClick && onClick(e)}>
+      onClick={e => onClick && onClick(e)}
+      aria-label={ariaLabel}>
       {type === 'add' && <CiSaveDown1 size={24} />}
       {type === 'edit' && <CiEdit size={24} />}
       {type === 'del' && <CiEraser size={24} />}

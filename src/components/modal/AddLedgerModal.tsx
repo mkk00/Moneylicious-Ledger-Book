@@ -327,17 +327,20 @@ const AddLedgerModal = ({
         {amountType === '지출' ? (
           <IconButton
             type="expense"
+            ariaLabel="수입 내역으로 전환"
             onClick={handleAmountType}
           />
         ) : (
           <IconButton
             type="income"
+            ariaLabel="지출 내역으로 전환"
             onClick={handleAmountType}
           />
         )}
         {!isEdit && (
           <IconButton
             type="add"
+            ariaLabel="작성 완료"
             onClick={handleSubmit}
           />
         )}
@@ -345,10 +348,12 @@ const AddLedgerModal = ({
           <>
             <IconButton
               type="edit"
+              ariaLabel="수정 완료"
               onClick={handleEditLedgerItem}
             />
             <IconButton
               type="del"
+              ariaLabel="가계부 내역 삭제"
               onClick={handleDeleteLedgerItem}
             />
           </>

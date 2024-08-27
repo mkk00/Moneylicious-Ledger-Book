@@ -5,7 +5,13 @@ import useAuthStore from '@/store/useAuthStore'
 import useAuthForm from '@/hook/useAuthForm'
 import { MypageProps, UserInfoProps } from '@/interface/AuthProps'
 import Button from '@/components/button/Button'
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
+import {
+  ButtonHTMLAttributes,
+  ChangeEvent,
+  MouseEvent,
+  useEffect,
+  useState
+} from 'react'
 import mypageValidation from '@/utils/mypageValidation'
 import { MdOutlineCancel } from 'react-icons/md'
 import MetaTags from '@/components/common/MetaTag'
@@ -100,7 +106,7 @@ const Mypage = () => {
     }
   }
 
-  const handleCancelIcon = (e: MouseEvent<SVGAElement>) => {
+  const handleCancelIcon = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setFile(null)
     setPreviewImg('/moneylicious.svg')
@@ -172,12 +178,11 @@ const Mypage = () => {
             <Profile $isEdit={edit}>
               {renderProfilImage(userInfo, previewImg)}
               {edit && (
-                <UploadIcon>
-                  <MdOutlineCancel
-                    size={35}
-                    onClick={handleCancelIcon}
-                  />
-                </UploadIcon>
+                <RemoveIcon
+                  onClick={handleCancelIcon}
+                  aria-label="프로필 이미지 삭제">
+                  <MdOutlineCancel size={35} />
+                </RemoveIcon>
               )}
               <input
                 type="file"
@@ -379,7 +384,7 @@ const NoProfileImage = styled.img`
   filter: brightness(1000%);
 `
 
-const UploadIcon = styled.div`
+const RemoveIcon = styled.button`
   position: absolute;
   top: 0;
   right: 0;

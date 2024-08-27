@@ -176,7 +176,8 @@ const BoardDetail = () => {
         )}
         <Button
           $isLike={isLike}
-          onClick={handleLike}>
+          onClick={handleLike}
+          aria-label="게시글 추천">
           <GoThumbsup size={30} />
           {likesCount}
         </Button>
