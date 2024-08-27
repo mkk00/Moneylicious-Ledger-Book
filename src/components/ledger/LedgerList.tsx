@@ -202,7 +202,7 @@ const LedgerHeader = styled.div`
   font-size: 1.2rem;
 
   & span {
-    color: ${({ theme }) => theme.gray.gray_300};
+    color: ${({ theme }) => theme.gray.gray_500};
     font-size: 0.9rem;
   }
 `

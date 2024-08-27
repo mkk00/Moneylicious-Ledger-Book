@@ -65,8 +65,8 @@ const Button = styled.button<{
     type === 'main' &&
     $size === 'medium' &&
     css`
-      background-color: ${theme.color.main_light};
-      border-color: ${theme.color.main_light};
+      background-color: ${theme.color.main};
+      border-color: ${theme.color.main};
       color: ${theme.color.white};
     `}
 `

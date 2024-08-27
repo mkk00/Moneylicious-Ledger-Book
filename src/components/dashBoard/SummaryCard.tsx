@@ -33,7 +33,7 @@ const Content = styled.span`
 
 const Description = styled.span`
   font-size: 0.7rem;
-  color: ${({ theme }) => theme.gray.gray_300};
+  color: ${({ theme }) => theme.gray.gray_500};
 `
 
 const Container = styled.div`

@@ -6,7 +6,7 @@ const color = {
   main_dark: '#1934cd',
   sub: '#ff6e40',
   sub_light: '#fda488',
-  sub_dark: '#dd4414',
+  sub_dark: '#C44B25',
   white: '#ffffff'
 }
 
@@ -15,7 +15,8 @@ export const gray = {
   gray_100: '#e8ebed',
   gray_200: '#c9cdd2',
   gray_300: '#9ea4aa',
-  gray_400: '#72787f'
+  gray_400: '#72787f',
+  gray_500: '#646A70'
 }
 
 export type ColorTypes = typeof color

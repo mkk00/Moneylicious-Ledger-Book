@@ -72,7 +72,7 @@ export default BoardTable
 
 const spanStyle = css`
   font-size: 0.7rem;
-  color: ${({ theme }) => theme.gray.gray_400};
+  color: ${({ theme }) => theme.gray.gray_500};
 `
 
 const omiss = css`

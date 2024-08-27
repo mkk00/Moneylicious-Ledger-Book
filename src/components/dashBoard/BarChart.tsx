@@ -99,7 +99,7 @@ const Amount = styled.span`
   font-size: 0.7rem;
   left: 50%;
   transform: translateX(-50%);
-  color: ${({ theme }) => theme.gray.gray_400};
+  color: ${({ theme }) => theme.gray.gray_500};
 `
 
 const Bar = styled.div<{ $type: string; height: string }>`

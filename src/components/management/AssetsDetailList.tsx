@@ -171,7 +171,7 @@ const AssetsTotal = styled.div`
   font-weight: bold;
 `
 
-const AssetsDetail = styled.ul`
+const AssetsDetail = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;

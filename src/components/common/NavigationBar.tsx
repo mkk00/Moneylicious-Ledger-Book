@@ -1,4 +1,4 @@
-import styled, { css, useTheme } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
 import { useResponsive } from '@/hook/useMediaQuery'
 
@@ -12,12 +12,14 @@ const NavigationBar = () => {
     { name: '커뮤니티', path: '/board' }
   ]
 
-  const { color } = useTheme()
   const { isMobile } = useResponsive()
 
   const navActiveStyle = ({ isActive }: { isActive: boolean }) => ({
-    color: isMobile ? 'initial' : isActive ? color.sub : color.white,
-    fontWeight: isActive ? 'bold' : 'normal'
+    fontSize: isActive ? '1.1rem' : '1rem',
+    fontWeight: isActive ? 'bold' : 'normal',
+    textDecoration: isActive ? 'underline' : 'none',
+    textDecorationThickness: '1.5px',
+    textUnderlineOffset: '6px'
   })
 
   return (

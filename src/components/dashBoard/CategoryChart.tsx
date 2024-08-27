@@ -178,7 +178,7 @@ const SelectWrapper = styled.div`
 const NoData = styled.span`
   margin-top: 40px;
   margin-bottom: 50px;
-  color: ${({ theme }) => theme.gray.gray_300};
+  color: ${({ theme }) => theme.gray.gray_400};
 `
 
 const Wrapper = styled.div`

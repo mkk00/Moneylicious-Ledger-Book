@@ -138,7 +138,7 @@ const Wrapper = styled.div`
     padding: 30px 0;
     text-align: center;
     font-size: 0.9rem;
-    color: ${({ theme }) => theme.gray.gray_300};
+    color: ${({ theme }) => theme.gray.gray_400};
   }
 `
 
@@ -160,7 +160,7 @@ const LedgerListItem = styled.li`
 
   & span {
     font-size: 0.7rem;
-    color: ${({ theme }) => theme.gray.gray_300};
+    color: ${({ theme }) => theme.gray.gray_400};
   }
 
   & > div:first-of-type {
