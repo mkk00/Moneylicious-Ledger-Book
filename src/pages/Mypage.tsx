@@ -5,13 +5,7 @@ import useAuthStore from '@/store/useAuthStore'
 import useAuthForm from '@/hook/useAuthForm'
 import { MypageProps, UserInfoProps } from '@/interface/AuthProps'
 import Button from '@/components/button/Button'
-import {
-  ButtonHTMLAttributes,
-  ChangeEvent,
-  MouseEvent,
-  useEffect,
-  useState
-} from 'react'
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
 import mypageValidation from '@/utils/mypageValidation'
 import { MdOutlineCancel } from 'react-icons/md'
 import MetaTags from '@/components/common/MetaTag'
