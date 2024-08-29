@@ -64,21 +64,33 @@ const CategoryChart = ({
     }
 
     const getSeriesData = (data: TypeProps | undefined) => {
-      if (type === '수입')
-        return data?.income
-          ? Object.entries(data.income).map(([key, value]) => ({
-              name: key,
-              data: value
-            }))
-          : []
-      if (type === '지출')
-        return data?.expense
-          ? Object.entries(data.expense).map(([key, value]) => ({
-              name: key,
-              data: value
-            }))
-          : []
-      return []
+      if (!data) return []
+      const categoryData = type === '수입' ? data.income : data.expense
+      const entries = Object.entries(categoryData)
+
+      const topCategoryNumber = type === '수입' ? 3 : 7
+      const DescEntries = entries.sort(([, a], [, b]) => b - a)
+      const topEntries = DescEntries.slice(0, topCategoryNumber)
+
+      const otherEntries = DescEntries.slice(topCategoryNumber)
+      const otherEntriesTotal = otherEntries.reduce(
+        (acc, [, value]) => acc + value,
+        0
+      )
+
+      const result = topEntries.map(([key, value]) => ({
+        name: key,
+        data: value
+      }))
+
+      if (otherEntriesTotal > 0) {
+        result.push({
+          name: '기타',
+          data: otherEntriesTotal
+        })
+      }
+
+      return result
     }
 
     const seriesData = getSeriesData(data)
