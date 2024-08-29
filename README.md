@@ -98,6 +98,9 @@ npm run dev
 
 - 캘린더에는 일별 <span style="color:#3c5afe">수입</span>/<span style="color:#ff6e40">지출</span> 총 금액을 한눈에 확인할 수 있습니다.
 
+
+  <p align="center"><img src='https://github.com/user-attachments/assets/9faf128e-47a7-4f72-a647-e3dd9270a2e1' alt='Moneylicious 메인 페이지 - 캘린더' style="width: 80%;" /></p><br/>
+
 > **가계부 내역 확인**
 
 캘린더의 날짜 부분을 `토글`하여 해당 일자의 가계부 내역을 조회합니다.
@@ -107,13 +110,33 @@ npm run dev
 - 내역 추가 버튼( + )을 누르면 '기록 추가' 모달이 열립니다.
 - 모달 바깥쪽을 클릭하면 모달이 닫힙니다.
 
+
+<p align="center"><img src='https://github.com/user-attachments/assets/2207d4ec-9edc-48a1-af42-204b9bb18c51' alt='카테고리 모달(지출)' style="width: 300px;" /> <img src='https://github.com/user-attachments/assets/9c2df8a6-a0ae-4ddb-b6b3-8f6ac964f23f' alt='카테고리 모달(수입)' style="width: 300px;" /></p><br/>
+
+
 > **수입/지출 카테고리 선택** 
 - 왼쪽 하단에 `+`, `-` 버튼을 통해 수입/지출(type)을 선택할 수 있습니다.
 - 수입/지출별 카테고리를 선택할 수 있습니다.
 
+<p align="center"><img src='https://github.com/user-attachments/assets/382d3b5c-9d42-4a86-a656-a2817adf4ff7' alt='카테고리 모달(지출)' style="width: 300px;" /> <img src='https://github.com/user-attachments/assets/a9ee5cb7-70a6-43f7-8262-e85b96c0ba1f' alt='카테고리 모달(수입)' style="width: 300px;" /></p><br/>
+
+
+
+
 > **내역 수정 및 삭제**
 
 추가된 내역 리스트를 클릭하면 해당 기록을 수정하거나 삭제할 수 있습니다.
+
+> **고정 금액 지정**
+
+- 고정적인 수입/지출의 경우 고정 금액 체크를 통해 매월 금액을 직접 입력하지 않아도 한번에 등록됩니다.
+- 고정 금액을 모두 수정/삭제하려면 체크를 유지한 채 내용을 반영할 수 있습니다.
+- 고정 금액에 체크를 해제하면 해당 월의 데이터만 수정/삭제 내역이 반영됩니다.
+
+<p align="center"><img src='https://github.com/user-attachments/assets/3f977439-54c1-47e5-95ed-b7f87a955ef9' alt='카테고리 수정 모달(고정금액)' style="width: 300px;" /></p><br/>
+
+
+
 
 ### 대시보드 페이지('/dashboard')
 대시보드 페이지에는 `가계부 요약` 과 `월별/연별 지출 추세` 및 `카테고리별 수입/지출 비율` 로 구성되어 있습니다.
@@ -124,42 +147,86 @@ npm run dev
 - 해당 년도에서 가장 많이 소비한 월 표시
 - 해당 년도에서 가장 많이 소비한 카테고리 표시
 
+
+<p align="center"><img src='https://github.com/user-attachments/assets/33f3ebd8-9008-45fb-9bc6-368ae55da11d' alt='대시보드 페이지 - 요약' style="width: 80%;" /></p><br/>
+
+
+
 > **월별 수입/지출 추세**
-- 월별 수입/지출 추세를 막대 그래프로 시각화
-- 그래프의 월 막대 부분을 클릭하면 아래쪽에 해당 월의 카테고리별 수입/지출 비율을 확인할 수 있다.
+- 월별 수입/지출 추세를 막대 그래프로 시각화했습니다.
+- 그래프의 월 막대 부분을 클릭하면 아래쪽에 해당 월의 카테고리별 수입/지출 비율을 확인할 수 있습니다.
+
+
+<p align="center"><img src='https://github.com/user-attachments/assets/69afc40f-c556-4f91-9abd-9cb769c6b14e' alt='월별 그래프' style="width: 400px;" /></p><br/>
+
 
 > **연도별 수입/지출 추세**
-- 연도별 수입/지출 추세를 라인 그래프로 시각화
-- `전년도`와 `당해년도`의 수입/지출 금액이 얼마나 변화가 있었는지 쉽게 확인 가능
+- 연도별 수입/지출 추세를 라인 그래프로 시각화했습니다.
+- `전년도`와 `당해년도`의 수입/지출 금액이 얼마나 변화가 있었는지 쉽게 확인 가능합니다.
+
+<p align="center"><img src='https://github.com/user-attachments/assets/de84e6f8-dded-424c-a0f6-2f8fa2d99a8a' alt='연별 그래프' style="width: 400px;" /></p><br/>
+
+
 
 > **카테고리별 수입/지출 비율**
-- 월별/연도별 아래에 카테고리별 수입/지출 비율을 파이 그래프로 시각화
-- 월별 카테고리별 수입/지출 비율은 월별 막대 그래프의 막대를 클릭하거나 `SelectBox` 를 통해 조작 가능
+- 월별/연도별 아래에 카테고리별 수입/지출 비율을 파이 그래프로 시각화했습니다.
+- 월별 카테고리별 수입/지출 비율은 월별 막대 그래프의 막대를 클릭하거나 `SelectBox` 를 통해 조작 가능합니다.
+- 카테고리별 금액 상위 7개만 차트에 표시하고, 나머지 금액은 '기타' 금액으로 통합하여 표기했습다.
+
+<p align="center"><img src='https://github.com/user-attachments/assets/50596a57-24e6-4c69-b81c-7e3b3eff6dda' alt='월별 카테고리 그래프' style="width: 300px;" /> <img src='https://github.com/user-attachments/assets/56d7cf4b-18b2-4335-986d-f86c4247dd3a' alt='연별 카테고리 그래프' style="width: 300px;" /></p><br/>
+
+
+
+
 
 ### 자산관리 페이지('/management')
 자산관리 페이지에는 `자산 요약` 과 `목표 설정` 으로 구성되어 있습니다.
 
+<p align="center"><img src='https://github.com/user-attachments/assets/8a358c6b-911e-445b-823b-15ef072ef355' alt='자산관리 페이지 - 요약' style="width: 80%;" /></p><br/>
+
+
+
 > **현금 이용 내역**
-- 수입과 지출 금액의 차액(수입-지출)을 현금으로 표시
-- 해당 카드를 클릭하면 현금 이용 내역 월별 조회 가능
+- 수입과 지출 금액의 차액(수입-지출)을 현금으로 표시합니다.
+- 해당 카드를 클릭하면 하단에서 현금 이용 내역 월별 조회 가능합니다.
+
+<p align="center"><img src='https://github.com/user-attachments/assets/6607f856-8f6a-4eb9-8de6-d7c7e55f825f' alt='현금 이용 목록' style="width: 400px;" /></p><br/>
+
+
 
 > **자산 목록**
-- 자산은 저축, 보험, 투자 등의 합계로 구성
-- 자산 목록이 기본으로 보여지며 자산 카드 클릭을 통해 자산 목록 토글 가능
-- 자산의 목록은 각 항목(저축/보험/투자)의 합계 금액과 세부 항목 금액 표시
-- 하단의 `+` 버튼을 통해 저축/보험/투자 내역 추가 가능하며, 상세 내역을 클릭하면 수정/삭제 가능
+- 자산은 저축, 보험, 투자 등의 합계로 구성합니다.
+- 자산 목록이 기본으로 보여지며 자산 카드 클릭을 통해 자산 목록 토글 가능합니다.
+- 자산의 목록은 각 항목(저축/보험/투자)의 합계 금액과 세부 항목 금액 표시합니다.
+- 하단의 `+` 버튼을 통해 저축/보험/투자 내역 추가 가능하며, 상세 내역을 클릭하면 수정/삭제 가능합니다.
+
+
+
+<p align="center"><img src='https://github.com/user-attachments/assets/8392072c-1d7a-4a7b-a34e-0735a2aa9219' alt='자산 목록' style="width: 400px;" /> <img src='https://github.com/user-attachments/assets/f5dbdda9-5fc9-4ac0-93f9-6b59e0b1f8fb' alt='자산 추가 모달' style="width: 250px;" /></p><br/>
+
+
+
 
 > **한달 소비 계획 설정** 및 **연간 저축 목표 설정**
-- 한달동안 소비할 금액의 목표를 설정 가능
-- 연간 저축 목표 설정 가능
-- 카드 하단에 현재 지출 금액 합계 및 현재 저축액 표시
+- 카드를 클릭해서 한달동안 소비할 금액의 목표 및 연간 저축 목표 설정 가능합니다.
+- 카드 하단에 현재 지출 금액 합계 및 현재 저축액 표시하여 목표 달성 여부를 확인할 수 있습니다.
+
+
+<p align="center"><img src='https://github.com/user-attachments/assets/32deca08-5ca4-45a3-b95c-b3e1c7c260a7' alt='한달 소비 계획 추가 모달' style="width: 350px;" /><img src='https://github.com/user-attachments/assets/b8e60fab-d3d5-407d-84a7-cae27cc785d7' alt='연간 저축 목표 설정 모달' style="width: 350px;" /></p><br/>
+
+
+
 
 ### 커뮤니티 페이지('/board', '/board/[id]', '/board/write')
-커뮤니티 페이지에서는 `카테고리별`(일반/소비습관/정보/고민/기타) 게시글을 조회/작성/수정/삭제할 수 있다.
+커뮤니티 페이지에서는 `카테고리별`(일반/소비습관/정보/고민/기타) 게시글을 조회/작성/수정/삭제할 수 있습니다.
 - 카테고리별 게시글 조회 기능
 - 게시글 추천 기능(좋아요)
 - 댓글 작성/수정/삭제 기능
 - 뒤로가기 하지 않고도 하단에 게시글 목록을 통해 다른 게시글로 이동 가능
+
+<p align="center"><img src='https://github.com/user-attachments/assets/9cc5548e-bf8b-4376-be6b-94e4d5dbfa61' alt='커뮤니티 게시판 목록' style="width: 49%" /> <img src='https://github.com/user-attachments/assets/a60a515a-22cf-4db0-82ad-1eb7253204c4' alt='커뮤니티 게시판 상세조회' style="width: 49%;" /></p><br/>
+
+
 
 ### 회원가입 페이지
 > **유효성 검사**
@@ -168,11 +235,19 @@ npm run dev
 - 패스워드는 문자, 숫자 및 특수문자를 포함한 10글자 이상
 - 닉네임은 3글자 이상 8글자 이하의 영어, 한글, 숫자
 
+<p align="center"><img src='https://github.com/user-attachments/assets/885183f1-2043-43d9-8f76-b88ded87bbdf' alt='회원가입 유효성검사1' style="width: 350px;" /> <img src='https://github.com/user-attachments/assets/da9797b0-31b7-44f4-b34d-cfe6549eca63' alt='회원가입 유효성검사2' style="width: 350px;" /></p><br/>
+
+
+
 ### 마이 페이지
 - 프로필 사진 변경
 - 패스워드 변경
 - 닉네임 변경
 - 사용자 메시지 수정
+
+
+  <p align="center"><img src='https://github.com/user-attachments/assets/e6fccc4d-7f8d-47a4-8069-731ce642cca8' alt='마이페이지' style="width: 350px;" /> <img src='https://github.com/user-attachments/assets/900f6967-3e9d-4b37-84a3-412f217ce26d' alt='마이페이지' style="width: 350px;" /></p><br/>
+
 
 
 <br/>
