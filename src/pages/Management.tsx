@@ -53,26 +53,22 @@ const Management = () => {
 
   return (
     <PageLayout>
-      {ledgerData && (
-        <>
-          <Title>자산</Title>
-          <SummaryWrapper>
-            <Summary
-              ledgerData={ledgerData}
-              assetsData={assetsData}
-              setOpenCash={setIsOpenDetail}
-              setOpenAssets={setIsOpenAssets}
-              fetchAssetsData={fetchAssetsData}
-            />
-          </SummaryWrapper>
-          {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
-          {isOpenAssets && (
-            <AssetsDetailList
-              assetsData={assetsData}
-              fetchAssetsData={fetchAssetsData}
-            />
-          )}
-        </>
+      <Title>자산</Title>
+      <SummaryWrapper>
+        <Summary
+          ledgerData={ledgerData}
+          assetsData={assetsData}
+          setOpenCash={setIsOpenDetail}
+          setOpenAssets={setIsOpenAssets}
+          fetchAssetsData={fetchAssetsData}
+        />
+      </SummaryWrapper>
+      {isOpenDetail && <LedgerDetailList ledgerData={ledgerData} />}
+      {isOpenAssets && (
+        <AssetsDetailList
+          assetsData={assetsData}
+          fetchAssetsData={fetchAssetsData}
+        />
       )}
       {!ledgerData && <NoData />}
     </PageLayout>

@@ -48,26 +48,22 @@ const Dashboard = () => {
         description="가계부 내역을 차트를 통해 한눈에 확인해보세요."
         url="https://moneylicious.vercel.app/dashboard"
       />
-      {ledgerData && (
-        <>
-          <Summary ledgerData={ledgerData} />
-          <MonthlyChart
-            ledgerData={ledgerData}
-            selectYear={selectYear}
-            setSelectYear={setSelectYear}
-            setSelectMonth={setSelectMonth}
-            type={type}
-            setType={setType}
-          />
-          <CategoryChart
-            ledgerData={ledgerData}
-            selectMonth={selectMonth}
-            setSelectMonth={setSelectMonth}
-          />
-          <YearlyCell ledgerData={ledgerData} />
-          <CategoryChart ledgerData={ledgerData} />
-        </>
-      )}
+      <Summary ledgerData={ledgerData} />
+      <MonthlyChart
+        ledgerData={ledgerData}
+        selectYear={selectYear}
+        setSelectYear={setSelectYear}
+        setSelectMonth={setSelectMonth}
+        type={type}
+        setType={setType}
+      />
+      <CategoryChart
+        ledgerData={ledgerData}
+        selectMonth={selectMonth}
+        setSelectMonth={setSelectMonth}
+      />
+      <YearlyCell ledgerData={ledgerData} />
+      <CategoryChart ledgerData={ledgerData} />
       {!ledgerData && <NoData />}
     </PageLayout>
   )

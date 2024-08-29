@@ -140,9 +140,9 @@ const Comment = ({
   const renderComments = (datas: CommentProps[], parentId: string | null) => {
     return datas
       .filter(comment => comment.parent_id === parentId)
-      .map(comment => (
+      .map((comment, idx) => (
         <CommentList
-          key={comment.userinfo.username + '-comment'}
+          key={comment.userinfo.username + '-comment-' + idx}
           $isRecomment={comment.parent_id ? true : false}>
           <div>
             <User>
