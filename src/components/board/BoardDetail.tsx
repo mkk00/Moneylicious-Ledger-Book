@@ -51,7 +51,7 @@ const BoardDetail = () => {
       .eq('board_id', item.id)
       .eq('user_id', userInfo?.id)
 
-    if (data) {
+    if (data && data.length > 0) {
       setIsLike(true)
     } else {
       setIsLike(false)
